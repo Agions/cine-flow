@@ -1,0 +1,1 @@
+import{_ as a,o as i,c as n,ag as l}from"./chunks/framework.CvgP6Fyv.js";const c=JSON.parse('{"title":"配置参考","description":"","frontmatter":{},"headers":[],"relativePath":"config.md","filePath":"config.md"}'),p={name:"config.md"};function t(h,s,e,k,d,r){return i(),n("div",null,[...s[0]||(s[0]=[l("",13)])])}const o=a(p,[["render",t]]);export{c as __pageData,o as default};

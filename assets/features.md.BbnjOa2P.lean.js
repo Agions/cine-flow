@@ -1,0 +1,1 @@
+import{_ as a,o as e,c as r,ag as d}from"./chunks/framework.CvgP6Fyv.js";const u=JSON.parse('{"title":"功能介绍","description":"","frontmatter":{},"headers":[],"relativePath":"features.md","filePath":"features.md"}'),o={name:"features.md"};function i(n,t,h,s,l,p){return e(),r("div",null,[...t[0]||(t[0]=[d("",22)])])}const b=a(o,[["render",i]]);export{u as __pageData,b as default};
