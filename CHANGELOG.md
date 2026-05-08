@@ -1,3 +1,32 @@
+## [4.0.1] - 2026-05-08
+
+### 🐛 Bug Fixes
+
+- **SecurityError 被静默吞噬**：`highlight_detector.py` 的 `_run_ffmpeg` 用 `except Exception` 吞掉了命令注入攻击被拦截的 `SecurityError` → 改为显式 catch 并 log WARNING
+- **FFmpegTool 异常类型错误**：`ffmpeg_tool.py` 14处 catch `subprocess.CalledProcessError`，但实际抛出 `SecurityError` → 全部改为 `SecurityError`
+- **VoiceGenerator 异常类型错误**：`_get_audio_duration` 方法 catch `CalledProcessError` 但实际抛 `SecurityError`
+
+### 🧹 Code Cleanup
+
+- **删除未使用接口文件**：移除 `app/core/interfaces/video_maker.py`（272行，0导入）和 `app/services/interfaces.py`（292行，0导入），合计 **-607行**
+- **删除重复 Enum 定义**：`audio/__init__.py` 删除了 `BeatStrength`、`MusicSection`、`SyncStrategy`、`TransitionType` 的副本（已存在于子模块）
+- **`TTSProvider._get_audio_duration` 去重**：统一到基类 `TTSProvider`，删除 EdgeTTSProvider / OpenAITTSProvider / F5TTSProvider 三个重复副本（-32行）
+- **删除死方法**：`FFmpegTool.run_command`（-20行）、`_detect_audio_peaks` 中的死 `import json`、未使用的 `SceneConverter` 实例
+
+### 📚 Documentation
+
+- `ARCHITECTURE.md`：更新目录结构（反映删除的接口文件）、更新 `monologue_maker.py` 行数（658→578）、更新架构债务列表、更新测试状态（389 passed, 0 failed）
+
+### 🔒 Security
+
+- 所有 subprocess 调用统一收敛至 `SecureExecutor`，异常类型统一为 `SecurityError`，无遗漏
+
+### 📊 质量指标
+
+- Tests：**389 passed, 20 skipped, 2 warnings, 0 failed**
+
+---
+
 ## [4.0.0] - 2026-04-21
 
 ### 🚀 全面重构 Phase 1-4
