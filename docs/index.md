@@ -71,7 +71,7 @@ features:
 <div class="vp-proof-bar">
   <span class="vp-proof-item">
     <svg class="vp-proof-dot" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="4" r="3.5" fill="#10B981"/></svg>
-    v1.0.0 最新
+    v1.0.1 最新
   </span>
   <span class="vp-proof-sep">·</span>
   <span class="vp-proof-item">
@@ -270,7 +270,7 @@ features:
 <!-- Stats Footer -->
 <div class="vp-stats-row">
   <div class="vp-stat">
-    <div class="vp-stat-val">v1.0.0</div>
+    <div class="vp-stat-val">v1.0.1</div>
     <div class="vp-stat-lbl">最新版本</div>
   </div>
   <div class="vp-stat-sep">|</div>
