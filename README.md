@@ -1,23 +1,40 @@
 # Voxplore
 
-**AI First-Person Video Narrator — 多视频智能合并解说专家**
+<p align="center">
+  <img src="docs/public/favicon.svg" width="80" alt="Voxplore" />
+</p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python)](https://www.python.org/)
-[![PySide6](https://img.shields.io/badge/Qt-6.5+-41C845?style=flat-square&logo=qt)](https://qt.io/)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-silver?style=flat-square)](https://github.com/Agions/Voxplore)
-[![Releases](https://img.shields.io/badge/v1.0.1-10B981?style=flat-square)](https://github.com/Agions/Voxplore/releases)
+<p align="center">
 
----
+[![License: MIT](https://img.shields.io/github/license/Agions/Voxplore?style=flat-square&color=MIT-blue)
+](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=FFD43B)
+](https://www.python.org/)
+[![Qt](https://img.shields.io/badge/Qt-6.5%2B-41C845?style=flat-square&logo=qt&logoColor=41C845)
+](https://qt.io/)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-silver?style=flat-square&color=silver)
+](https://github.com/Agions/Voxplore)
+[![Release](https://img.shields.io/github/v/release/Agions/Voxplore?include_prereleases&style=flat-square&color=10B981)
+](https://github.com/Agions/Voxplore/releases/latest)
+[![Build](https://img.shields.io/github/actions/workflow/status/Agions/Voxplore/build.yml?style=flat-square&logo=github-actions)
+](https://github.com/Agions/Voxplore/actions)
 
-## 定位
+</p>
 
 > **Voxplore** — 批量上传视频，AI 自动分组选段，一键生成电影感第一人称配音解说。
 >
 > 短剧 / 影视 / Vlog，一键变成"我在现场"的专业叙事视频。
 
-**成本**：< ¥0.01 / 视频（DeepSeek-V4）  
+**成本**：< ¥0.01 / 视频（DeepSeek-V4）
 **隐私**：视频永不上传云端，全本地处理
+
+---
+
+## 定位
+
+Voxplore 是一款专注于**第一人称视角视频解说**的 AI 工具。用户上传一段视频，AI 自动判断"我是谁"，从视频中提取该人物出现的片段，生成电影感配音解说。
+
+适用于：短剧二次创作、影视解说、Vlog 故事化改造等场景。
 
 ---
 
@@ -30,7 +47,7 @@
 | 💡 **情感峰值驱动选段** | 叙事完整优先 + 情感峰值加权排序 |
 | 🎙️ **7 种情感风格** | 治愈 / 悬疑 / 励志 / 怀旧 / 浪漫 / 幽默 / 纪录片 |
 | ✍️ **精准字幕** | TTS word-level，音字同步 50ms 精度 |
-| 📦 **模块化成品输出** | 合并版（完整叙事）+ 高光片段（单独分发）|
+| 📦 **模块化成品输出** | 合并版（完整叙事）+ 高光片段（单独分发） |
 | 🖥️ **剪映草稿导出** | 原生 JSON，无缝导入剪映继续精剪 |
 | 🌐 **全本地运行** | 视频永不上传云端 |
 
@@ -128,11 +145,3 @@ export DASHSCOPE_API_KEY="..."
 ## 许可证
 
 [MIT License](LICENSE) · Copyright © 2025-2026 [Agions](https://github.com/Agions)
-
----
-
-<div align="center">
-
-⭐ 如果 Voxplore 对你有帮助，请给一个 Star
-
-</div>

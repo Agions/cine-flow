@@ -2,22 +2,21 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: 'Voxplore',
-  description: 'AI 驱动的第一人称视频解说工具 — 上传视频，AI 代入主角视角，一键生成电影感配音解说。Qwen2.5-VL + DeepSeek-V3 + Edge-TTS。',
+  description: 'AI 驱动的第一人称视频解说工具 — 上传视频，AI 代入主角视角，一键生成电影感配音解说。Qwen2.5-VL + DeepSeek-V4 + Edge-TTS。',
   base: '/Voxplore/',
   lang: 'zh-CN',
   cleanUrls: false,
   ignoreDeadLinks: true,
 
   head: [
-    ['link', { rel: 'icon', type: 'image/png', href: '/logo.png' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/Voxplore/favicon.svg' }],
     ['meta', { name: 'keywords', content: 'AI视频解说,第一人称视频,自动配音,AI字幕,视频剪辑,Voxplore,DeepSeek,Qwen,Edge-TTS' }],
     ['meta', { name: 'author', content: 'Agions' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:title', content: 'Voxplore — AI First-Person Video Narrator' }],
     ['meta', { property: 'og:description', content: '上传视频，AI 代入主角视角，一键生成电影感配音解说' }],
-    ['meta', { property: 'og:image', content: 'https://agions.github.io/Voxplore/logo.png' }],
     ['meta', { property: 'og:url', content: 'https://agions.github.io/Voxplore/' }],
-    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:card', content: 'summary' }],
     ['meta', { name: 'twitter:title', content: 'Voxplore — AI First-Person Video Narrator' }],
     ['meta', { name: 'twitter:description', content: '上传视频，AI 代入主角视角，一键生成电影感配音解说' }],
     ['meta', { name: 'theme-color', content: '#070B12' }],
@@ -26,7 +25,6 @@ export default defineConfig({
   markdown: { lineNumbers: false },
 
   themeConfig: {
-    logo: '/logo.png',
     siteTitle: 'Voxplore',
     appearance: 'dark',
 
@@ -126,7 +124,7 @@ export default defineConfig({
 
     returnToTopLabel: '返回顶部',
     sidebarMenuLabel: '菜单',
-    docFooter: { prev: '下一篇', next: '上一篇' },
+    docFooter: { prev: '上一篇', next: '下一篇' },
     outline: { level: [2, 3], label: '目录' },
     socialLinks: [{ icon: 'github', link: 'https://github.com/Agions/Voxplore' }],
     footer: {

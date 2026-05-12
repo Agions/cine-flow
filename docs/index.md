@@ -8,9 +8,6 @@ hero:
   name: Voxplore
   text: AI First-Person Video Narrator
   tagline: 批量上传视频 · AI 自动分组选段 · 一键生成电影感配音解说
-  image:
-    src: /logo.png
-    alt: Voxplore
   actions:
     - theme: brand
       text: 快速开始 →
@@ -23,49 +20,27 @@ hero:
       link: https://github.com/Agions/Voxplore
 
 features:
-  - icon:
-      src: /icons/multi-video.svg
+  - icon: 🎬
     title: 多视频智能合并
     details: 批量上传视频，AI 视觉+声纹混合分组，避免同一人重复生成解说
-  - icon:
-      src: /icons/monologue.svg
+  - icon: 👤
     title: 第一人称片段提取
     details: 逐帧分析画面，Qwen2.5-VL 判断"我"的视角，提取情感峰值高光片段
-  - icon:
-      src: /icons/emotion.svg
+  - icon: 💡
     title: 情感峰值驱动选段
     details: 叙事完整优先 + 情感峰值加权，悬疑铺垫 → 剧情高潮 → 情感共鸣
-  - icon:
-      src: /icons/module.svg
+  - icon: 📦
     title: 模块化成品输出
     details: 合并版完整叙事 + 高光片段单独发布，最大化内容分发效率
-  - icon:
-      src: /icons/style.svg
+  - icon: 🎭
     title: 7 种情感风格
     details: 治愈/悬疑/励志/怀旧/浪漫/幽默/纪录片 + 角色设定自定义
-  - icon:
-      src: /icons/export.svg
+  - icon: ✍️
     title: 多格式导出
     details: H.264/H.265 MP4 直出，或原生剪映草稿 JSON，无缝继续精剪
 ---
 
 <div class="vp-home">
-
-<!-- Hero Animations -->
-<div class="vp-hero-animations">
-  <div class="vp-float-card vp-float-1">
-    <span class="vp-float-icon">🎬</span>
-    <span class="vp-float-text">Qwen2.5-VL</span>
-  </div>
-  <div class="vp-float-card vp-float-2">
-    <span class="vp-float-icon">🎙️</span>
-    <span class="vp-float-text">DeepSeek-V4</span>
-  </div>
-  <div class="vp-float-card vp-float-3">
-    <span class="vp-float-icon">✍️</span>
-    <span class="vp-float-text">SenseVoice</span>
-  </div>
-</div>
 
 <!-- Social Proof Bar -->
 <div class="vp-proof-bar">
@@ -325,50 +300,6 @@ features:
   to   { opacity: 1; }
 }
 
-/* Hero Animations */
-.vp-home .vp-hero-animations {
-  position: relative;
-  height: 80px;
-  margin-bottom: 24px;
-}
-.vp-home .vp-float-card {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 20px;
-  font-size: 12px;
-  color: rgba(255,255,255,0.7);
-  backdrop-filter: blur(8px);
-  opacity: 0;
-  animation: fade-in 0.5s ease forwards;
-}
-.vp-home .vp-float-card .vp-float-icon { font-size: 16px; }
-.vp-home .vp-float-1 {
-  left: 10%; top: 10px;
-  animation-delay: 0.6s;
-  animation-name: float-1;
-  animation-duration: 4s;
-  animation-fill-mode: forwards;
-}
-.vp-home .vp-float-2 {
-  left: 40%; top: 0;
-  animation-delay: 0.9s;
-  animation-name: float-2;
-  animation-duration: 5s;
-  animation-fill-mode: forwards;
-}
-.vp-home .vp-float-3 {
-  right: 10%; top: 20px;
-  animation-delay: 1.2s;
-  animation-name: float-3;
-  animation-duration: 3.5s;
-  animation-fill-mode: forwards;
-}
-
 /* Proof Bar */
 .vp-home .vp-proof-bar {
   display: flex;
@@ -392,11 +323,11 @@ features:
   opacity: 0;
   animation: fade-up 0.5s ease forwards;
 }
-.vp-home .vp-section:nth-child(3) { animation-delay: 0.2s; }
-.vp-home .vp-section:nth-child(4) { animation-delay: 0.3s; }
-.vp-home .vp-section:nth-child(5) { animation-delay: 0.4s; }
-.vp-home .vp-section:nth-child(6) { animation-delay: 0.5s; }
-.vp-home .vp-section:nth-child(7) { animation-delay: 0.6s; }
+.vp-home .vp-section:nth-child(2) { animation-delay: 0.15s; }
+.vp-home .vp-section:nth-child(3) { animation-delay: 0.25s; }
+.vp-home .vp-section:nth-child(4) { animation-delay: 0.35s; }
+.vp-home .vp-section:nth-child(5) { animation-delay: 0.45s; }
+.vp-home .vp-section:nth-child(6) { animation-delay: 0.55s; }
 
 .vp-home .vp-section-title {
   font-size: 20px;
@@ -501,29 +432,36 @@ features:
 }
 .vp-home .vp-arch-row {
   display: grid;
-  grid-template-columns: 80px 2fr 2fr;
-  gap: 0;
+  grid-template-columns: 1fr 2fr 2fr;
   padding: 10px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-top: 1px solid rgba(255,255,255,0.05);
   font-size: 13px;
+  transition: background 0.15s;
 }
-.vp-home .vp-arch-row:last-child { border-bottom: none; }
+.vp-home .vp-arch-row:hover { background: rgba(255,255,255,0.02); }
 .vp-home .vp-arch-header {
   background: rgba(255,255,255,0.04);
   font-size: 12px;
   color: rgba(255,255,255,0.5);
+  font-weight: 600;
 }
 .vp-home .vp-arch-badge {
   display: inline-block;
-  padding: 2px 8px;
   background: rgba(16,185,129,0.15);
-  border: 1px solid rgba(16,185,129,0.3);
-  border-radius: 4px;
-  font-size: 11px;
   color: #10B981;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.vp-home .vp-arch-row code {
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 12px;
 }
 
-/* Start Cards */
+/* Start Grid */
 .vp-home .vp-start-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -537,39 +475,41 @@ features:
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 10px;
   padding: 16px;
-  text-decoration: none !important;
+  text-decoration: none;
   transition: border-color 0.2s, transform 0.2s;
 }
 .vp-home .vp-start-card:hover {
-  border-color: rgba(16, 185, 129, 0.35);
+  border-color: rgba(16,185,129,0.3);
   transform: translateY(-1px);
 }
-.vp-home .vp-start-icon { font-size: 24px; }
+.vp-home .vp-start-icon { font-size: 22px; }
 .vp-home .vp-start-title { font-size: 14px; font-weight: 700; color: #f0f0f0; }
-.vp-home .vp-start-desc { font-size: 12px; color: rgba(255,255,255,0.45); flex: 1; }
+.vp-home .vp-start-desc { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.4; }
 .vp-home .vp-start-arrow { font-size: 14px; color: #10B981; margin-top: 4px; }
 
-/* Stats Footer */
+/* Stats Row */
 .vp-home .vp-stats-row {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
   gap: 0;
-  margin-top: 56px;
-  padding: 24px 0;
+  margin-top: 48px;
+  padding: 20px 0;
   border-top: 1px solid rgba(255,255,255,0.06);
   opacity: 0;
-  animation: fade-in 0.5s ease 0.8s forwards;
+  animation: fade-up 0.5s ease 0.65s forwards;
 }
 .vp-home .vp-stat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
   padding: 0 24px;
 }
 .vp-home .vp-stat-val { font-size: 16px; font-weight: 700; color: #f0f0f0; }
-.vp-home .vp-stat-lbl { font-size: 11px; color: rgba(255,255,255,0.4); }
-.vp-home .vp-stat-sep { color: rgba(255,255,255,0.12); font-size: 18px; }
+.vp-home .vp-stat-lbl { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px; }
+.vp-home .vp-stat-sep { font-size: 14px; color: rgba(255,255,255,0.1); }
+
+/* VitePress Feature Icon Fix */
+.VPFeature .VPFeatureIcon { display: flex; align-items: center; justify-content: center; }
 </style>
