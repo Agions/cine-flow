@@ -10,6 +10,7 @@
 import pickle
 import json
 import shutil
+import fnmatch
 import logging
 from typing import Any, Optional
 from pathlib import Path
@@ -250,13 +251,8 @@ class DiskCache(ICache):
                 with open(meta_file, 'r') as f:
                     metadata = json.load(f)
                 key = metadata.get('key')
-                if key:
-                    if pattern is None:
-                        keys.append(key)
-                    else:
-                        import fnmatch
-                        if fnmatch.fnmatch(key, pattern):
-                            keys.append(key)
+                if key and (pattern is None or fnmatch.fnmatch(key, pattern)):
+                    keys.append(key)
             except Exception as e:
                 logger.debug(f"Cache keys iteration error: {e}")
         return keys
