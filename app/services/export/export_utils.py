@@ -20,8 +20,14 @@ from ..video_tools.ffmpeg_tool import FFmpegTool
 
 logger = logging.getLogger(__name__)
 
-# Premiere tick rate constant (must be defined before any function using it)
 PREMIERE_TICKS_PER_SECOND = 254016000000
+
+
+# ========== 通用工具 ==========
+
+def first_video_stream(info: dict) -> dict:
+    """从 ffprobe 输出中提取第一个视频流"""
+    return next((s for s in info.get('streams', []) if s.get('codec_type') == 'video'), {})
 
 
 # ========== 时间处理工具 ==========
@@ -177,6 +183,7 @@ __all__ = [
     "get_video_duration",
     "get_video_resolution",
     "copy_material_to_folder",
+    "first_video_stream",
 
     # 基础类
     "BaseTrack",

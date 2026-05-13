@@ -11,6 +11,8 @@ from pathlib import Path
 import logging
 logger = logging.getLogger(__name__)
 
+from ..export.export_utils import first_video_stream
+
 
 @dataclass
 class VideoMetadata:
@@ -91,7 +93,7 @@ class BaseVideoProcessor(IVideoProcessor):
         from .ffmpeg_tool import FFmpegTool
 
         info = FFmpegTool.get_video_info(video_path)
-        video_stream = next((s for s in info.get('streams', []) if s.get('codec_type') == 'video'), {})
+        video_stream = first_video_stream(info)
         format_info = info.get('format', {})
         duration = float(format_info.get('duration') or 0)
         width = video_stream.get('width', 0) or 0
