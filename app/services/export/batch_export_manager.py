@@ -124,24 +124,17 @@ class BatchExportManager:
         Returns:
             任务列表
         """
-        tasks = []
-
-        for project in projects:
-            task_id = f"export_{project['id']}"
-            output_path = os.path.join(
-                output_dir,
-                f"{project['name']}.{format}"
-            )
-
-            task = self.add_task(
-                task_id=task_id,
+        tasks = [
+            self.add_task(
+                task_id=f"export_{project['id']}",
                 name=project['name'],
                 project_path=project['path'],
-                output_path=output_path,
+                output_path=os.path.join(output_dir, f"{project['name']}.{format}"),
                 format=format,
-                quality=quality
+                quality=quality,
             )
-            tasks.append(task)
+            for project in projects
+        ]
 
         return tasks
 
