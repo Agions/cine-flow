@@ -103,7 +103,7 @@ class UploadWindow(BaseStepWindow):
 
     def _update_navigation(self):
         """根据文件数量更新导航按钮状态"""
-        has_files = len(self._selected_files) > 0
+        has_files = bool(self._selected_files)
         self.btn_next.setEnabled(has_files)
         if has_files:
             self.btn_next.setText(f"下一步 ({len(self._selected_files)} 个文件) →")

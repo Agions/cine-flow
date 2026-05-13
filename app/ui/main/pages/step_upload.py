@@ -272,7 +272,7 @@ class StepUpload(QWidget):
 
         # 更新计数
         self._update_count_label()
-        self._next_btn.setEnabled(len(self._video_paths) > 0)
+        self._next_btn.setEnabled(bool(self._video_paths))
 
     def _start_thumbnail_worker(self, paths: list):
         """启动缩略图后台生成"""

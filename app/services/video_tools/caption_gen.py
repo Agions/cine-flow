@@ -313,21 +313,19 @@ class CaptionGenerator:
         """标记关键词和情绪词"""
         full_text = ''.join(w.text for w in words)
 
+        # 预计算 full_text 中存在的关键词（一次遍历，避免重复 in full_text）
+        present_keywords = [kw for kw in self.KEYWORDS_CN if kw in full_text]
+
         for word in words:
-            # 检查是否为关键词
-            if word.text in self.KEYWORDS_CN:
+            # 检查是否为关键词：字本身在关键词列表，或属于某个出现在 full_text 中的关键词短语
+            if word.text in self.KEYWORDS_CN or any(word.text in kw for kw in present_keywords):
                 word.is_keyword = True
 
-            # 检查是否为情绪词
+            # 情绪词
             if word.text in self.EMOTION_WORDS_HIGH:
                 word.emotion = EmotionLevel.HIGH
             elif word.text in self.EMOTION_WORDS_MEDIUM:
                 word.emotion = EmotionLevel.MEDIUM
-
-            # 检查是否在关键词短语中
-            for keyword in self.KEYWORDS_CN:
-                if keyword in full_text and word.text in keyword:
-                    word.is_keyword = True
 
         return words
 

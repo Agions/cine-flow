@@ -305,7 +305,7 @@ class HTTPClientMixin:
                 except json.JSONDecodeError:
                     continue  # Skip malformed JSON lines
                 choices_key = "choices"
-                if choices_key in data and len(data[choices_key]) > 0:
+                if choices_key in data and data[choices_key]:
                     delta = data[choices_key][0].get(delta_key, {})
                     if content_key in delta:
                         yield delta[content_key]
