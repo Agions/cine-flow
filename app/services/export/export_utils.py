@@ -43,10 +43,7 @@ def seconds_to_ticks(seconds: float, fps: float = 30.0) -> int:
 
 def safe_filename(name: str) -> str:
     """生成安全的文件名"""
-    invalid_chars = '<>:"/\\|?*'
-    for char in invalid_chars:
-        name = name.replace(char, '_')
-    return name.strip()
+    return name.translate(str.maketrans('<>:"/\\|?*', '_________')).strip()
 
 
 # ========== 基础数据模型 ==========
