@@ -104,11 +104,12 @@ class VideoDropZone(QFrame):
 
     def _scan_folder(self, folder: str) -> list:
         """递归扫描文件夹内所有视频"""
-        paths = []
-        for root, _, files in os.walk(folder):
-            for f in files:
-                if Path(f).suffix.lower() in VIDEO_EXTS:
-                    paths.append(os.path.join(root, f))
+        paths = [
+            os.path.join(root, f)
+            for root, _, files in os.walk(folder)
+            for f in files
+            if Path(f).suffix.lower() in VIDEO_EXTS
+        ]
         return paths
 
     def dragEnterEvent(self, event: QDragEnterEvent):
