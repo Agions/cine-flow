@@ -142,15 +142,15 @@ class PipelineIntegrator(MonologueMaker):
         """提取关键帧列表"""
         from .models.perspective import KeyFrame
 
-        keyframes = []
-        for i, scene in enumerate(project.scenes):
-            if hasattr(scene, 'keyframe_path') and scene.keyframe_path:
-                kf = KeyFrame(
-                    timestamp=scene.start,
-                    frame_index=i,
-                    image_path=scene.keyframe_path,
-                )
-                keyframes.append(kf)
+        keyframes = [
+            KeyFrame(
+                timestamp=scene.start,
+                frame_index=i,
+                image_path=scene.keyframe_path,
+            )
+            for i, scene in enumerate(project.scenes)
+            if hasattr(scene, 'keyframe_path') and scene.keyframe_path
+        ]
         return keyframes
 
     # ─────────────────────────────────────────────────────────────────
@@ -216,9 +216,8 @@ class PipelineIntegrator(MonologueMaker):
 
     def _build_original_clips(self, project: MonologueProject) -> List[ClipSegment]:
         """构建原片片段列表"""
-        clips = []
-        for i, scene in enumerate(project.scenes):
-            clip = ClipSegment(
+        clips = [
+            ClipSegment(
                 clip_id=f"clip_{i}",
                 source_path=project.source_video,
                 start_time=scene.start,
@@ -226,7 +225,8 @@ class PipelineIntegrator(MonologueMaker):
                 duration=scene.duration,
                 is_key_moment=scene.suitability_score > 70 if hasattr(scene, 'suitability_score') else False,
             )
-            clips.append(clip)
+            for i, scene in enumerate(project.scenes)
+        ]
         return clips
 
     # ─────────────────────────────────────────────────────────────────
