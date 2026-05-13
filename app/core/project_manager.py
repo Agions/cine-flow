@@ -175,9 +175,12 @@ class Project:
                 if os.path.isdir(backup_path):
                     backup_info_file = os.path.join(backup_path, 'backup_info.json')
                     if os.path.exists(backup_info_file):
-                        with open(backup_info_file, 'r') as f:
-                            backup_info = json.load(f)
+                        try:
+                            with open(backup_info_file, 'r') as f:
+                                backup_info = json.load(f)
                             backups.append((backup_path, backup_info['timestamp']))
+                        except Exception:
+                            pass
             backups.sort(key=lambda x: x[1], reverse=True)
             for backup_path, _ in backups[keep_count:]:
                 shutil.rmtree(backup_path)

@@ -128,16 +128,10 @@ class SecureConfigLoader:
         """
         # 构建可能的环境变量名
         possible_keys = []
-
         if env_var:
             possible_keys.append(env_var)
-
         if provider:
-            possible_keys.extend([
-                f"{provider.upper()}_API_KEY",
-                f"{provider.upper()}_API_TOKEN",
-            ])
-
+            possible_keys.extend([f"{provider.upper()}_API_KEY", f"{provider.upper()}_API_TOKEN"])
         possible_keys.extend(['API_KEY', 'API_TOKEN', 'OPENAI_API_KEY'])
 
         for key in possible_keys:

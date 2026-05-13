@@ -400,11 +400,7 @@ class ProjectVersionManager(QObject):
             # 保留主要版本和最近的版本
             recent_versions = all_versions[-keep_count:]
 
-            # 确定要删除的版本
-            versions_to_delete = []
-            for version in all_versions:
-                if not version.is_major and version not in recent_versions:
-                    versions_to_delete.append(version)
+            versions_to_delete = [v for v in all_versions if not v.is_major and v not in recent_versions]
 
             # 删除版本
             for version in versions_to_delete:

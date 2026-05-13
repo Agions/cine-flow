@@ -249,8 +249,7 @@ class DiskCache(ICache):
         for meta_file in self._cache_dir.rglob('*.meta'):
             try:
                 with open(meta_file, 'r') as f:
-                    metadata = json.load(f)
-                key = metadata.get('key')
+                    key = json.load(f).get('key')
                 if key and (pattern is None or fnmatch.fnmatch(key, pattern)):
                     keys.append(key)
             except Exception as e:

@@ -144,14 +144,9 @@ class TaskManager:
     def cleanup_completed(self, max_age_hours: int = 24):
         """清理已完成的任务"""
         now = datetime.now()
-        to_remove = []
-
-        for task_id, task in self._tasks.items():
-            if task.status in [TaskStatus.COMPLETED, TaskStatus.FAILED, TaskStatus.CANCELLED]:
-                if task.completed_at:
-                    age = (now - task.completed_at).total_seconds() / 3600
-                    if age > max_age_hours:
-                        to_remove.append(task_id)
+        to_remove = [task_id for task_id, task in self._tasks.items()
+                     if task.status in [TaskStatus.COMPLETED, TaskStatus.FAILED, TaskStatus.CANCELLED]
+                     and task.completed_at and (now - task.completed_at).total_seconds() / 3600 > max_age_hours]
 
         for task_id in to_remove:
             del self._tasks[task_id]
