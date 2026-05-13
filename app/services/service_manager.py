@@ -90,7 +90,7 @@ class ServiceManager:
         cls.initialize()
         return {
             name: cls.get(name)
-            for name in cls._services.keys()
+            for name in cls._services
         }
 
     @classmethod

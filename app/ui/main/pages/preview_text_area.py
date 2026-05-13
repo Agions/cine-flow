@@ -178,16 +178,11 @@ class PreviewTextArea(QFrame):
 
     def get_segments(self) -> list:
         """获取所有分段的 (time_range, text, emotion)"""
-        result = []
-        for i in range(self._segments_layout.count()):
-            card = self._segments_layout.itemAt(i).widget()
-            if isinstance(card, NarrationSegmentCard):
-                result.append((
-                    card._time_range,
-                    card.get_text(),
-                    card._emotion
-                ))
-        return result
+        return [
+            (card._time_range, card.get_text(), card._emotion)
+            for i in range(self._segments_layout.count())
+            if isinstance(card := self._segments_layout.itemAt(i).widget(), NarrationSegmentCard)
+        ]
 
     def _on_segment_changed(self, text: str):
         self._update_word_count()

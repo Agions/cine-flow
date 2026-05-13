@@ -257,9 +257,10 @@ class GroupCard(QFrame):
 
     def _rearrange_grid(self):
         """重新排列网格中的组件"""
-        items = []
-        for i in range(self._thumb_grid.count()):
-            items.append(self._thumb_grid.itemAt(i).widget())
+        items = [
+            self._thumb_grid.itemAt(i).widget()
+            for i in range(self._thumb_grid.count())
+        ]
         # 重新按列排
         for i, w in enumerate(items):
             self._thumb_grid.removeWidget(w)

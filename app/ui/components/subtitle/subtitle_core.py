@@ -244,11 +244,11 @@ class SubtitleTrack:
 
     def get_blocks_in_range(self, start: float, end: float) -> List[SubtitleBlock]:
         """获取指定时间范围内的字幕块"""
-        result = []
-        for block in self.blocks:
-            if block.start_time < end and block.end_time > start:
-                result.append(block)
-        return result
+        return [
+            block
+            for block in self.blocks
+            if block.start_time < end and block.end_time > start
+        ]
 
     def to_dict(self) -> dict:
         """转换为字典"""
@@ -360,13 +360,11 @@ class MultiTrackSubtitleEditor:
 
     def get_all_blocks_at(self, time: float) -> List[SubtitleBlock]:
         """获取指定时间的所有轨道字幕块"""
-        result = []
-        for track in self.tracks:
-            if track.enabled:
-                block = track.get_block_at(time)
-                if block:
-                    result.append(block)
-        return result
+        return [
+            block
+            for track in self.tracks
+            if track.enabled and (block := track.get_block_at(time))
+        ]
 
     # ─────────────────────────────────────────────────────────────
     # 样式预设
@@ -445,17 +443,15 @@ def export_to_jianying_text_track(
         剪映字幕段列表
     """
     style = editor.get_style_for_track(track)
-    segments = []
-
-    for block in sorted(track.blocks, key=lambda b: b.start_time):
-        segments.append({
+    return [
+        {
             "text": block.text,
             "start": block.start_time,
             "duration": block.duration,
             "style": style.to_dict(),
-        })
-
-    return segments
+        }
+        for block in sorted(track.blocks, key=lambda b: b.start_time)
+    ]
 
 
 __all__ = [

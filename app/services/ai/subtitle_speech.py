@@ -112,23 +112,26 @@ class SpeechSubtitleExtractor:
                 timestamp_granularities=["segment"],
             )
 
-        segments = []
         if hasattr(response, 'segments') and response.segments:
-            for seg in response.segments:
-                segments.append(SubtitleSegment(
+            segments = [
+                SubtitleSegment(
                     start=seg.get("start", seg.start) if isinstance(seg, dict) else seg.start,
                     end=seg.get("end", seg.end) if isinstance(seg, dict) else seg.end,
                     text=(seg.get("text", "") if isinstance(seg, dict) else seg.text).strip(),
                     confidence=seg.get("avg_logprob", 0) if isinstance(seg, dict) else getattr(seg, 'avg_logprob', 0),
                     source="speech",
-                ))
+                )
+                for seg in response.segments
+            ]
         elif hasattr(response, 'text'):
             # 无时间戳,整段返回
-            segments.append(SubtitleSegment(
+            segments = [SubtitleSegment(
                 start=0, end=FFmpegTool.get_duration(audio_path),
                 text=response.text.strip(),
                 source="speech",
-            ))
+            )]
+        else:
+            segments = []
 
         return segments
 
@@ -189,16 +192,11 @@ class SpeechSubtitleExtractor:
         except Exception as e:
             raise RuntimeError(f"Faster-Whisper 转录失败: {e}")
 
-        segments = []
-        for seg in segments_gen:
-            text = seg.text.strip()
-            if text:  # 跳过空文本
-                segments.append(SubtitleSegment(
-                    start=seg.start,
-                    end=seg.end,
-                    text=text,
-                    source="speech",
-                ))
+        segments = [
+            SubtitleSegment(start=seg.start, end=seg.end, text=text, source="speech")
+            for seg in segments_gen
+            if (text := seg.text.strip())
+        ]
 
         return segments
 
