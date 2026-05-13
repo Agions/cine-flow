@@ -48,6 +48,11 @@ from .export_utils import safe_filename
 
 logger = logging.getLogger(__name__)
 
+
+def _first_video_stream(info: dict) -> dict:
+    """从 ffprobe 输出中提取第一个视频流"""
+    return next((s for s in info.get('streams', []) if s.get('codec_type') == 'video'), {})
+
 __all__ = [
     "JianyingExporter",
 ]
@@ -413,7 +418,7 @@ class JianyingExporter:
         """
         try:
             info = FFmpegTool.get_video_info(video_path)
-            video_stream = next((s for s in info.get('streams', []) if s.get('codec_type') == 'video'), {})
+            video_stream = _first_video_stream(info)
             duration_str = info.get('format', {}).get('duration', '0')
             duration = float(duration_str) if duration_str else 0.0
             width = int(video_stream.get('width', 1920))
