@@ -409,7 +409,3 @@ def run(argv: Optional[List[str]] = None) -> int:
 def main() -> None:
     """入口点 (供 setuptools/scripts 调用)"""
     sys.exit(run())
-
-
-if __name__ == "__main__":
-    main()

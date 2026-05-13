@@ -114,7 +114,3 @@ def get_version_string() -> str:
 # 便捷导出
 VERSION = get_version()
 __version__ = VERSION
-
-
-if __name__ == "__main__":
-    print(__version__)
