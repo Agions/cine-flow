@@ -26,6 +26,7 @@
 import logging
 import json
 import shutil
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 
@@ -229,8 +230,6 @@ class JianyingExporter:
         """复制素材到草稿目录（并行化以提升大文件性能）"""
         materials_folder = draft_folder / "materials"
         materials_folder.mkdir(exist_ok=True)
-
-        from concurrent.futures import ThreadPoolExecutor, as_completed
 
         def _copy_single(src_path: str, materials_folder: Path) -> Optional[str]:
             """复制单个素材，返回新路径"""

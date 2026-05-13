@@ -495,7 +495,7 @@ class ProjectManager(QObject):
             self.logger.error(f"Failed to load templates: {e}")
 
     def cleanup(self) -> None:
-        for project_id in list(self.projects.keys()):
+        for project_id in list(self.projects):
             self.close_project(project_id)
         if hasattr(self, 'auto_save_timer'):
             self.auto_save_timer.stop()

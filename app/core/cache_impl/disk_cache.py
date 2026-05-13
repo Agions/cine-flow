@@ -264,7 +264,7 @@ class DiskCache(ICache):
     def cleanup_expired(self) -> int:
         """清理过期条目"""
         count = 0
-        for meta_file in list(self._cache_dir.rglob('*.meta')):
+        for meta_file in self._cache_dir.rglob('*.meta'):
             try:
                 with open(meta_file, 'r') as f:
                     metadata = json.load(f)

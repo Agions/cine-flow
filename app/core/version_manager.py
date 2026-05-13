@@ -269,10 +269,7 @@ class ProjectVersionManager(QObject):
             return []
 
         branch = self.branches[branch_name]
-        versions = []
-        for version_id in branch.versions:
-            if version_id in self.versions:
-                versions.append(self.versions[version_id])
+        versions = [self.versions[vid] for vid in branch.versions if vid in self.versions]
 
         return sorted(versions, key=lambda v: v.timestamp, reverse=True)
 
@@ -536,7 +533,7 @@ class ProjectVersionManager(QObject):
         """压缩版本存储"""
         try:
             # 删除空目录
-            for version_id in list(self.versions.keys()):
+            for version_id in list(self.versions):
                 version_path = os.path.join(self.version_dir, version_id)
                 if not os.path.exists(version_path):
                     del self.versions[version_id]
