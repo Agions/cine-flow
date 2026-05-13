@@ -105,7 +105,7 @@ class JianyingExporter:
 
     def _get_canvas_config(self, ratio: str) -> CanvasConfig:
         """根据比例获取画布配置"""
-        return self._CANVAS_CONFIGS.get(ratio, self._CANVAS_CONFIGS["9:16"])
+        return self._CANVAS_CONFIGS.get(ratio) or self._CANVAS_CONFIGS["9:16"]
 
     def export(
         self,
