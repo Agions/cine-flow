@@ -174,9 +174,9 @@ class JianyingExporter:
         Returns:
             轨道对象
         """
-        tracks = [t for t in draft.tracks if t.type == track_type]
-        if tracks:
-            return tracks[0]
+        track = next((t for t in draft.tracks if t.type == track_type), None)
+        if track:
+            return track
         new_track = Track(type=track_type, attribute=attribute)
         draft.add_track(new_track)
         return new_track
@@ -195,10 +195,10 @@ class JianyingExporter:
         Returns:
             目标时间轴开始位置（秒），默认 0
         """
-        tracks = [t for t in draft.tracks if t.type == track_type]
-        if not tracks or not tracks[0].segments:
+        track = next((t for t in draft.tracks if t.type == track_type), None)
+        if not track or not track.segments:
             return 0.0
-        last_seg = tracks[0].segments[-1]
+        last_seg = track.segments[-1]
         return (last_seg.target_timerange.start + last_seg.target_timerange.duration) / 1_000_000
 
     def _add_segment(
