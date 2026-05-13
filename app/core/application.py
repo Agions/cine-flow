@@ -457,7 +457,7 @@ class Application(QObject):
             # 从 PySide6 QSettings 加载
             QSettings = __import__('PySide6.QtCore', fromlist=['QSettings']).QSettings
             settings = QSettings("Voxplore", "Application")
-            self.logger.info("配置加载完成: %s keys", settings.allKeys().__len__())
+            self.logger.info("配置加载完成: %s keys", len(settings.allKeys()))
         except Exception as e:
             self.logger.error(f"配置加载失败: {e}")
 

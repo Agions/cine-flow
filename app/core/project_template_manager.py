@@ -123,7 +123,7 @@ class ProjectTemplateManager(QObject):
                         except Exception as e:
                             self.logger.warning(f"Failed to load builtin template {template_dir}: {e}")
 
-            self.logger.info(f"Loaded {len([t for t in self.templates.values() if t.is_builtin])} builtin templates")
+            self.logger.info(f"Loaded {sum(1 for t in self.templates.values() if t.is_builtin)} builtin templates")
 
         except Exception as e:
             self.logger.error(f"Failed to load builtin templates: {e}")
