@@ -12,6 +12,7 @@ import json
 import shutil
 import uuid
 import zipfile
+import psutil
 from datetime import datetime
 from dataclasses import asdict
 from typing import Dict, List, Optional, Any
@@ -246,9 +247,8 @@ class ProjectManager(QObject):
 
     def _is_process_running(self, pid_str: str) -> bool:
         try:
-            import psutil
             return psutil.pid_exists(int(pid_str))
-        except (ImportError, ValueError):
+        except ValueError:
             return False
 
     @_handle_project_error("CREATE", "创建项目")
