@@ -244,14 +244,9 @@ class JianyingExporter:
 
         # 收集所有待复制的素材
         tasks: List[str] = []
-
-        for video in draft.materials.videos:
-            if video.path:
-                tasks.append(video.path)
-
-        for audio in draft.materials.audios:
-            if audio.path:
-                tasks.append(audio.path)
+        for material in draft.materials.videos + draft.materials.audios:
+            if material.path:
+                tasks.append(material.path)
 
         # 并行复制所有素材
         if tasks:

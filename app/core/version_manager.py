@@ -401,8 +401,6 @@ class ProjectVersionManager(QObject):
             deleted_count = 0
 
             # 保留主要版本和最近的版本
-            major_versions = [v for v in all_versions if v.is_major]
-            del major_versions  # retained as safety net, currently unused
             recent_versions = all_versions[-keep_count:]
 
             # 确定要删除的版本
