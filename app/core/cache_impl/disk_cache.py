@@ -9,6 +9,7 @@
 
 import pickle
 import json
+import shutil
 import logging
 from typing import Any, Optional
 from pathlib import Path
@@ -180,7 +181,6 @@ class DiskCache(ICache):
     def clear(self) -> None:
         """清空缓存"""
         if self._cache_dir.exists():
-            import shutil
             shutil.rmtree(self._cache_dir)
             self._cache_dir.mkdir(parents=True, exist_ok=True)
 
