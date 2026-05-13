@@ -8,6 +8,7 @@
 """
 
 import pickle
+import fnmatch
 import logging
 from typing import Any, Optional, Dict
 from collections import OrderedDict
@@ -231,7 +232,6 @@ class MemoryCache(ICache):
             keys = list(self._cache.keys())
 
             if pattern:
-                import fnmatch
                 keys = [k for k in keys if fnmatch.fnmatch(k, pattern)]
 
             return keys
