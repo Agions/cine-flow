@@ -166,7 +166,7 @@ class EventBus:
             bool: 若事件有处理器则返回True，否则返回False
         """
         with self._lock:
-            return event_name in self._handlers and len(self._handlers[event_name]) > 0
+            return event_name in self._handlers and bool(self._handlers[event_name])
 
     def get_registered_events(self) -> List[str]:
         """获取所有已注册的事件名称列表（线程安全）

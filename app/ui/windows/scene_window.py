@@ -130,7 +130,7 @@ class SceneWindow(BaseStepWindow):
         self.btn_next.setEnabled(True)
 
     def can_proceed(self) -> bool:
-        return len(self._scenes) > 0
+        return bool(self._scenes)
 
     def get_data(self) -> dict:
         return {"scenes": self._scenes}

@@ -111,7 +111,7 @@ class UploadWindow(BaseStepWindow):
             self.btn_next.setText("下一步 →")
 
     def can_proceed(self) -> bool:
-        return len(self._selected_files) > 0
+        return bool(self._selected_files)
 
     def get_data(self) -> dict:
         return {"files": self._selected_files.copy()}

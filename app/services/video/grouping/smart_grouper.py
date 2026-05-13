@@ -198,7 +198,7 @@ class SmartGrouper:
         # 4. 构建分组
         groups = []
         for cluster in clusters:
-            if len(cluster) == 0:
+            if not cluster:
                 continue
             if len(cluster) == 1:
                 # 单视频单独成一组，置信度较低

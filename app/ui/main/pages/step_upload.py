@@ -344,7 +344,7 @@ class StepUpload(QWidget):
         total = len(self._video_paths)
         if total == 0:
             self._count_label.setText("未选择文件")
-        elif len(checked) == 0:
+        elif not checked:
             self._count_label.setText(f"已选 {total} 个视频（无选中）")
         else:
             self._count_label.setText(f"已选 {total} 个视频，{len(checked)} 个已勾选")
