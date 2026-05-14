@@ -13,7 +13,7 @@ from PySide6.QtGui import QFont
 import logging
 
 from app.ui.components.design_system import Colors
-from app.services.export.batch_export_manager import ExportStatus
+from app.export import ExportStatus
 
 logger = logging.getLogger(__name__)
 
