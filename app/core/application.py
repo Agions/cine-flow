@@ -443,6 +443,11 @@ class Application(QObject):
             settings_manager = ProjectSettingsManager(config_manager)
             self.register_service("settings_manager", settings_manager)
 
+            # 创建并注册导出系统
+            from ..export import ExportSystem
+            export_system = ExportSystem()
+            self.register_service("export_system", export_system)
+
             self.logger.info("服务初始化完成")
             return True
 

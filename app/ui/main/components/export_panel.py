@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                             QLineEdit, QCheckBox, QDialog, QFormLayout)
 from PySide6.QtCore import Qt, Signal
 
-from ...export.export_system import ExportPreset
+from ...export.export_system import ExportPreset, ExportFormat
 from ...core.logger import Logger
 
 from .export_format_selector import ExportSettingsDialog
@@ -513,28 +513,44 @@ class ExportPanel(QWidget):
 
     def _apply_concurrent_limit(self, limit: int):
         """实际应用并发限制"""
-        pass  # TODO: connect to actual export queue
+        try:
+            self.export_system.set_concurrent_limit(limit)
+        except AttributeError:
+            pass  # export_system not yet available
 
     def _schedule_cleanup(self):
         """安排自动清理"""
-        pass  # TODO: implement auto-cleanup scheduling
+        try:
+            self.export_system.set_auto_cleanup(days=7)
+        except AttributeError:
+            pass  # export_system not yet available
 
     def add_preset(self):
         """添加预设"""
         dialog = ExportSettingsDialog(parent=self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             preset_data = dialog.get_preset_data()
+            resolution_str = preset_data.get("resolution", "1920x1080")
+            if "x" in resolution_str:
+                res_w, res_h = resolution_str.split("x")
+                resolution = (int(res_w), int(res_h))
+            else:
+                resolution = (1920, 1080)
+            bitrate_str = str(preset_data.get("bitrate", 8000))
+            audio_bitrate_str = str(preset_data.get("audio_bitrate", 128))
             new_preset = ExportPreset(
                 name=preset_data.get("name", "新预设"),
-                format=preset_data.get("format", "mp4"),
-                codec=preset_data.get("codec", "h264"),
-                resolution=preset_data.get("resolution", "1920x1080"),
+                description=preset_data.get("description", ""),
+                format=ExportFormat.MP4,
+                resolution=resolution,
                 fps=preset_data.get("fps", 30),
-                bitrate=preset_data.get("bitrate", "8M"),
-                audio_codec=preset_data.get("audio_codec", "aac"),
-                audio_bitrate=preset_data.get("audio_bitrate", "192k"),
+                bitrate=int(bitrate_str),
+                audio_bitrate=int(audio_bitrate_str),
+                codec="h264",
+                audio_codec="aac",
             )
-            self.presets.append(new_preset)
+            self.export_system.add_preset(new_preset)
+            self.refresh_presets()
             self.refresh_presets_table()
             QMessageBox.information(self, "成功", f"预设 '{new_preset.name}' 已添加")
 
@@ -544,19 +560,27 @@ class ExportPanel(QWidget):
         if not selected_items:
             QMessageBox.warning(self, "警告", "请选择要编辑的预设")
             return
-        self.edit_preset_data(None)
+        row = self.presets_table.currentRow()
+        preset_id = self.presets_table.item(row, 0).data(Qt.ItemDataRole.UserRole)
+        if not preset_id:
+            preset_id = self.preset_combo.currentData()
+        preset = self.export_system.get_preset(preset_id) if preset_id else None
+        self.edit_preset_data(preset)
 
     def edit_preset_data(self, preset: ExportPreset):
         """编辑预设数据"""
         dialog = ExportSettingsDialog(preset, parent=self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             preset_data = dialog.get_preset_data()
-            self._save_preset(preset.id, preset_data)
+            self._save_preset(preset.id if preset else None, preset_data)
             QMessageBox.information(self, "成功", "预设已更新")
 
     def _save_preset(self, preset_id: str, data: dict):
         """保存预设数据"""
-        pass  # TODO: implement preset persistence
+        if not preset_id:
+            return
+        self.export_system.update_preset(preset_id, data)
+        self.refresh_presets()
 
     def delete_preset(self):
         """删除预设"""
@@ -564,14 +588,13 @@ class ExportPanel(QWidget):
         if not selected_items:
             QMessageBox.warning(self, "警告", "请选择要删除的预设")
             return
-
-        reply = QMessageBox.question(
-            self, "确认删除", "确定要删除选中的预设吗？",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-        )
-
-        if reply == QMessageBox.StandardButton.Yes:
-            QMessageBox.information(self, "成功", "预设已删除")
+        row = self.presets_table.currentRow()
+        preset_id = self.presets_table.item(row, 0).data(Qt.ItemDataRole.UserRole)
+        if not preset_id:
+            preset_id = self.preset_combo.currentData()
+        preset = self.export_system.get_preset(preset_id) if preset_id else None
+        if preset:
+            self.delete_preset_data(preset)
 
     def delete_preset_data(self, preset: ExportPreset):
         """删除预设数据"""
@@ -579,14 +602,10 @@ class ExportPanel(QWidget):
             self, "确认删除", f"确定要删除预设 '{preset.name}' 吗？",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
-
         if reply == QMessageBox.StandardButton.Yes:
-            success = self.export_system.remove_preset(preset.id)
-            if success:
-                self.refresh_presets_table()
-                QMessageBox.information(self, "成功", "预设已删除")
-            else:
-                QMessageBox.warning(self, "警告", "删除预设失败")
+            self.export_system.delete_preset(preset.id)
+            self.refresh_presets()
+            QMessageBox.information(self, "成功", "预设已删除")
 
     def update_queue_display(self):
         """更新队列显示"""
