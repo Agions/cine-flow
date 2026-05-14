@@ -10,6 +10,7 @@ import sys
 import json
 import importlib
 import importlib.util
+import re
 from pathlib import Path
 from typing import List, Optional, Dict
 
@@ -389,7 +390,6 @@ class PluginLoader:
 
     def _parse_version(self, version: str) -> tuple:
         """解析版本号为元组"""
-        import re
         match = re.match(r"(\d+)\.(\d+)\.(\d+)", version)
         if match:
             return tuple(int(x) for x in match.groups())

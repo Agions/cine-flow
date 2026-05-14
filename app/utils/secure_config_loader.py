@@ -7,6 +7,7 @@
 import os
 import json
 import logging
+import re
 from typing import Any, Dict, Optional
 import yaml
 import threading
@@ -278,8 +279,6 @@ class SecureConfigLoader:
         - ${VAR_NAME} - 基本用法
         - ${VAR_NAME:-default} - 带默认值
         """
-        import re
-
         def replacer(match):
             var_expr = match.group(1)
 

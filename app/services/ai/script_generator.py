@@ -37,6 +37,7 @@ AI 文案生成器 (Script Generator)
 
 import os
 import asyncio
+import re
 from typing import Optional, List, Dict, Any
 
 from .base_llm_provider import LLMRequest
@@ -463,8 +464,6 @@ class ScriptGenerator:
         Returns:
             字幕列表，每个包含 text, start, duration
         """
-        import re
-
         captions = []
 
         for segment in script.segments:
