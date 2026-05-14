@@ -13,13 +13,12 @@ from typing import Dict, List, Optional, Any
 from dataclasses import asdict
 from pathlib import Path
 import logging
-
 from app.core._signals import QObject, Signal
-
 from .config_manager import ConfigManager
 from .secure_key_manager import get_secure_key_manager
 from .settings_types import SettingType, SettingDefinition, ProjectSettingsProfile
 from .settings_data import get_all_settings_definitions
+from .settings_helpers import SettingsIO, SettingsValidator, ProfileManager
 
 
 class ProjectSettingsManager(QObject):
@@ -48,9 +47,16 @@ class ProjectSettingsManager(QObject):
         self.settings_file = os.path.expanduser("~/Voxplore/settings/project_settings.json")
         self.profiles_file = os.path.expanduser("~/Voxplore/settings/profiles.json")
 
-        # 初始化
+        # Helpers
+        self._settings_io = SettingsIO(self.settings_file, self.profiles_file)
+        self._settings_validator = SettingsValidator(self.settings_definitions)
+        self._profile_manager = ProfileManager(
+            self.profiles, self.settings, self.settings_definitions,
+        )
+
+        # Initialize
         self._init_settings_definitions()
-        self._load_settings()
+        self._settings_io.load_settings(self.settings, self.settings_definitions)
         self._load_profiles()
 
 
@@ -60,25 +66,36 @@ class ProjectSettingsManager(QObject):
         self.settings_definitions.update(get_all_settings_definitions())
 
     def _load_settings(self) -> None:
-        """加载设置"""
-        try:
-            # 首先设置默认值
-            for key, definition in self.settings_definitions.items():
-                self.settings[key] = definition.default_value
+        """Load settings (kept for subclass compatibility, delegates to helper)."""
+        # Handled in __init__ via self._settings_io.load_settings()
 
-            # 从文件加载设置
-            if os.path.exists(self.settings_file):
-                with open(self.settings_file, 'r', encoding='utf-8') as f:
-                    loaded_settings = json.load(f)
-                    self._update_settings(loaded_settings)
+    def _update_settings(self, new_settings: Dict[str, Any]) -> None:
+        """Apply validated settings updates."""
+        for key, value in new_settings.items():
+            if key in self.settings_definitions:
+                if self._settings_validator.validate(key, value):
+                    self.settings[key] = value
+                else:
+                    self.logger.warning(f"Invalid value for setting {key}: {value}")
 
-            self.logger.info("Project settings loaded successfully")
+    def _validate_setting(self, key: str, value: Any) -> bool:
+        """Validate a setting value."""
+        return self._settings_validator.validate(key, value)
 
-        except Exception as e:
-            self.logger.error(f"Failed to load settings: {e}")
+    def _save_settings(self) -> None:
+        """Persist settings."""
+        self._settings_io.save_settings(self.settings)
+
+    def _save_json_file(self, file_path: str, data: Any) -> None:
+        """Save arbitrary data to JSON."""
+        self._settings_io.save_json_file(file_path, data)
+
+    def _save_profiles(self) -> None:
+        """Persist profiles."""
+        self._settings_io.save_profiles(self.profiles)
 
     def _load_profiles(self) -> None:
-        """加载配置文件"""
+        """Load profiles and merge with defaults."""
         try:
             if os.path.exists(self.profiles_file):
                 with open(self.profiles_file, 'r', encoding='utf-8') as f:
@@ -86,12 +103,8 @@ class ProjectSettingsManager(QObject):
                     for name, profile_data in profiles_data.items():
                         profile = ProjectSettingsProfile(**profile_data)
                         self.profiles[name] = profile
-
-            # 创建默认配置文件
             self._create_default_profiles()
-
             self.logger.info("Project profiles loaded successfully")
-
         except Exception as e:
             self.logger.error(f"Failed to load profiles: {e}")
 
@@ -165,61 +178,8 @@ class ProjectSettingsManager(QObject):
                     self.logger.warning(f"Invalid value for setting {key}: {value}")
 
     def _validate_setting(self, key: str, value: Any) -> bool:
-        """验证设置值"""
-        if key not in self.settings_definitions:
-            return False
-
-        definition = self.settings_definitions[key]
-
-        # 类型检查
-        try:
-            if definition.setting_type == SettingType.STRING:
-                if not isinstance(value, str):
-                    return False
-            elif definition.setting_type == SettingType.INTEGER:
-                if not isinstance(value, int):
-                    return False
-            elif definition.setting_type == SettingType.FLOAT:
-                if not isinstance(value, (int, float)):
-                    return False
-            elif definition.setting_type == SettingType.BOOLEAN:
-                if not isinstance(value, bool):
-                    return False
-            elif definition.setting_type == SettingType.LIST:
-                if not isinstance(value, list):
-                    return False
-            elif definition.setting_type == SettingType.DICT:
-                if not isinstance(value, dict):
-                    return False
-        except Exception as e:
-            self.logger.debug(f"Setting validation error: {e}")
-            return False
-
-        # 范围检查
-        if definition.min_value is not None:
-            if value < definition.min_value:
-                return False
-
-        if definition.max_value is not None:
-            if value > definition.max_value:
-                return False
-
-        # 选项检查
-        if definition.options:
-            if value not in definition.options:
-                return False
-
-        # 自定义验证
-        if definition.validator:
-            try:
-                validator_func = getattr(self, definition.validator)
-                if not validator_func(value):
-                    return False
-            except Exception as e:
-                self.logger.debug(f"Validator error for {definition.key}: {e}")
-                return False
-
-        return True
+        """Validate a setting value."""
+        return self._settings_validator.validate(key, value)
 
     def get_setting(self, key: str, default: Any = None) -> Any:
         """获取设置值"""
