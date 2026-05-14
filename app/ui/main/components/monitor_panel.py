@@ -25,6 +25,7 @@ from ....services import ServiceStatus
 from .monitor_models import MonitorMode, AlertData
 from .monitor_widgets import ServiceStatusWidget, AlertWidget
 from .monitor_pages import MonitorPages
+from .monitor_helpers import MonitorAlertManager
 
 
 class AIMonitorPanel(QWidget):
@@ -43,6 +44,9 @@ class AIMonitorPanel(QWidget):
         self.current_mode = MonitorMode.OVERVIEW
         self.alerts: List[AlertData] = []
         self.performance_data: Dict[str, List[float]] = {}
+
+        # Alert manager helper
+        self._alert_manager = MonitorAlertManager(self.alerts)
 
         # 获取AI服务管理器
         self._get_ai_service_manager()
@@ -443,64 +447,20 @@ class AIMonitorPanel(QWidget):
         try:
             if not self.ai_service_manager:
                 return
-
-            current_time = time_module.time()
-
-            # 检查服务健康状态
-            for service_name, health in self.ai_service_manager.service_health.items():
-                if health.status == ServiceStatus.ERROR:
-                    alert = AlertData(
-                        id=f"{service_name}_error_{int(current_time)}",
-                        service_name=service_name,
-                        level="error",
-                        message="服务出现错误，请检查配置",
-                        timestamp=current_time,
-                        details={"error_rate": health.error_rate, "last_check": health.last_check}
-                    )
-                    self._add_alert(alert)
-
-                elif health.error_rate > 0.1:
-                    alert = AlertData(
-                        id=f"{service_name}_high_error_rate_{int(current_time)}",
-                        service_name=service_name,
-                        level="warning",
-                        message=f"错误率过高: {health.error_rate:.1%}",
-                        timestamp=current_time,
-                        details={"error_rate": health.error_rate}
-                    )
-                    self._add_alert(alert)
-
-                elif health.response_time > 5000:  # 5秒
-                    alert = AlertData(
-                        id=f"{service_name}_slow_response_{int(current_time)}",
-                        service_name=service_name,
-                        level="warning",
-                        message=f"响应时间过长: {health.response_time:.1f}ms",
-                        timestamp=current_time,
-                        details={"response_time": health.response_time}
-                    )
-                    self._add_alert(alert)
-
+            self._alert_manager.generate_alerts(
+                self.ai_service_manager.service_health,
+            )
         except Exception as e:
             self.logger.error(f"生成告警失败: {e}")
 
     def _add_alert(self, alert: AlertData):
-        """添加告警"""
-        now = time_module.time()
-        # 检查是否已存在相似的告警（5分钟内不重复告警）
-        for existing_alert in self.alerts:
-            if (existing_alert.service_name == alert.service_name and
-                existing_alert.level == alert.level and
-                existing_alert.message == alert.message and
-                not existing_alert.resolved and
-                now - existing_alert.timestamp < 300):
-                return
-
-        self.alerts.append(alert)
-
-        # 保持告警数量在合理范围内
-        if len(self.alerts) > 100:
-            self.alerts = self.alerts[-100:]
+        """添加告警（保持向后兼容）"""
+        self._alert_manager._add_alert(
+            service_name=alert.service_name,
+            level=alert.level,
+            message=alert.message,
+            details=alert.details,
+        )
 
     def _update_alerts_list(self):
         """更新告警列表"""
