@@ -449,7 +449,7 @@ class ExportSystem(QObject):
                 fps=preset.fps if preset else 30,
                 codec=preset.codec if preset else "h264",
                 audio_codec=preset.audio_codec if preset else "aac",
-                bitrate=f"{preset.bitrate}k" if preset else "8M",
+                bitrate=f"{preset.bitrate // 1000}M" if preset else "8M",
                 output_path=task.output_path,
                 progress_callback=lambda p: self._on_progress(task.id, p),
             )
