@@ -20,6 +20,7 @@ from app.core._signals import QObject, Signal
 from .project_manager import Project, ProjectType
 from .config_manager import ConfigManager
 from .template_models import TemplateInfo, TemplateCategory, TemplateMetadata
+from .template_helpers import TemplateStorageIO, TemplateFileOps, TemplateCategorizer
 
 
 class ProjectTemplateManager(QObject):
@@ -45,113 +46,44 @@ class ProjectTemplateManager(QObject):
         self.builtin_templates_dir = Path(__file__).parent / "templates"
         self.temp_dir = Path.home() / "Voxplore" / "Temp"
 
-        # 确保目录存在
-        self._ensure_directories()
-
         # 模板存储
         self.templates: Dict[str, TemplateInfo] = {}
         self.categories: Dict[str, TemplateCategory] = {}
 
+        # Helpers
+        self._storage = TemplateStorageIO(self.templates_dir, self.builtin_templates_dir)
+        self._file_ops = TemplateFileOps()
+        self._categorizer = TemplateCategorizer(self.categories)
+
         # 初始化
-        self._init_categories()
-        self._load_templates()
-        self._load_builtin_templates()
+        self._storage.ensure_directories(self.templates_dir, self.temp_dir)
+        self._categorizer.init_categories()
+        self._storage.load_templates(self.templates)
+        self._storage.load_builtin_templates(self.templates, self.builtin_templates_dir)
 
     def _ensure_directories(self) -> None:
         """确保所需目录存在"""
-        for directory in [self.templates_dir, self.temp_dir]:
-            directory.mkdir(parents=True, exist_ok=True)
+        self._storage.ensure_directories(self.templates_dir, self.temp_dir)
 
     def _init_categories(self) -> None:
         """初始化模板类别"""
-        default_categories = [
-            TemplateCategory("video_editing", "视频编辑", "video", "#4CAF50"),
-            TemplateCategory("ai_enhancement", "AI增强", "auto_awesome", "#9C27B0"),
-            TemplateCategory("compilation", "视频集锦", "movie", "#FF5722"),
-            TemplateCategory("commentary", "视频解说", "record_voice_over", "#2196F3"),
-            TemplateCategory("social_media", "社交媒体", "share", "#00BCD4"),
-            TemplateCategory("education", "教育培训", "school", "#FF9800"),
-            TemplateCategory("business", "商务展示", "business", "#607D8B"),
-            TemplateCategory("personal", "个人创作", "person", "#E91E63")
-        ]
-
-        for category in default_categories:
-            self.categories[category.name] = category
+        self._categorizer.init_categories()
 
     def _load_templates(self) -> None:
         """加载用户模板"""
-        try:
-            if not self.templates_dir.exists():
-                return
-
-            # 加载模板索引
-            index_file = self.templates_dir / "templates.json"
-            if index_file.exists():
-                with open(index_file, 'r', encoding='utf-8') as f:
-                    templates_data = json.load(f)
-                    for template_id, template_data in templates_data.items():
-                        template_info = TemplateInfo.from_dict(template_data)
-                        self.templates[template_id] = template_info
-
-            self.logger.info(f"Loaded {len(self.templates)} user templates")
-
-        except Exception as e:
-            self.logger.error(f"Failed to load templates: {e}")
+        self._storage.load_templates(self.templates)
 
     def _load_builtin_templates(self) -> None:
         """加载内置模板"""
-        try:
-            if not self.builtin_templates_dir.exists():
-                return
-
-            # 扫描内置模板目录
-            for template_dir in self.builtin_templates_dir.iterdir():
-                if template_dir.is_dir():
-                    template_info_file = template_dir / "template_info.json"
-                    if template_info_file.exists():
-                        try:
-                            with open(template_info_file, 'r', encoding='utf-8') as f:
-                                template_data = json.load(f)
-
-                            template_info = TemplateInfo.from_dict(template_data)
-                            template_info.is_builtin = True
-
-                            # 如果用户模板中不存在，则添加
-                            if template_info.id not in self.templates:
-                                self.templates[template_info.id] = template_info
-
-                        except Exception as e:
-                            self.logger.warning(f"Failed to load builtin template {template_dir}: {e}")
-
-            self.logger.info(f"Loaded {sum(1 for t in self.templates.values() if t.is_builtin)} builtin templates")
-
-        except Exception as e:
-            self.logger.error(f"Failed to load builtin templates: {e}")
+        self._storage.load_builtin_templates(self.templates, self.builtin_templates_dir)
 
     def _save_templates(self) -> None:
         """保存模板信息"""
-        try:
-            index_file = self.templates_dir / "templates.json"
-            templates_data = {tid: t.to_dict() for tid, t in self.templates.items() if not t.is_builtin}
-            with open(index_file, 'w', encoding='utf-8') as f:
-                json.dump(templates_data, f, indent=2, ensure_ascii=False)
-
-        except Exception as e:
-            self.logger.error(f"Failed to save templates: {e}")
+        self._storage.save_templates(self.templates)
 
     def _calculate_directory_size(self, directory: Path) -> int:
         """计算目录大小"""
-        try:
-            total_size = 0
-            for dirpath, dirnames, filenames in os.walk(directory):
-                for filename in filenames:
-                    file_path = os.path.join(dirpath, filename)
-                    if os.path.exists(file_path):
-                        total_size += os.path.getsize(file_path)
-            return total_size
-        except Exception as e:
-            self.logger.error(f"Failed to calculate directory size: {e}")
-            return 0
+        return self._storage.calculate_directory_size(directory)
 
     def create_template(self, project: Project, template_name: str, category: str,
                       description: str = "", tags: List[str] = None) -> Optional[str]:
@@ -218,26 +150,7 @@ class ProjectTemplateManager(QObject):
 
     def _copy_project_to_template(self, project_path: str, template_dir: Path) -> None:
         """复制项目文件到模板目录"""
-        try:
-            # 复制项目配置文件
-            project_file = os.path.join(project_path, 'project.json')
-            if os.path.exists(project_file):
-                shutil.copy2(project_file, template_dir / 'project_template.json')
-
-            # 复制媒体文件（可选，可以只复制结构）
-            media_source = Path(project_path) / 'media'
-            if media_source.exists():
-                media_dest = template_dir / 'media'
-                shutil.copytree(media_source, media_dest, dirs_exist_ok=True)
-
-            # 复制资产文件
-            assets_source = Path(project_path) / 'assets'
-            if assets_source.exists():
-                assets_dest = template_dir / 'assets'
-                shutil.copytree(assets_source, assets_dest, dirs_exist_ok=True)
-
-        except Exception as e:
-            self.logger.error(f"Failed to copy project to template: {e}")
+        self._file_ops.copy_project_to_template(project_path, template_dir)
 
     def apply_template(self, template_id: str, project_name: str,
                       project_path: str, variables: Dict[str, Any] = None) -> bool:
@@ -287,70 +200,11 @@ class ProjectTemplateManager(QObject):
     def _copy_template_to_project(self, template_path: Path, project_dir: Path,
                                  variables: Dict[str, Any]) -> None:
         """复制模板文件到项目目录"""
-        try:
-            # 处理模板项目文件
-            template_project_file = template_path / 'project_template.json'
-            if template_project_file.exists():
-                with open(template_project_file, 'r', encoding='utf-8') as f:
-                    project_data = json.load(f)
-
-                # 应用变量替换
-                self._apply_variables_to_project(project_data, variables)
-
-                # 更新项目元数据
-                if 'metadata' in project_data:
-                    project_data['metadata']['name'] = variables.get('project_name', 'Untitled Project')
-                    project_data['metadata']['created_at'] = datetime.now().isoformat()
-                    project_data['metadata']['modified_at'] = datetime.now().isoformat()
-
-                # 保存项目文件
-                with open(project_dir / 'project.json', 'w', encoding='utf-8') as f:
-                    json.dump(project_data, f, indent=2, ensure_ascii=False)
-
-            # 复制媒体文件
-            media_source = template_path / 'media'
-            if media_source.exists():
-                media_dest = project_dir / 'media'
-                shutil.copytree(media_source, media_dest, dirs_exist_ok=True)
-
-            # 复制资产文件
-            assets_source = template_path / 'assets'
-            if assets_source.exists():
-                assets_dest = project_dir / 'assets'
-                shutil.copytree(assets_source, assets_dest, dirs_exist_ok=True)
-
-            # 复制其他文件
-            for file_path in template_path.rglob('*'):
-                if file_path.is_file() and file_path.name not in ['project_template.json', 'template_metadata.json', 'template_info.json']:
-                    relative_path = file_path.relative_to(template_path)
-                    dest_path = project_dir / relative_path
-                    dest_path.parent.mkdir(parents=True, exist_ok=True)
-                    shutil.copy2(file_path, dest_path)
-
-        except Exception as e:
-            self.logger.error(f"Failed to copy template to project: {e}")
+        self._file_ops.copy_template_to_project(template_path, project_dir, variables)
 
     def _apply_variables_to_project(self, project_data: Dict[str, Any], variables: Dict[str, Any]) -> None:
         """应用变量到项目数据"""
-        try:
-            # 递归替换变量
-            def replace_variables(obj):
-                if isinstance(obj, dict):
-                    return {k: replace_variables(v) for k, v in obj.items()}
-                elif isinstance(obj, list):
-                    return [replace_variables(item) for item in obj]
-                elif isinstance(obj, str):
-                    # 替换变量占位符
-                    for var_name, var_value in variables.items():
-                        obj = obj.replace(f"${{{var_name}}}", str(var_value))
-                    return obj
-                else:
-                    return obj
-
-            project_data = replace_variables(project_data)
-
-        except Exception as e:
-            self.logger.error(f"Failed to apply variables to project: {e}")
+        self._file_ops._apply_variables(project_data, variables)
 
     def update_template(self, template_id: str, updates: Dict[str, Any]) -> bool:
         """更新模板信息"""
