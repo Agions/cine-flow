@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 from .subtitle_types import SubtitleSegment, SubtitleExtractionResult
+from .subtitle_refiner import SubtitleRefiner, refine_subtitles
 from ..video_tools.ffmpeg_tool import FFmpegTool
 from ...utils.security import get_ffmpeg_executor
 
@@ -43,18 +44,22 @@ class SpeechSubtitleExtractor:
 
     def __init__(self, api_key: Optional[str] = None,
                  mode: str = "local",
-                 local_model: str = "medium"):
+                 local_model: str = "medium",
+                 enable_refiner: bool = True):
         """
         Args:
             api_key: OpenAI API key(mode=api 时需要)
             mode: "api"(OpenAI Whisper API) / "local"(本地 faster-whisper)
             local_model: 本地模型大小 ("tiny"/"base"/"small"/"medium"/"large")
                       推荐 "medium":精度与速度最佳平衡(GPU 2-3min / 10min 音频)
+            enable_refiner: 是否启用字幕精准优化（默认启用）
         """
         self._api_key = api_key or os.getenv("OPENAI_API_KEY")
         self._mode = mode
         self._local_model = local_model if local_model in self.WHISPER_MODELS else "base"
         self._local_model_instance = None  # 缓存加载的模型
+        self._enable_refiner = enable_refiner
+        self._refiner = SubtitleRefiner() if enable_refiner else None
 
     def extract(self, video_path: str,
                 language: str = "zh") -> SubtitleExtractionResult:
@@ -83,6 +88,10 @@ class SpeechSubtitleExtractor:
                 segments = self._transcribe_api(audio_path, language)
             else:
                 segments = self._transcribe_local(audio_path, language)
+
+            # 字幕精准优化 — 提高识别准确率
+            if self._enable_refiner and self._refiner and segments:
+                segments = self._refiner.refine(segments, {"source": "whisper"})
 
             result.segments = segments
             result.full_text = " ".join(s.text for s in segments)
