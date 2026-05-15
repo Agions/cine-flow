@@ -32,6 +32,7 @@ __all__ = ["HighlightReason", "HighlightSegment", "HighlightDetectorConfig", "Hi
 import logging
 import subprocess
 from pathlib import Path
+from collections import defaultdict
 from typing import List, Optional, Tuple
 from enum import Enum
 from dataclasses import dataclass, asdict
@@ -239,10 +240,8 @@ class HighlightDetector:
             return []
 
         changes = []
-        try:
-            from PIL import Image
+        if _OPTIONAL_DEPS_OK:
             import math
-
             prev_hist = None
             for i, frame_path in enumerate(frame_files):
                 timestamp = i / self.config.fps
@@ -251,15 +250,14 @@ class HighlightDetector:
 
                 if prev_hist is not None:
                     # 计算直方图差异
-                    diff = sum(math.sqrt((a - b) ** 2) for a, b in zip(hist, prev_hist))
+                    diff = math.sqrt(sum((a - b) ** 2 for a, b in zip(hist, prev_hist)))
                     diff /= len(hist) * 255.0  # 归一化
 
                     if diff > 0.3:  # 阈值
                         changes.append((timestamp, min(diff * 2, 1.0)))
 
                 prev_hist = hist
-
-        except ImportError:
+        else:
             # 无 PIL 时使用简化的帧文件大小变化
             prev_size = None
             for i, frame_path in enumerate(frame_files):
@@ -295,7 +293,7 @@ class HighlightDetector:
 
         peaks = []
 
-        try:
+        if _OPTIONAL_DEPS_OK:
             import numpy as np
             from pydub import AudioSegment
 
@@ -315,8 +313,7 @@ class HighlightDetector:
             for idx in peak_indices:
                 timestamp = idx * self.config.block_size
                 peaks.append((timestamp, min(energies[idx] * 2, 1.0)))
-
-        except ImportError:
+        else:
             # 无 numpy/pydub 时跳过音频分析
             logger.debug("numpy 或 pydub 未安装，跳过音频峰值检测")
 
@@ -340,6 +337,10 @@ class HighlightDetector:
             return []
 
         motions = []
+        if not _OPTIONAL_DEPS_OK:
+            self._cleanup_frames(frame_files)
+            return []
+
         import numpy as np
         from PIL import Image
 
@@ -373,6 +374,10 @@ class HighlightDetector:
             return []
 
         vibrant = []
+        if not _OPTIONAL_DEPS_OK:
+            self._cleanup_frames(frame_files)
+            return []
+
         import numpy as np
         from PIL import Image
 
@@ -410,17 +415,16 @@ class HighlightDetector:
         """
         合并多种检测结果，加权评分
         """
-        # 构建时间线分数
-        timeline: dict[float, dict] = {}
-        zero = {"scene": 0, "audio": 0, "motion": 0, "color": 0}
+        # 构建时间线分数（使用 defaultdict 简化）
+        timeline: dict[float, dict] = defaultdict(lambda: {"scene": 0, "audio": 0, "motion": 0, "color": 0})
         for ts, score in scene_changes:
-            timeline.setdefault(ts, zero.copy())["scene"] = score
+            timeline[ts]["scene"] = score
         for ts, score in audio_peaks:
-            timeline.setdefault(ts, zero.copy())["audio"] = score
+            timeline[ts]["audio"] = score
         for ts, score in motion_intense:
-            timeline.setdefault(ts, zero.copy())["motion"] = score
+            timeline[ts]["motion"] = score
         for ts, score in color_vibrant:
-            timeline.setdefault(ts, zero.copy())["color"] = score
+            timeline[ts]["color"] = score
 
         # 计算加权综合分数
         highlights = []
