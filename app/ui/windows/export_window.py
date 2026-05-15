@@ -149,7 +149,7 @@ class ExportWindow(BaseStepWindow):
 
         def show_step(index: int):
             if index >= len(steps):
-                self.preview_placeholder.setText("✅ 导出完成!\n\n文件已保存至：~/Videos/Voxplore/")
+                self.preview_placeholder.setText("✅ 导出完成!\n\n文件已保存至：~/Videos/NarrateFlow/")
                 self.finished.emit()
                 return
             label_text, pct = steps[index]
@@ -166,5 +166,5 @@ class ExportWindow(BaseStepWindow):
         return {
             "format": self._format,
             "quality": self._quality,
-            "output_path": "~/Videos/Voxplore/",
+            "output_path": "~/Videos/NarrateFlow/",
         }

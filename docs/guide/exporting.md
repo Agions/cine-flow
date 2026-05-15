@@ -1,6 +1,6 @@
 ---
 title: 导出格式详解
-description: Voxplore 支持的导出格式、参数配置与最佳实践。
+description: NarrateFlow 支持的导出格式、参数配置与最佳实践。
 ---
 
 # 导出格式详解
@@ -55,7 +55,7 @@ description: Voxplore 支持的导出格式、参数配置与最佳实践。
 
 ## ASS 字幕单独导出
 
-Voxplore 可以单独导出 ASS 字幕文件，不含视频：
+NarrateFlow 可以单独导出 ASS 字幕文件，不含视频：
 
 - `.ass` 文件：完整样式（位置/颜色/动画）
 - `.srt` 文件：纯文本时间轴（通用格式）

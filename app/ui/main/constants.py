@@ -21,7 +21,7 @@ class PageType(Enum):
 @dataclass
 class WindowConfig:
     """窗口配置"""
-    title: str = "Voxplore"
+    title: str = "NarrateFlow"
     width: int = 1200
     height: int = 800
     min_width: int = 800

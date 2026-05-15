@@ -1,27 +1,27 @@
-# Voxplore
+# NarrateFlow
 
 <p align="center">
-  <img src="docs/public/favicon.svg" width="80" alt="Voxplore" />
+  <img src="docs/public/favicon.svg" width="80" alt="NarrateFlow" />
 </p>
 
 <p align="center">
 
-[![License: MIT](https://img.shields.io/github/license/Agions/Voxplore?style=flat-square&color=MIT-blue)
+[![License: MIT](https://img.shields.io/github/license/Agions/NarrateFlow?style=flat-square&color=MIT-blue)
 ](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=FFD43B)
 ](https://www.python.org/)
 [![Qt](https://img.shields.io/badge/Qt-6.5%2B-41C845?style=flat-square&logo=qt&logoColor=41C845)
 ](https://qt.io/)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-silver?style=flat-square&color=silver)
-](https://github.com/Agions/Voxplore)
-[![Release](https://img.shields.io/github/v/release/Agions/Voxplore?include_prereleases&style=flat-square&color=10B981)
-](https://github.com/Agions/Voxplore/releases/latest)
-[![Build](https://img.shields.io/github/actions/workflow/status/Agions/Voxplore/build.yml?style=flat-square&logo=github-actions)
-](https://github.com/Agions/Voxplore/actions)
+](https://github.com/Agions/NarrateFlow)
+[![Release](https://img.shields.io/github/v/release/Agions/NarrateFlow?include_prereleases&style=flat-square&color=10B981)
+](https://github.com/Agions/NarrateFlow/releases/latest)
+[![Build](https://img.shields.io/github/actions/workflow/status/Agions/NarrateFlow/build.yml?style=flat-square&logo=github-actions)
+](https://github.com/Agions/NarrateFlow/actions)
 
 </p>
 
-> **Voxplore** — 批量上传视频，AI 自动分组选段，一键生成电影感第一人称配音解说。
+> **NarrateFlow** — 批量上传视频，AI 自动分组选段，一键生成电影感第一人称配音解说。
 >
 > 短剧 / 影视 / Vlog，一键变成"我在现场"的专业叙事视频。
 
@@ -32,7 +32,7 @@
 
 ## 定位
 
-Voxplore 是一款专注于**第一人称视角视频解说**的 AI 工具。用户上传一段视频，AI 自动判断"我是谁"，从视频中提取该人物出现的片段，生成电影感配音解说。
+NarrateFlow 是一款专注于**第一人称视角视频解说**的 AI 工具。用户上传一段视频，AI 自动判断"我是谁"，从视频中提取该人物出现的片段，生成电影感配音解说。
 
 适用于：短剧二次创作、影视解说、Vlog 故事化改造等场景。
 
@@ -105,13 +105,13 @@ Voxplore 是一款专注于**第一人称视角视频解说**的 AI 工具。用
 
 ### 下载安装包
 
-访问 [Releases](https://github.com/Agions/Voxplore/releases/latest) 下载 Windows `.exe` / macOS `.dmg` / Linux `.AppImage`。
+访问 [Releases](https://github.com/Agions/NarrateFlow/releases/latest) 下载 Windows `.exe` / macOS `.dmg` / Linux `.AppImage`。
 
 ### 从源码运行
 
 ```bash
-git clone https://github.com/Agions/Voxplore.git
-cd Voxplore
+git clone https://github.com/Agions/NarrateFlow.git
+cd NarrateFlow
 pip install -r requirements.txt
 python app/main.py
 ```

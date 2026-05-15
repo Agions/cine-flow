@@ -280,11 +280,11 @@ class PluginRegistry:
 
     def log_info(self, message: str) -> None:
         import logging
-        logging.getLogger("voxplore.plugins").info(message)
+        logging.getLogger("narrateflow.plugins").info(message)
 
     def log_error(self, message: str) -> None:
         import logging
-        logging.getLogger("voxplore.plugins").error(message)
+        logging.getLogger("narrateflow.plugins").error(message)
 
     def __len__(self) -> int:
         return len(self._plugins)

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Voxplore Design System — OKLCH 感知均匀色彩系统
+NarrateFlow Design System — OKLCH 感知均匀色彩系统
 frontend-design-pro 规范 · 2026-04-10
 
 规范参考：
@@ -320,7 +320,7 @@ class StyleSheet:
 # ─── 组件封装 ──────────────────────────────────────────────
 class CFButton(QPushButton):
     """
-    Voxplore 按钮 — 支持多变体
+    NarrateFlow 按钮 — 支持多变体
 
     用法：
         btn = CFButton("保存", variant="primary")
@@ -344,7 +344,7 @@ class CFButton(QPushButton):
 
 class CFLabel(QLabel):
     """
-    Voxplore 标签
+    NarrateFlow 标签
 
     用法：
         lbl = CFLabel("标题")
@@ -359,7 +359,7 @@ class CFLabel(QLabel):
 
 class CFCard(QFrame):
     """
-    Voxplore 卡片
+    NarrateFlow 卡片
 
     用法：
         card = CFCard()
@@ -372,7 +372,7 @@ class CFCard(QFrame):
 
 
 class CFPanel(QWidget):
-    """Voxplore 面板"""
+    """NarrateFlow 面板"""
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setStyleSheet(StyleSheet.panel())
@@ -380,7 +380,7 @@ class CFPanel(QWidget):
 
 class CFInput(QLineEdit):
     """
-    Voxplore 输入框
+    NarrateFlow 输入框
 
     用法：
         input = CFInput(placeholder="请输入...")
@@ -394,7 +394,7 @@ class CFInput(QLineEdit):
 
 
 class CFProgressBar(QProgressBar):
-    """Voxplore 进度条"""
+    """NarrateFlow 进度条"""
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setStyleSheet(StyleSheet.progress_bar())
@@ -402,7 +402,7 @@ class CFProgressBar(QProgressBar):
 
 class CFNavButton(CFButton):
     """
-    Voxplore 导航按钮 — 支持选中状态
+    NarrateFlow 导航按钮 — 支持选中状态
 
     用法：
         nav = CFNavButton("首页", icon="🏠", selected=True)
@@ -427,7 +427,7 @@ class CFNavButton(CFButton):
 # ─── Toast 通知 ────────────────────────────────────────────
 class CFToastNotification(QFrame):
     """
-    Voxplore Toast 通知组件
+    NarrateFlow Toast 通知组件
 
     用法：
         toast = CFToastNotification("操作成功", type="success")

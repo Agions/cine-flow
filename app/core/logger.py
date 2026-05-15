@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Voxplore 日志记录器模块
+NarrateFlow 日志记录器模块
 提供日志记录和管理功能
 """
 
@@ -131,7 +131,7 @@ def setup_logging(
             log_dir.mkdir(exist_ok=True)
 
             file_handler = logging.FileHandler(
-                log_dir / "Voxplore.log",
+                log_dir / "NarrateFlow.log",
                 encoding='utf-8'
             )
             file_handler.setFormatter(formatter)

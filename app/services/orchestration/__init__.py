@@ -31,7 +31,7 @@ from .pipeline_proj_mgr import (
     ProjectMetadata,
     ProjectSource,
     ProjectConfig,
-    VoxploreProject,
+    NarrateFlowProject,
     save_project,
     load_project,
 )
@@ -57,7 +57,7 @@ __all__ = [
     "ProjectMetadata",
     "ProjectSource",
     "ProjectConfig",
-    "VoxploreProject",
+    "NarrateFlowProject",
     "save_project",
     "load_project",
 ]

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Voxplore 应用程序核心类
+NarrateFlow 应用程序核心类
 负责应用程序的生命周期管理、服务管理和状态控制
 """
 
@@ -66,7 +66,7 @@ class ErrorInfo:
 
 
 class Application(QObject):
-    """Voxplore 应用程序核心类"""
+    """NarrateFlow 应用程序核心类"""
 
     # 信号定义
     state_changed = Signal(ApplicationState)        # 应用程序状态变化信号
@@ -328,7 +328,7 @@ class Application(QObject):
             from .logger import Logger
 
             # 创建日志服务
-            logger = Logger("Voxplore")
+            logger = Logger("NarrateFlow")
             self.register_service("logger", logger)
 
             # 设置应用程序日志
@@ -461,7 +461,7 @@ class Application(QObject):
         try:
             # 从 PySide6 QSettings 加载
             QSettings = __import__('PySide6.QtCore', fromlist=['QSettings']).QSettings
-            settings = QSettings("Voxplore", "Application")
+            settings = QSettings("NarrateFlow", "Application")
             self.logger.info("配置加载完成: %s keys", len(settings.allKeys()))
         except Exception as e:
             self.logger.error(f"配置加载失败: {e}")
@@ -471,7 +471,7 @@ class Application(QObject):
         try:
             # 保存到 PySide6 QSettings
             QSettings = __import__('PySide6.QtCore', fromlist=['QSettings']).QSettings
-            QSettings("Voxplore", "Application")  # persist session config
+            QSettings("NarrateFlow", "Application")  # persist session config
             self.logger.info("配置保存完成")
         except Exception as e:
             self.logger.error(f"配置保存失败: {e}")

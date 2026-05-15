@@ -1,6 +1,6 @@
 ---
 title: 贡献指南
-description: 如何参与 Voxplore 的开发和贡献。
+description: 如何参与 NarrateFlow 的开发和贡献。
 ---
 
 # 贡献指南
@@ -8,8 +8,8 @@ description: 如何参与 Voxplore 的开发和贡献。
 ## 开发环境
 
 ```bash
-git clone https://github.com/Agions/Voxplore.git
-cd Voxplore
+git clone https://github.com/Agions/NarrateFlow.git
+cd NarrateFlow
 pip install -r requirements.txt
 python app/main.py
 ```
@@ -36,5 +36,5 @@ python app/main.py
 
 ## 问题反馈
 
-- 缺陷请提交 [GitHub Issues](https://github.com/Agions/Voxplore/issues)
+- 缺陷请提交 [GitHub Issues](https://github.com/Agions/NarrateFlow/issues)
 - 功能建议欢迎提交 Discussion

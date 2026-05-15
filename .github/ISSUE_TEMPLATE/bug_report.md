@@ -32,7 +32,7 @@ assignees: ''
 
 - OS: [e.g. macOS 14.0 / Windows 11]
 - Python 版本 / Python Version: [e.g. 3.11]
-- Voxplore 版本 / Version: [e.g. 3.0.0]
+- NarrateFlow 版本 / Version: [e.g. 3.0.0]
 - 使用的 AI 模型 / AI Model: [e.g. GPT-4o]
 
 ## 📋 错误日志 / Error Logs

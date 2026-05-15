@@ -7,7 +7,7 @@ from app.plugins.interfaces.base import PluginType
 
 class TestPluginLoaderEntryPoints:
     def test_entry_point_group_name(self):
-        assert PluginLoader.ENTRY_POINT_GROUP == "voxplore.plugins"
+        assert PluginLoader.ENTRY_POINT_GROUP == "narrateflow.plugins"
 
     def test_discover_via_entry_points_empty(self):
         """When no entry_points match, should return empty list"""
@@ -27,7 +27,7 @@ class TestPluginLoaderEntryPoints:
         fake_ep.attr = "MyPlugin"
         fake_ep.name = "my-plugin"
         fake_ep.value = "my_plugin:MyPlugin"
-        fake_ep.group = "voxplore.plugins"
+        fake_ep.group = "narrateflow.plugins"
 
         fake_class = type("MyPlugin", (), {"__name__": "MyPlugin"})
         fake_ep.load.return_value = fake_class

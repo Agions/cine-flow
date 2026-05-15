@@ -1,5 +1,5 @@
 """
-Voxplore 核心模块
+NarrateFlow 核心模块
 
 核心功能：
 - application: 应用入口和管理 (需要 Qt)
@@ -19,7 +19,7 @@ from .config_manager import ConfigManager, AppConfig
 from .cache_manager import CacheManager, MemoryCache, DiskCache
 from .event_bus import EventBus
 from .exceptions import (
-    VoxploreError,
+    NarrateFlowError,
     LLMError,
     ConfigError,
     FileError,
@@ -48,7 +48,7 @@ __all__ = [
     "EventBus",
 
     # Exceptions
-    "VoxploreError",
+    "NarrateFlowError",
     "LLMError",
     "ConfigError",
     "FileError",

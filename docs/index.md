@@ -1,11 +1,11 @@
 ---
 layout: home
 
-title: Voxplore
+title: NarrateFlow
 titleTemplate: false
 
 hero:
-  name: Voxplore
+  name: NarrateFlow
   text: AI First-Person Video Narrator
   tagline: 批量上传视频 · AI 自动分组选段 · 一键生成电影感配音解说
   actions:
@@ -17,7 +17,7 @@ hero:
       link: /features
     - theme: alt
       text: GitHub ⭐
-      link: https://github.com/Agions/Voxplore
+      link: https://github.com/Agions/NarrateFlow
 
 features:
   - icon: 🎬
@@ -77,7 +77,7 @@ features:
     <div class="vp-compare-header">
       <div></div>
       <div><strong>传统方式</strong></div>
-      <div><strong>Voxplore</strong></div>
+      <div><strong>NarrateFlow</strong></div>
     </div>
     <div class="vp-compare-row">
       <div class="vp-compare-label">制作时间</div>
@@ -112,9 +112,9 @@ features:
   </div>
 </section>
 
-<!-- Why Voxplore -->
+<!-- Why NarrateFlow -->
 <section class="vp-section">
-  <h2 class="vp-section-title">为什么选择 Voxplore</h2>
+  <h2 class="vp-section-title">为什么选择 NarrateFlow</h2>
   <div class="vp-why-grid">
     <div class="vp-why-card">
       <div class="vp-why-icon">⚡</div>
@@ -274,7 +274,7 @@ features:
 
 <style>
 /* ============================================
-   Voxplore Home — Design System
+   NarrateFlow Home — Design System
    简约科技风 · OKLCH暗色 · 动画优先
    ============================================ */
 

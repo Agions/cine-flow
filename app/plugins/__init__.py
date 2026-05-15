@@ -1,5 +1,5 @@
 """
-Voxplore Plugin System
+NarrateFlow Plugin System
 插件系统核心模块
 """
 

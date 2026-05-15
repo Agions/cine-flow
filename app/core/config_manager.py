@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Voxplore 配置管理器
+NarrateFlow 配置管理器
 提供统一的配置管理接口
 """
 

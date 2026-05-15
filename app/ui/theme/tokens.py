@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Voxplore Design Tokens — OKLCH 感知均匀色彩系统
+NarrateFlow Design Tokens — OKLCH 感知均匀色彩系统
 纯暗色简约科技风 · 2026-04-22
 
 OKLCH 优势：

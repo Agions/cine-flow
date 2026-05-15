@@ -58,7 +58,7 @@ class SettingsPage(BasePage):
         about_layout = QVBoxLayout(about_card)
         about_layout.setSpacing(12)
 
-        about_title = CFLabel("ℹ️ 关于 Voxplore")
+        about_title = CFLabel("ℹ️ 关于 NarrateFlow")
         about_title.set_style("color: #E8EDF5; font-size: 14px; font-weight: 600;")
         about_layout.addWidget(about_title)
 

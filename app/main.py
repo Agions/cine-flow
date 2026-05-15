@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Voxplore 主程序入口
+NarrateFlow 主程序入口
 专业的AI视频编辑器
 """
 
@@ -25,7 +25,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 # 设置日志
-logger = logging.getLogger("Voxplore")
+logger = logging.getLogger("NarrateFlow")
 if not logger.handlers:
     handler = logging.StreamHandler()
     handler.setFormatter(logging.Formatter(
@@ -57,7 +57,7 @@ def main():
     from app.utils.version import __version__
 
     logger.info("=" * 50)
-    logger.info("🎬 Voxplore - AI 视频创作工具")
+    logger.info("🎬 NarrateFlow - AI 视频创作工具")
     logger.info("=" * 50)
     logger.info(f"版本: {__version__}")
     logger.info("作者: Agions")
@@ -72,7 +72,7 @@ def main():
         from PySide6.QtWidgets import QApplication
 
         qt_app = QApplication(sys.argv)
-        qt_app.setApplicationName("Voxplore")
+        qt_app.setApplicationName("NarrateFlow")
         qt_app.setApplicationVersion(str(__version__))
 
         # 初始化核心应用程序实例
@@ -137,7 +137,7 @@ def check_dependencies():
 
 def run_cli_mode():
     """命令行模式"""
-    print("Voxplore 命令行模式")
+    print("NarrateFlow 命令行模式")
     print("-" * 30)
     print("可用功能:")
     print("  1. AI 第一人称解说")
@@ -172,7 +172,7 @@ def run_cli_mode():
 def run_commentary():
     """运行解说功能 — 使用 MonologueMaker 作为第一人称解说"""
     print("\n--- AI 第一人称解说 ---")
-    print("(Voxplore 核心功能)")
+    print("(NarrateFlow 核心功能)")
 
     video_path = input("输入视频路径: ").strip()
     if not video_path or not Path(video_path).exists():
@@ -238,9 +238,9 @@ def run_commentary():
 
 
 def run_mashup():
-    """运行混剪功能 — 已移除，参考 Voxplore 专注第一人称解说"""
+    """运行混剪功能 — 已移除，参考 NarrateFlow 专注第一人称解说"""
     print("\n--- AI 视频混剪 ---")
-    print("Voxplore 当前版本专注于第一人称解说功能。")
+    print("NarrateFlow 当前版本专注于第一人称解说功能。")
     print("混剪功能已不在当前版本规划中。")
     print("如有需要，请使用剪映等专业剪辑工具。")
 

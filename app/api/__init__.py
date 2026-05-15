@@ -1,5 +1,5 @@
 """
-Voxplore API Package
+NarrateFlow API Package
 """
 
 from app.api.main import app

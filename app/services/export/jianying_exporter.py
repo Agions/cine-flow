@@ -4,7 +4,7 @@
 """
 剪映草稿导出器 (Jianying Exporter)
 
-将 Voxplore 项目导出为剪映草稿格式，实现与剪映的完美对接。
+将 NarrateFlow 项目导出为剪映草稿格式，实现与剪映的完美对接。
 
 剪映草稿结构:
     drafts/

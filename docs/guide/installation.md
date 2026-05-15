@@ -1,6 +1,6 @@
 ---
 title: 安装指南
-description: Voxplore 各平台完整安装步骤与依赖配置。
+description: NarrateFlow 各平台完整安装步骤与依赖配置。
 ---
 
 # 安装指南
@@ -32,13 +32,13 @@ description: Voxplore 各平台完整安装步骤与依赖配置。
 
 ### 下载安装包
 
-1. 访问 [Releases](https://github.com/Agions/Voxplore/releases/latest)
-2. 下载 `Voxplore-x.x.x-win.exe`
+1. 访问 [Releases](https://github.com/Agions/NarrateFlow/releases/latest)
+2. 下载 `NarrateFlow-x.x.x-win.exe`
 3. 双击运行，按提示完成安装
 
 ### 便携版
 
-如需免安装版本，下载 `.zip` 便携版，解压后直接运行 `Voxplore.exe`。
+如需免安装版本，下载 `.zip` 便携版，解压后直接运行 `NarrateFlow.exe`。
 
 ---
 
@@ -46,20 +46,20 @@ description: Voxplore 各平台完整安装步骤与依赖配置。
 
 ### 下载安装包
 
-1. 访问 [Releases](https://github.com/Agions/Voxplore/releases/latest)
-2. 下载 `Voxplore-x.x.x.dmg`
-3. 打开 DMG，将 Voxplore 拖入应用程序文件夹
+1. 访问 [Releases](https://github.com/Agions/NarrateFlow/releases/latest)
+2. 下载 `NarrateFlow-x.x.x.dmg`
+3. 打开 DMG，将 NarrateFlow 拖入应用程序文件夹
 
 ### 首次运行
 
 如果提示「无法验证开发者」：
 
-1. 右键点击 Voxplore →「打开」
+1. 右键点击 NarrateFlow →「打开」
 2. 弹出提示时点击「打开」
 
 或在终端执行：
 ```bash
-xattr -d com.apple.quarantine /Applications/Voxplore.app
+xattr -d com.apple.quarantine /Applications/NarrateFlow.app
 ```
 
 ---
@@ -70,8 +70,8 @@ xattr -d com.apple.quarantine /Applications/Voxplore.app
 
 ```bash
 # 下载后添加执行权限
-chmod +x Voxplore-x.x.x.AppImage
-./Voxplore-x.x.x.AppImage
+chmod +x NarrateFlow-x.x.x.AppImage
+./NarrateFlow-x.x.x.AppImage
 ```
 
 ### 依赖安装
@@ -83,7 +83,7 @@ sudo apt install fuse libfuse2 libegl1 libgl1 libxkbcommon0 libdbus-1-3
 
 ### 无头环境运行
 
-Linux 服务器或 Docker 容器中，Voxplore 自动使用 `QT_QPA_PLATFORM=offscreen` 模式：
+Linux 服务器或 Docker 容器中，NarrateFlow 自动使用 `QT_QPA_PLATFORM=offscreen` 模式：
 
 ```bash
 export QT_QPA_PLATFORM=offscreen
@@ -97,8 +97,8 @@ python3 app/main.py
 ### 克隆代码
 
 ```bash
-git clone https://github.com/Agions/Voxplore.git
-cd Voxplore
+git clone https://github.com/Agions/NarrateFlow.git
+cd NarrateFlow
 ```
 
 ### 创建虚拟环境（推荐）
@@ -144,8 +144,8 @@ CMD ["python3", "app/main.py"]
 ### 构建与运行
 
 ```bash
-docker build -t voxplore .
-docker run -v /path/to/videos:/videos voxplore
+docker build -t narrateflow .
+docker run -v /path/to/videos:/videos narrateflow
 ```
 
 ---
@@ -154,7 +154,7 @@ docker run -v /path/to/videos:/videos voxplore
 
 ### FFmpeg（必需）
 
-Voxplore 使用 FFmpeg 进行视频处理。
+NarrateFlow 使用 FFmpeg 进行视频处理。
 
 | 系统 | 安装方式 |
 |------|----------|
@@ -210,7 +210,7 @@ Linux 无头环境中，确保设置了 `QT_QPA_PLATFORM=offscreen`。
 
 ### GPU 不可用
 
-Voxplore 自动检测 CUDA。如需手动禁用：
+NarrateFlow 自动检测 CUDA。如需手动禁用：
 ```bash
 export CUDA_VISIBLE_DEVICES=""
 python app/main.py

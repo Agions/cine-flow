@@ -1,5 +1,5 @@
 """
-Voxplore Auto-Update Checker
+NarrateFlow Auto-Update Checker
 
 启动时检测 GitHub Releases 最新版本。
 有新版时提示用户下载，不自动下载/安装（安全优先）。
@@ -15,13 +15,13 @@ from app.utils.version import get_version_string, Version
 
 logger = logging.getLogger(__name__)
 
-GITHUB_API_RELEASES = "https://api.github.com/repos/Agions/Voxplore/releases/latest"
-GITHUB_RELEASES_PAGE = "https://github.com/Agions/Voxplore/releases"
+GITHUB_API_RELEASES = "https://api.github.com/repos/Agions/NarrateFlow/releases/latest"
+GITHUB_RELEASES_PAGE = "https://github.com/Agions/NarrateFlow/releases"
 
 # HTTP 客户端配置（10s 超时，防止阻塞启动）
 _client_config = {
     "timeout": httpx.Timeout(10.0, connect=5.0),
-    "headers": {"Accept": "application/vnd.github.v3+json", "User-Agent": "Voxplore"},
+    "headers": {"Accept": "application/vnd.github.v3+json", "User-Agent": "NarrateFlow"},
 }
 
 
@@ -108,7 +108,7 @@ def check_update() -> Optional[UpdateInfo]:
 def format_update_message(info: UpdateInfo) -> str:
     """格式化更新提示消息"""
     return (
-        f"发现新版本 Voxplore {info.latest_version}！\n\n"
+        f"发现新版本 NarrateFlow {info.latest_version}！\n\n"
         f"当前版本：{info.current_version}\n"
         f"最新版本：{info.latest_version}\n\n"
         f"发布说明：\n{info.release_notes}\n\n"

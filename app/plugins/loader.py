@@ -34,7 +34,7 @@ class PluginLoader:
     """
 
     # entry_points 中的组名
-    ENTRY_POINT_GROUP = "voxplore.plugins"
+    ENTRY_POINT_GROUP = "narrateflow.plugins"
 
     def __init__(self, registry: PluginRegistry = None):
         self._registry = registry if registry is not None else PluginRegistry()
@@ -84,7 +84,7 @@ class PluginLoader:
 
         第三方包需要在 setup.py / pyproject.toml 中声明：
             entry_points={
-                "voxplore.plugins": [
+                "narrateflow.plugins": [
                     "my-plugin = my_plugin.module:PluginClass"
                 ]
             }

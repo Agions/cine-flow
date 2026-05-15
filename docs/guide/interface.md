@@ -1,13 +1,13 @@
 ---
 title: 界面介绍
-description: Voxplore 桌面应用界面各区域功能说明。
+description: NarrateFlow 桌面应用界面各区域功能说明。
 ---
 
 # 界面介绍
 
 ## 主界面布局
 
-Voxplore 采用 4 步流程式设计，从左到右依次完成。
+NarrateFlow 采用 4 步流程式设计，从左到右依次完成。
 
 ### 步骤导航栏
 

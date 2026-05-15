@@ -327,7 +327,7 @@ class ProjectDetailsPanel(QWidget):
         if self._current_project_id:
             from PySide6.QtWidgets import QFileDialog
             path, _ = QFileDialog.getSaveFileName(
-                self, "导出项目", "", "Voxplore项目包 (*.zip)"
+                self, "导出项目", "", "NarrateFlow项目包 (*.zip)"
             )
             if path:
                 self._project_manager.export_project(self._current_project_id, path, True)

@@ -13,7 +13,7 @@ from .base import (
     ProviderType
 )
 
-logger = logging.getLogger("voxplore.ai")
+logger = logging.getLogger("narrateflow.ai")
 
 
 @dataclass

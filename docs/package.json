@@ -1,8 +1,8 @@
 {
-  "name": "voxplore-docs",
+  "name": "narrateflow-docs",
   "version": "1.0.0",
   "type": "module",
-  "description": "Voxplore Documentation",
+  "description": "NarrateFlow Documentation",
   "scripts": {
     "docs:dev": "vitepress dev",
     "docs:build": "vitepress build",

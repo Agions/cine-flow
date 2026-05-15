@@ -48,7 +48,7 @@ class SecureConfigLoader:
 
         self.allowed_dirs = allowed_dirs or [
             os.path.expanduser("~/.narrafiilm"),
-            os.path.expanduser("~/Voxplore"),
+            os.path.expanduser("~/NarrateFlow"),
             "/etc/narrafiilm",
             os.path.join(os.path.dirname(__file__), '..', '..', 'config')
         ]

@@ -210,7 +210,7 @@ class HighlightDetector:
 
     def _extract_frames(self, video_path: Path, prefix: str) -> List[Path]:
         """提取视频帧到临时目录，返回帧文件列表"""
-        temp_dir = video_path.parent / ".voxplore_highlight_cache"
+        temp_dir = video_path.parent / ".narrateflow_highlight_cache"
         temp_dir.mkdir(exist_ok=True)
         output_prefix = temp_dir / f"{video_path.stem}_{prefix}"
         cmd = [
@@ -274,7 +274,7 @@ class HighlightDetector:
 
     def _detect_audio_peaks(self, video_path: Path) -> List[Tuple[float, float]]:
         """检测音频能量峰值（高能量 = 可能的高光）"""
-        temp_dir = video_path.parent / ".voxplore_highlight_cache"
+        temp_dir = video_path.parent / ".narrateflow_highlight_cache"
         temp_dir.mkdir(exist_ok=True)
 
         audio_path = temp_dir / f"{video_path.stem}_audio.wav"

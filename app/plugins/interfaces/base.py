@@ -25,7 +25,7 @@ class PluginType(Enum):
 @dataclass
 class PluginManifest:
     """插件清单数据结构"""
-    id: str                               # 唯一标识符 (e.g. "voxplore.wordstrike-subtitle")
+    id: str                               # 唯一标识符 (e.g. "narrateflow.wordstrike-subtitle")
     name: str                              # 显示名称
     version: str                           # 版本号 (semver)
     author: str                            # 作者
@@ -81,7 +81,7 @@ class PluginManifest:
 @dataclass
 class AppContext:
     """应用上下文，插件通过此获取应用服务"""
-    app_name: str = "Voxplore"
+    app_name: str = "NarrateFlow"
     app_version: str = "1.0.1"
     data_dir: str = ""                    # 用户数据目录
     config_dir: str = ""                  # 配置目录

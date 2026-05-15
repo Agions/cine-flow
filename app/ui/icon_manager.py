@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Voxplore 图标管理器
+NarrateFlow 图标管理器
 提供统一的图标加载和管理功能
 支持自定义图标和 PyQt 标准图标
 """

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Voxplore Export System
+NarrateFlow Export System
 导出一个中心化的任务调度系统，管理导出队列、预设和信号。
 """
 
@@ -582,10 +582,10 @@ class ExportSystem(QObject):  # noqa: C901
     # ── 持久化 ───────────────────────────────────────────────────────────────
 
     def _default_presets_file(self) -> str:
-        return str(Path.home() / ".voxplore" / "presets.json")
+        return str(Path.home() / ".narrateflow" / "presets.json")
 
     def _default_history_file(self) -> str:
-        return str(Path.home() / ".voxplore" / "export_history.json")
+        return str(Path.home() / ".narrateflow" / "export_history.json")
 
     def _load_presets(self) -> None:
         """从文件加载预设"""

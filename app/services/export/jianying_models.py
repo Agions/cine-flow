@@ -226,7 +226,7 @@ class JianyingDraft:
     这是导出的核心数据结构，包含所有轨道、素材和配置信息
     """
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
-    name: str = "Voxplore Project"
+    name: str = "NarrateFlow Project"
     duration: int = 0  # 总时长（微秒）
 
     # 轨道

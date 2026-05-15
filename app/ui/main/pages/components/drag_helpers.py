@@ -27,7 +27,7 @@ _T = {
     "error":      "oklch(0.63 0.24 25)",
 }
 
-MIME_TYPE = "application/x-voxplore-video"
+MIME_TYPE = "application/x-narrateflow-video"
 
 
 class _VideoMimeData(QFrame):

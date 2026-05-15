@@ -1,4 +1,4 @@
-# Voxplore UI Components
+# NarrateFlow UI Components
 # REDESIGNED: frontend-design-pro compliant
 
 # containers
@@ -7,10 +7,10 @@ from .containers import MacCard, MacElevatedCard, MacSection
 # buttons
 from .buttons import MacButton, MacPrimaryButton, MacSecondaryButton, MacDangerButton
 
-# narration editor (Voxplore architecture upgrade)
+# narration editor (NarrateFlow architecture upgrade)
 from .narration import NarrationEditor, NarrationSegmentItem
 
-# timeline shuttle (Voxplore architecture upgrade)
+# timeline shuttle (NarrateFlow architecture upgrade)
 from .timeline import TimelineShuttle, TimelineRuler, TimelineTrack
 
 __all__ = [

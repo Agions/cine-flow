@@ -86,7 +86,7 @@ class RedisTaskStore(TaskStore):
     依赖：pip install redis
     """
 
-    def __init__(self, url: str = "redis://localhost:6379/0", prefix: str = "voxplore:task:"):
+    def __init__(self, url: str = "redis://localhost:6379/0", prefix: str = "narrateflow:task:"):
         if not _HAS_REDIS:
             raise ImportError("redis is not installed. Run: pip install redis")
         self._client = redis.from_url(url, decode_responses=True)

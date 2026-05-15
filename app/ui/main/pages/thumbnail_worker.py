@@ -39,7 +39,7 @@ class ThumbnailWorker(QThread):
 
     def _generate_one(self, video_path: str) -> str:
         """生成单个视频缩略图"""
-        thumb_dir = os.path.join(os.path.dirname(video_path), ".voxplore_thumbs")
+        thumb_dir = os.path.join(os.path.dirname(video_path), ".narrateflow_thumbs")
         os.makedirs(thumb_dir, exist_ok=True)
         thumb_path = os.path.join(thumb_dir, f"{Path(video_path).stem}_thumb.jpg")
 

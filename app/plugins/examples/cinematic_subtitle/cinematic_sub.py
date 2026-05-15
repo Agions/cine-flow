@@ -146,7 +146,7 @@ class CinematicSubtitlePlugin(BaseExportPlugin):
 
         lines = []
         lines.append("[Script Info]")
-        lines.append("Title: Voxplore Cinematic Subtitles")
+        lines.append("Title: NarrateFlow Cinematic Subtitles")
         lines.append("ScriptType: v4.00+")
         lines.append("WrapStyle: 0")
         lines.append("ScaledBorderAndShadow: yes")

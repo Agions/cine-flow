@@ -1,6 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
 """
-Voxplore PyInstaller 构建配置
+NarrateFlow PyInstaller 构建配置
 使用方法: pyinstaller main.spec
 
 版本: 自动从 pyproject.toml 读取（CI/CD 使用 workflows，本地推荐 make build:win）
@@ -63,7 +63,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name=f'Voxplore-{VERSION}',
+    name=f'NarrateFlow-{VERSION}',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -78,5 +78,5 @@ coll = COLLECT(
     a.datas,
     strip=False,
     upx=True,
-    name=f'Voxplore-{VERSION}',
+    name=f'NarrateFlow-{VERSION}',
 )

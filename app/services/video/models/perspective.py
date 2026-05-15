@@ -1,5 +1,5 @@
 """
-Voxplore Video Perspective & Interleave Models
+NarrateFlow Video Perspective & Interleave Models
 """
 
 from dataclasses import dataclass, field

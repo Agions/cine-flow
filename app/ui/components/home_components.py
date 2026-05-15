@@ -293,7 +293,7 @@ class WelcomeHeader(QWidget):
         layout.addWidget(welcome)
 
         # 主标题
-        title = QLabel("Voxplore")
+        title = QLabel("NarrateFlow")
         title.setFont(QFont("", 42, QFont.Weight.Bold))
         title.setStyleSheet("""
             color: qlineargradient(x1:0, y1:0, x2:1, y2:0,
