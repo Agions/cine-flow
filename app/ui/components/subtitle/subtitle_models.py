@@ -462,7 +462,10 @@ class SubtitleImporter:
             track = cls.from_ass(content, track_name=path.stem)
             return track
         elif suffix == '.json':
-            return cls.from_json(content)
+            try:
+                return cls.from_json(content)
+            except json.JSONDecodeError as e:
+                raise ValueError(f"JSON解析失败: {e}")
         else:
             # 尝试作为JSON处理
             try:
