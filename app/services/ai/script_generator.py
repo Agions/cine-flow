@@ -139,7 +139,7 @@ class ScriptGenerator:
 
         if use_llm_manager:
             # 新架构：使用 LLMManager
-            llm_cfg = llm_config or load_llm_config(llm_config_file)
+            llm_cfg = llm_config or load_llm_config(llm_config_file or None)
             self.llm_manager = LLMManager(llm_cfg)
             logger.info(f"LLMManager 初始化成功，默认: {llm_cfg.get('LLM', {}).get('default_provider', 'qwen')}")
         elif api_key:

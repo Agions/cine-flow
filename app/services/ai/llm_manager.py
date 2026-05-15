@@ -232,9 +232,10 @@ class LLMManager:
         await self.close_all()
 
 
-def load_llm_config(config_file: str = "config/llm.yaml") -> Dict[str, Any]:
+def load_llm_config(config_file: Optional[str] = None) -> Dict[str, Any]:
     """加载 LLM 配置"""
     import yaml
+    config_file = config_file or "config/llm.yaml"
     try:
         with open(config_file, "r", encoding="utf-8") as f:
             config = yaml.safe_load(f)
