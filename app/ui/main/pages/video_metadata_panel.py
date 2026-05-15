@@ -77,5 +77,5 @@ class VideoMetadataPanel(QFrame):
             else:
                 self.labels["size"].setText(f"{size/1024:.0f} KB")
             self.labels["format"].setText(fmt.get("format_name", "").split(",")[0])
-        except Exception as e:
+        except (json.JSONDecodeError, ValueError) as e:
             logging.getLogger(__name__).warning(f"获取文件信息失败: {e}")

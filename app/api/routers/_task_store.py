@@ -93,7 +93,10 @@ class RedisTaskStore(TaskStore):
         data = self._client.get(key)
         if data is None:
             return None
-        return json.loads(data)
+        try:
+            return json.loads(data)
+        except json.JSONDecodeError:
+            return None
 
     def exists(self, task_id: str) -> bool:
         return bool(self._client.exists(self._key(task_id)))
