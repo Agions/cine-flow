@@ -10,14 +10,10 @@
 - 延迟统计 ✅
 """
 
-import time
-import httpx
-
 from ..base_llm_provider import (
     BaseLLMProvider,
     LLMRequest,
     LLMResponse,
-    ProviderError,
     HTTPClientMixin,
     ModelManagerMixin,
 )
@@ -82,29 +78,12 @@ class QwenProvider(BaseLLMProvider, HTTPClientMixin, ModelManagerMixin):
         """生成文本"""
         model = self._get_model_name(request.model)
         messages = self._build_messages(request)
-
-        start_time = time.monotonic()
-        payload = {
-            "model": model,
-            "messages": messages,
-            "max_tokens": request.max_tokens,
-            "temperature": request.temperature,
-            "top_p": request.top_p,
-        }
-
-        async def _call():
-            return await self._call_api(
-                "POST", f"{self.base_url}/chat/completions", json=payload
-            )
-
-        try:
-            data = await self._retry_handler.execute(_call)
-            latency_ms = (time.monotonic() - start_time) * 1000
-            return self._parse_response(data, model, latency_ms)
-        except httpx.HTTPStatusError as e:
-            raise self._handle_http_error(e)
-        except Exception as e:
-            raise ProviderError(f"生成失败: {str(e)}")
+        return await self._generate_openai_compatible(
+            request=request,
+            model=model,
+            messages=messages,
+            endpoint="/chat/completions",
+        )
 
 
 # 添加日志记录器

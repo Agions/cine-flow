@@ -88,32 +88,17 @@ class DoubaoProvider(BaseLLMProvider, HTTPClientMixin, ModelManagerMixin):
                     "temperature": request.temperature or 0.7,
                     "top_p": request.top_p,
                     "stream": False,
-                }
+                },
             )
-
             if response.status_code != 200:
                 raise ProviderError(f"API Error: {response.status_code} - {response.text}")
-
             result = response.json()
         except httpx.HTTPStatusError as e:
             raise self._handle_http_error(e)
         except Exception as e:
             raise ProviderError(f"生成失败: {str(e)}")
 
-        usage_data = result.get("usage", {})
-        tokens_used = (
-            usage_data.get("prompt_tokens", 0) +
-            usage_data.get("completion_tokens", 0)
-        )
-
-        return LLMResponse(
-            content=result["choices"][0]["message"]["content"],
-            model=model,
-            tokens_used=tokens_used,
-            finish_reason=result["choices"][0].get("finish_reason", "stop"),
-            usage=usage_data or None,
-            raw_response=result,
-        )
+        return self._parse_response(result, model)
 
     async def generate_stream(self, request: LLMRequest):
         """流式生成"""
