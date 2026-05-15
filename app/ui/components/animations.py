@@ -103,18 +103,16 @@ class SlideWidget(QWidget):
         parent_rect = self.parent().rect() if self.parent() else self.rect()
         my_rect = self.rect()
 
-        if self._direction == "left":
-            start = QRect(-my_rect.width(), my_rect.y(), my_rect.width(), my_rect.height())
-            end   = QRect(0, my_rect.y(), my_rect.width(), my_rect.height())
-        elif self._direction == "right":
-            start = QRect(parent_rect.width(), my_rect.y(), my_rect.width(), my_rect.height())
-            end   = QRect(parent_rect.width() - my_rect.width(), my_rect.y(), my_rect.width(), my_rect.height())
-        elif self._direction == "top":
-            start = QRect(my_rect.x(), -my_rect.height(), my_rect.width(), my_rect.height())
-            end   = QRect(my_rect.x(), 0, my_rect.width(), my_rect.height())
-        else:  # bottom
-            start = QRect(my_rect.x(), parent_rect.height(), my_rect.width(), my_rect.height())
-            end   = QRect(my_rect.x(), parent_rect.height() - my_rect.height(), my_rect.width(), my_rect.height())
+        # 方向→(start_rect, end_rect)，字典映射消除 if-elif 链
+        _DIR_RECTS = {
+            "left":  (QRect(-my_rect.width(), my_rect.y(), my_rect.width(), my_rect.height()),
+                      QRect(0, my_rect.y(), my_rect.width(), my_rect.height())),
+            "right": (QRect(parent_rect.width(), my_rect.y(), my_rect.width(), my_rect.height()),
+                      QRect(parent_rect.width() - my_rect.width(), my_rect.y(), my_rect.width(), my_rect.height())),
+            "top":   (QRect(my_rect.x(), -my_rect.height(), my_rect.width(), my_rect.height()),
+                      QRect(my_rect.x(), 0, my_rect.width(), my_rect.height())),
+        }
+        start, end = _DIR_RECTS.get(self._direction, _DIR_RECTS["top"])
 
         self._animation.setStartValue(start)
         self._animation.setEndValue(end)
@@ -129,14 +127,12 @@ class SlideWidget(QWidget):
         parent_rect = self.parent().rect() if self.parent() else self.rect()
         my_rect = self.rect()
 
-        if self._direction == "left":
-            end = QRect(-my_rect.width(), my_rect.y(), my_rect.width(), my_rect.height())
-        elif self._direction == "right":
-            end = QRect(parent_rect.width(), my_rect.y(), my_rect.width(), my_rect.height())
-        elif self._direction == "top":
-            end = QRect(my_rect.x(), -my_rect.height(), my_rect.width(), my_rect.height())
-        else:
-            end = QRect(my_rect.x(), parent_rect.height(), my_rect.width(), my_rect.height())
+        _DIR_END = {
+            "left":  QRect(-my_rect.width(), my_rect.y(), my_rect.width(), my_rect.height()),
+            "right": QRect(parent_rect.width(), my_rect.y(), my_rect.width(), my_rect.height()),
+            "top":   QRect(my_rect.x(), -my_rect.height(), my_rect.width(), my_rect.height()),
+        }
+        end = _DIR_END.get(self._direction, QRect(my_rect.x(), parent_rect.height(), my_rect.width(), my_rect.height()))
 
         self._animation.setStartValue(self.geometry())
         self._animation.setEndValue(end)
