@@ -16,6 +16,9 @@ from typing import List, Optional, Dict
 
 from app.plugins.interfaces.base import PluginManifest, PluginType, AppContext
 from app.plugins.registry import PluginRegistry
+from app.core.logger import get_logger
+
+_logger = get_logger(__name__)
 
 
 class PluginLoader:
@@ -147,7 +150,7 @@ class PluginLoader:
             return self._infer_manifest_from_ep(ep, plugin_class)
 
         except Exception as e:
-            print(f"Failed to load entry_point {ep}: {e}")
+            _logger.warning(f"Failed to load entry_point {ep}: {e}")
             return None
 
     def _infer_manifest_from_ep(self, ep, plugin_class) -> Optional[PluginManifest]:
@@ -215,7 +218,7 @@ class PluginLoader:
             return manifest
 
         except Exception as e:
-            print(f"Failed to load manifest from {manifest_path}: {e}")
+            _logger.warning(f"Failed to load manifest from {manifest_path}: {e}")
             return None
 
     def load_plugin_from_directory(
@@ -235,7 +238,7 @@ class PluginLoader:
             self._registry.enable_plugin(manifest.id)
             return True
         except Exception as e:
-            print(f"Failed to load plugin {manifest.id}: {e}")
+            _logger.warning(f"Failed to load plugin {manifest.id}: {e}")
             return False
 
     def load_plugin_from_entry_point(
@@ -273,7 +276,7 @@ class PluginLoader:
             return True
 
         except Exception as e:
-            print(f"Failed to load plugin from entry_point {manifest.id}: {e}")
+            _logger.warning(f"Failed to load plugin from entry_point {manifest.id}: {e}")
             return False
 
     def _safe_load_entry_point(self, plugin_dir: Path, manifest: PluginManifest) -> None:

@@ -109,9 +109,9 @@ class BeatDetector:
         detector = BeatDetector()
         result = detector.analyze("music.mp3")
 
-        print(f"BPM: {result.bpm}")
+        logger.info(f"BPM: {result.bpm}")
         for beat in result.beats:
-            print(f"  {beat.timestamp:.3f}s [{beat.strength.value}]")
+            logger.info(f"  {beat.timestamp:.3f}s [{beat.strength.value}]")
     """
 
     def __init__(self, hop_length: int = 512):
