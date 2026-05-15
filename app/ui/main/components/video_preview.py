@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-NarrateFlow 视频预览组件
+Voxplore 视频预览组件
 基于 QMediaPlayer 的视频播放 + 帧预览
 """
 

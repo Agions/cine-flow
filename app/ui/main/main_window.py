@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*
 
 """
-NarrateFlow 主窗口 — 精致现代专业布局 v4
+Voxplore 主窗口 — 精致现代专业布局 v4
 视觉升级:
   - 渐变玻璃态侧边栏 (左侧紫色光晕)
   - 顶部工具栏磨砂效果
@@ -94,7 +94,7 @@ class SidebarTopLogo(QFrame):
         name_layout.setSpacing(0)
         name_layout.setContentsMargins(0, 0, 0, 0)
 
-        title_label = QLabel("NarrateFlow")
+        title_label = QLabel("Voxplore")
         title_label.setFont(QFont("SF Pro Display", 14, QFont.Weight.Bold))
         title_label.setStyleSheet("color: #F1F0F5;")
         name_layout.addWidget(title_label)
@@ -291,7 +291,7 @@ class UserAvatarBtn(QPushButton):
 #  主窗口
 # ═══════════════════════════════════════════════════════════════
 
-class NarrateFlowWindow(QMainWindow):
+class VoxploreWindow(QMainWindow):
     """主窗口 v4 — 精致现代专业布局"""
 
     status_updated = Signal(str)
@@ -299,8 +299,8 @@ class NarrateFlowWindow(QMainWindow):
     def __init__(self, application: Application):
         super().__init__()
         self.application = application
-        self.logger = application.get_service_by_name("logger") or Logger("NarrateFlowWindow")
-        self.setWindowTitle("NarrateFlow — AI Video Studio")
+        self.logger = application.get_service_by_name("logger") or Logger("VoxploreWindow")
+        self.setWindowTitle("Voxplore — AI Video Studio")
         self.resize(1440, 900)
         self.setMinimumSize(1200, 750)
 
@@ -315,7 +315,7 @@ class NarrateFlowWindow(QMainWindow):
         self._setup_ui()
         self._load_pages()
         self._navigate_to("creator")
-        self.logger.info("NarrateFlow 主窗口初始化完成 (v4 — 精致现代布局)")
+        self.logger.info("Voxplore 主窗口初始化完成 (v4 — 精致现代布局)")
 
     # ─── UI 初始化 ────────────────────────────────────────────
 
@@ -580,4 +580,4 @@ class NarrateFlowWindow(QMainWindow):
         self.status_bar.showMessage(msg)
 
 
-MainWindow = NarrateFlowWindow
+MainWindow = VoxploreWindow

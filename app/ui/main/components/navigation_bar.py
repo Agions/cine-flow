@@ -149,7 +149,7 @@ class NavigationBar(QWidget):
         layout.addWidget(logo_label)
 
         # 标题
-        title_label = QLabel("NarrateFlow")
+        title_label = QLabel("Voxplore")
         title_label.setProperty("class", "app-title")
         layout.addWidget(title_label)
 

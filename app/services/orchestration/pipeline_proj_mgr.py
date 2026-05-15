@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-NarrateFlow 项目文件管理
+Voxplore 项目文件管理
 
 支持 .narrafiilm 项目文件的保存、加载和管理。
 
@@ -68,7 +68,7 @@ class ProjectMetadata:
     description: str = ""           # 项目描述
 
     # 软件信息
-    app_version: str = "2.0.0"      # NarrateFlow 版本
+    app_version: str = "2.0.0"      # Voxplore 版本
     platform: str = "windows"      # 平台
 
     # 输出设置
@@ -114,9 +114,9 @@ class ProjectConfig:
 
 
 @dataclass
-class NarrateFlowProject:
+class VoxploreProject:
     """
-    NarrateFlow 项目
+    Voxplore 项目
 
     完整的项目数据结构
     """
@@ -150,14 +150,14 @@ class ProjectManager:
     PROJECT_EXTENSIONS = [".narrafiilm", ".vfproj"]
 
     def __init__(self):
-        self.current_project: Optional[NarrateFlowProject] = None
+        self.current_project: Optional[VoxploreProject] = None
         self._last_save_path: Optional[Path] = None
 
     def create_project(
         self,
         name: str = "未命名项目",
         project_type: ProjectType = ProjectType.RAW,
-    ) -> NarrateFlowProject:
+    ) -> VoxploreProject:
         """
         创建新项目
 
@@ -168,7 +168,7 @@ class ProjectManager:
         Returns:
             新项目对象
         """
-        project = NarrateFlowProject(
+        project = VoxploreProject(
             metadata=ProjectMetadata(
                 name=name,
                 project_type=project_type.value,
@@ -179,7 +179,7 @@ class ProjectManager:
 
     def save(
         self,
-        project: NarrateFlowProject,
+        project: VoxploreProject,
         output_path: str,
         include_sources: bool = True,
         compress: bool = True,
@@ -215,7 +215,7 @@ class ProjectManager:
             # 直接保存 JSON
             return self._save_json(project_dict, output_path)
 
-    def load(self, project_path: str) -> NarrateFlowProject:
+    def load(self, project_path: str) -> VoxploreProject:
         """
         从文件加载项目
 
@@ -243,7 +243,7 @@ class ProjectManager:
 
         return project
 
-    def _project_to_dict(self, project: NarrateFlowProject) -> Dict:
+    def _project_to_dict(self, project: VoxploreProject) -> Dict:
         """将项目转换为字典"""
         return {
             "metadata": asdict(project.metadata),
@@ -252,13 +252,13 @@ class ProjectManager:
             "project_data": project.project_data,
         }
 
-    def _dict_to_project(self, data: Dict) -> NarrateFlowProject:
+    def _dict_to_project(self, data: Dict) -> VoxploreProject:
         """将字典转换为项目"""
         metadata = ProjectMetadata(**data.get("metadata", {}))
         sources = [ProjectSource(**s) for s in data.get("sources", [])]
         config = ProjectConfig(**data.get("config", {}))
 
-        project = NarrateFlowProject(
+        project = VoxploreProject(
             metadata=metadata,
             sources=sources,
             config=config,
@@ -360,7 +360,7 @@ class ProjectManager:
 
     def add_source(
         self,
-        project: NarrateFlowProject,
+        project: VoxploreProject,
         path: str,
         source_type: str = "video",
     ) -> ProjectSource:
@@ -417,7 +417,7 @@ class ProjectManager:
 
     def export_to_template(
         self,
-        project: NarrateFlowProject,
+        project: VoxploreProject,
         output_path: str,
     ) -> str:
         """
@@ -433,7 +433,7 @@ class ProjectManager:
             模板文件路径
         """
         # 创建模板项目（复制配置，清除敏感信息）
-        template = NarrateFlowProject(
+        template = VoxploreProject(
             metadata=ProjectMetadata(
                 name=f"{project.metadata.name} (模板)",
                 project_type=project.metadata.project_type,
@@ -449,7 +449,7 @@ class ProjectManager:
         self,
         template_path: str,
         new_name: str,
-    ) -> NarrateFlowProject:
+    ) -> VoxploreProject:
         """
         从模板创建项目
 
@@ -476,7 +476,7 @@ class ProjectManager:
 
 
 def save_project(
-    project: NarrateFlowProject,
+    project: VoxploreProject,
     output_path: str,
 ) -> str:
     """
@@ -493,7 +493,7 @@ def save_project(
     return manager.save(project, output_path)
 
 
-def load_project(project_path: str) -> NarrateFlowProject:
+def load_project(project_path: str) -> VoxploreProject:
     """
     便捷的项目加载函数
 

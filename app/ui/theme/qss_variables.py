@@ -7,7 +7,7 @@ from .tokens import COLORS, SPACING, RADIUS, FONT, SHADOW, TRANSITION
 
 def register_qss_variables() -> str:
     """生成 QSS 变量声明"""
-    lines = ["/* === NarrateFlow Design Tokens === */"]
+    lines = ["/* === Voxplore Design Tokens === */"]
 
     # 颜色
     for key, val in COLORS.items():

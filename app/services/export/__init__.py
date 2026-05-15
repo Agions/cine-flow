@@ -1,5 +1,5 @@
 """
-NarrateFlow 导出服务模块
+Voxplore 导出服务模块
 
 提供视频项目的导出能力:
 - JianyingExporter: 剪映草稿导出

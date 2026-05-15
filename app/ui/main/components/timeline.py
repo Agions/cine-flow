@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-NarrateFlow 时间线组件
+Voxplore 时间线组件
 多轨时间线编辑器：视频轨 / 音频轨 / 字幕轨
 """
 

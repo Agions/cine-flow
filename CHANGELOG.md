@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2026-05-09
 
-> 此版本汇总了 NarrateFlow 从初始化到 v4.x 的所有历史变更，作为 1.0.0 基线版本归档。
+> 此版本汇总了 Voxplore 从初始化到 v4.x 的所有历史变更，作为 1.0.0 基线版本归档。
 
 ### 🚀 核心功能
 

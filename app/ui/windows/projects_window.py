@@ -121,7 +121,7 @@ class ProjectsWindow(QWidget):
         self._load_projects()
 
     def _setup_ui(self):
-        self.setWindowTitle("NarrateFlow — 项目列表")
+        self.setWindowTitle("Voxplore — 项目列表")
         self.setMinimumSize(900, 650)
 
         layout = QVBoxLayout(self)

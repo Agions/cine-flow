@@ -1,4 +1,4 @@
-"""DeepSeek AI Generator Plugin for NarrateFlow"""
+"""DeepSeek AI Generator Plugin for Voxplore"""
 
 from .deepseek_ai_generator import DeepSeekAIPlugin
 

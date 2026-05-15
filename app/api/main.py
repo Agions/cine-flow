@@ -1,5 +1,5 @@
 """
-NarrateFlow FastAPI Application
+Voxplore FastAPI Application
 Web API 层入口
 """
 
@@ -10,13 +10,13 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routers import projects, pipeline, export, health, plugins
-from app.core.exceptions import NarrateFlowError
+from app.core.exceptions import VoxploreError
 
 
 def create_app() -> FastAPI:
     """创建并配置 FastAPI 应用"""
     app = FastAPI(
-        title="NarrateFlow API",
+        title="Voxplore API",
         description="AI 第一人称视频解说 API - 让视频讲述你的故事",
         version="1.0.1",
         docs_url="/docs",
@@ -34,8 +34,8 @@ def create_app() -> FastAPI:
     )
 
     # ── 全局异常处理器 ─────────────────────────────────────────────
-    @app.exception_handler(NarrateFlowError)
-    async def narrateflow_error_handler(request: Request, exc: NarrateFlowError):
+    @app.exception_handler(VoxploreError)
+    async def voxplore_error_handler(request: Request, exc: VoxploreError):
         return JSONResponse(
             status_code=400,
             content={
@@ -92,7 +92,7 @@ app = create_app()
 @app.get("/")
 async def root():
     return {
-        "name": "NarrateFlow API",
+        "name": "Voxplore API",
         "version": "1.0.1",
         "docs": "/docs",
         "health": "/api/v1/health"

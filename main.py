@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-NarrateFlow - AI Video Editor
+Voxplore - AI Video Editor
 入口点：将启动工作委托给 app.main
 
 用法:

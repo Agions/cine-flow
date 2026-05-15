@@ -33,9 +33,9 @@ class ProjectService:
         self.projects: Dict[str, Project] = {}
         self.current_project: Optional[Project] = None
         self.templates: Dict[str, Project] = {}
-        self.projects_dir = os.path.expanduser("~/NarrateFlow/Projects")
-        self.templates_dir = os.path.expanduser("~/NarrateFlow/Templates")
-        self.temp_dir = os.path.expanduser("~/NarrateFlow/Temp")
+        self.projects_dir = os.path.expanduser("~/Voxplore/Projects")
+        self.templates_dir = os.path.expanduser("~/Voxplore/Templates")
+        self.temp_dir = os.path.expanduser("~/Voxplore/Temp")
         self.recent_projects: List[str] = self._load_recent_projects()
         self._ensure_directories()
         self._load_templates()

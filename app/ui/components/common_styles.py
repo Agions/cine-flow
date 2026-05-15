@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-NarrateFlow UI 公共样式 — REDESIGNED
+Voxplore UI 公共样式 — REDESIGNED
 OKLCH 色彩系统 · frontend-design-pro compliant
 
 所有组件共享的 design token（颜色/间距/圆角/按钮/卡片/输入框）

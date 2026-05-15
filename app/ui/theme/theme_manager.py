@@ -21,13 +21,13 @@ def _oklch(key: str, mode: str = "dark") -> str:
 @dataclass
 class ThemeConfig:
     """主题配置（简化版）"""
-    name: str = "narrateflow"
+    name: str = "voxplore"
     mode: str = "dark"
 
 
 @dataclass
 class ThemeColors:
-    """主题颜色 — OKLCH Design Tokens (NarrateFlow)"""
+    """主题颜色 — OKLCH Design Tokens (Voxplore)"""
     # Primary
     primary: str = ""
     secondary: str = ""
@@ -162,8 +162,8 @@ class ThemeManager(QObject):
             ThemePreset("森林绿色",   "dark",  forest_colors),
             ThemePreset("紫色主题",   "dark",  purple_colors),
             ThemePreset("橙色主题",   "dark",  orange_colors),
-            # NarrateFlow 架构升级 - 新增主题
-            ThemePreset("NarrateFlow 声视界", "narrateflow", dark_colors),
+            # Voxplore 架构升级 - 新增主题
+            ThemePreset("Voxplore 声视界", "voxplore", dark_colors),
         ]
 
     def get_available_themes(self) -> List[str]:
@@ -227,9 +227,9 @@ class ThemeManager(QObject):
         import os
         stylesheet_path = ""
 
-        if self.current_mode == "narrateflow":
-            # NarrateFlow 专用主题
-            stylesheet_path = os.path.join(os.path.dirname(__file__), "narrateflow.qss")
+        if self.current_mode == "voxplore":
+            # Voxplore 专用主题
+            stylesheet_path = os.path.join(os.path.dirname(__file__), "voxplore.qss")
         elif self.current_mode == "dark":
             # 使用外部深色主题样式表
             stylesheet_path = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "resources", "styles", "dark_theme.qss")

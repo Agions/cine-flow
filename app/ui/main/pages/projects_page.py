@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-NarrateFlow 项目管理页面 - 重构版
+Voxplore 项目管理页面 - 重构版
 使用独立的 ProjectsListPanel 和 ProjectDetailsPanel 组件
 """
 
@@ -161,7 +161,7 @@ class ProjectsPage(BasePage):
             return
 
         path, _ = QFileDialog.getOpenFileName(
-            self, "打开项目", "", "NarrateFlow项目 (*.json)"
+            self, "打开项目", "", "Voxplore项目 (*.json)"
         )
         if path:
             import os
@@ -182,7 +182,7 @@ class ProjectsPage(BasePage):
             return
 
         path, _ = QFileDialog.getOpenFileName(
-            self, "导入项目", "", "NarrateFlow项目包 (*.zip)"
+            self, "导入项目", "", "Voxplore项目包 (*.zip)"
         )
         if path:
             project_id = self._project_manager.import_project(path)

@@ -6,7 +6,7 @@ from app.core.exceptions import (
     format_error_message,
     get_error_hint,
     ErrorCode,
-    NarrateFlowError,
+    VoxploreError,
     LLMError,
     ConfigError,
     FileError,
@@ -38,12 +38,12 @@ class TestErrorCode:
         assert ErrorCode.FILE_WRITE_ERROR.value == "FILE003"
 
 
-class TestNarrateFlowError:
+class TestVoxploreError:
     """测试基础异常类"""
 
     def test_basic_creation(self):
         """测试基本创建"""
-        err = NarrateFlowError(
+        err = VoxploreError(
             code=ErrorCode.UNKNOWN_ERROR,
             message="测试错误"
         )
@@ -55,7 +55,7 @@ class TestNarrateFlowError:
 
     def test_with_details(self):
         """测试带详情的错误"""
-        err = NarrateFlowError(
+        err = VoxploreError(
             code=ErrorCode.FILE_NOT_FOUND,
             message="文件未找到",
             details={"path": "/test/file.mp4"},
@@ -67,7 +67,7 @@ class TestNarrateFlowError:
 
     def test_str_representation(self):
         """测试字符串表示"""
-        err = NarrateFlowError(
+        err = VoxploreError(
             code=ErrorCode.CONFIG_MISSING,
             message="配置缺失"
         )
@@ -168,8 +168,8 @@ class TestNetworkError:
 class TestFormatErrorMessage:
     """测试 format_error_message 函数"""
 
-    def test_narrateflow_error_uses_str_directly(self):
-        """测试 NarrateFlowError 直接返回字符串"""
+    def test_voxplore_error_uses_str_directly(self):
+        """测试 VoxploreError 直接返回字符串"""
         err = LLMError("API调用失败")
         result = format_error_message(err)
         assert "API调用失败" in result

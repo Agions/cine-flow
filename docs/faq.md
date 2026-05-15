@@ -1,6 +1,6 @@
 ---
 title: 常见问题
-description: NarrateFlow 使用中的常见问题解答。
+description: Voxplore 使用中的常见问题解答。
 ---
 
 # 常见问题
@@ -14,7 +14,7 @@ description: NarrateFlow 使用中的常见问题解答。
 GitHub Releases 国内访问较慢，可使用代理：
 ```bash
 # 使用 ghproxy
-wget https://ghproxy.com/https://github.com/Agions/NarrateFlow/releases/download/v3.4.0/NarrateFlow-x.x.x.AppImage
+wget https://ghproxy.com/https://github.com/Agions/Voxplore/releases/download/v3.4.0/Voxplore-x.x.x.AppImage
 ```
 
 或使用 Gitee 镜像（如有同步）。
@@ -27,13 +27,13 @@ wget https://ghproxy.com/https://github.com/Agions/NarrateFlow/releases/download
 
 或在终端执行：
 ```bash
-xattr -d com.apple.quarantine /Applications/NarrateFlow.app
+xattr -d com.apple.quarantine /Applications/Voxplore.app
 ```
 
 ### Linux AppImage 无法运行？
 
 ```bash
-chmod +x NarrateFlow-x.x.x.AppImage
+chmod +x Voxplore-x.x.x.AppImage
 sudo apt install fuse libfuse2  # 如缺少依赖
 ```
 
@@ -82,7 +82,7 @@ DeepSeek-V4 价格极低（约 $0.1 / 1M tokens），处理一个 5 分钟视频
 
 ### 支持其他 AI 提供商吗？
 
-目前 NarrateFlow 主推 DeepSeek-V4（性价比最优）。理论上支持 OpenAI GPT-4.1 和 Anthropic Claude 系列，但需要自行修改代码中的 API 端点。视频理解模型（Qwen2.5-VL）目前仅支持阿里云百炼 API。
+目前 Voxplore 主推 DeepSeek-V4（性价比最优）。理论上支持 OpenAI GPT-4.1 和 Anthropic Claude 系列，但需要自行修改代码中的 API 端点。视频理解模型（Qwen2.5-VL）目前仅支持阿里云百炼 API。
 
 ---
 
@@ -153,7 +153,7 @@ DeepSeek-V4 价格极低（约 $0.1 / 1M tokens），处理一个 5 分钟视频
 
 ### 没有 NVIDIA 显卡能用吗？
 
-能。NarrateFlow 在无 GPU 时自动回退到 CPU 模式。视频理解会变慢（3x 实时 vs 10x 实时），其他步骤（配音合成、字幕、导出）几乎不受影响。
+能。Voxplore 在无 GPU 时自动回退到 CPU 模式。视频理解会变慢（3x 实时 vs 10x 实时），其他步骤（配音合成、字幕、导出）几乎不受影响。
 
 ### 显存不足（OOM）怎么办？
 
@@ -185,12 +185,12 @@ DeepSeek-V4 价格极低（约 $0.1 / 1M tokens），处理一个 5 分钟视频
 
 ### 商业使用需要授权吗？
 
-不需要。NarrateFlow 采用 MIT 协议，商用和个人使用均无需授权。但需注意：
+不需要。Voxplore 采用 MIT 协议，商用和个人使用均无需授权。但需注意：
 - 使用的 AI 模型（DeepSeek / Qwen / Edge-TTS）各有其服务条款，商业场景请自行确认合规
-- 生成内容的版权由使用者自行负责，NarrateFlow 不对输出内容主张任何权利
+- 生成内容的版权由使用者自行负责，Voxplore 不对输出内容主张任何权利
 
 ### 如何获取更新？
 
-- **GitHub Releases**：关注 [Releases 页面](https://github.com/Agions/NarrateFlow/releases)
+- **GitHub Releases**：关注 [Releases 页面](https://github.com/Agions/Voxplore/releases)
 - **Watch 仓库**：在 GitHub 页面点击 Watch → Releases only
 - **Homebrew**：`brew upgrade narrafiilm`

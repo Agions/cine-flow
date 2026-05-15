@@ -1,6 +1,6 @@
 ---
 title: 架构概览
-description: NarrateFlow 技术架构与模块设计。
+description: Voxplore 技术架构与模块设计。
 ---
 
 # 架构概览
@@ -18,7 +18,7 @@ description: NarrateFlow 技术架构与模块设计。
 ## 模块架构
 
 ```
-NarrateFlow/
+Voxplore/
 ├── app/
 │   ├── core/           # 核心应用：Application、配置、缓存、异常
 │   ├── services/

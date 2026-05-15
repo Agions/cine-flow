@@ -1,5 +1,5 @@
 """
-NarrateFlow CLI
+Voxplore CLI
 命令行接口模块
 
 提供以下功能:

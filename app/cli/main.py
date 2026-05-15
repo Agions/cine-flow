@@ -1,5 +1,5 @@
 """
-NarrateFlow CLI Main Entry
+Voxplore CLI Main Entry
 命令行主入口
 """
 
@@ -25,8 +25,8 @@ if str(PROJECT_ROOT) not in sys.path:
 def create_parser() -> argparse.ArgumentParser:
     """创建 CLI 参数解析器"""
     parser = argparse.ArgumentParser(
-        prog="narrateflow",
-        description="NarrateFlow - AI 第一人称视频解说工具",
+        prog="voxplore",
+        description="Voxplore - AI 第一人称视频解说工具",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 示例:
@@ -124,7 +124,7 @@ def _add_plugin_subcommands(subparsers) -> None:
 
 def _handle_project_command(args) -> int:
     """处理 project 子命令"""
-    PROJECTS_DIR = os.path.expanduser("~/NarrateFlow/Projects")
+    PROJECTS_DIR = os.path.expanduser("~/Voxplore/Projects")
 
     # 按名称查找项目，返回 (project_id, project_path) 或 None
     def _find_project_by_name(name: str) -> tuple[str, str] | None:

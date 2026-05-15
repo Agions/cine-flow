@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-NarrateFlow 动画组件 — REDESIGNED
+Voxplore 动画组件 — REDESIGNED
 frontend-design-pro compliant: OutCubic easing · 微交互 100-150ms · 页面过渡 250-300ms
 
 所有动画遵循:

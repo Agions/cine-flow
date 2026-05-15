@@ -1,5 +1,5 @@
 """
-NarrateFlow 主窗口 — 完整的窗口管理器 + Pipeline 集成
+Voxplore 主窗口 — 完整的窗口管理器 + Pipeline 集成
 """
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QStackedWidget,
@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
         self._setup_window_connections()
 
     def _setup_ui(self):
-        self.setWindowTitle("NarrateFlow — AI 第一人称视频解说")
+        self.setWindowTitle("Voxplore — AI 第一人称视频解说")
         self.setMinimumSize(1024, 700)
 
         central = QWidget()
@@ -169,7 +169,7 @@ class MainWindow(QMainWindow):
         """Pipeline 完成"""
         QMessageBox.information(
             self, "🎉 完成",
-            "视频导出成功！\n\n文件已保存至：~/Videos/NarrateFlow/"
+            "视频导出成功！\n\n文件已保存至：~/Videos/Voxplore/"
         )
         # 返回项目列表
         self._show_projects_page()

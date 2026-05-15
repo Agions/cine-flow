@@ -1,5 +1,5 @@
 """
-NarrateFlow AI 服务模块
+Voxplore AI 服务模块
 
 提供 AI 能力:
 - LLM: 大语言模型支持（DeepSeek-V4 主力）

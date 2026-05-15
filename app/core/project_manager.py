@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-NarrateFlow 项目管理器
+Voxplore 项目管理器
 
 提供完整的项目生命周期管理功能
 

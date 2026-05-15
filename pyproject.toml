@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "narrateflow"
+name = "voxplore"
 version = "1.0.1"
-description = "NarrateFlow - AI-Powered Video Creation Desktop App"
+description = "Voxplore - AI-Powered Video Creation Desktop App"
 license = {text = "MIT"}
 authors = [
     {name = "Agions", email = "agions@qq.com"}
@@ -99,7 +99,7 @@ all = [
 ]
 
 [project.scripts]
-narrateflow = "app.main:main"
+voxplore = "app.main:main"
 
 [tool.setuptools]
 packages = ["app"]

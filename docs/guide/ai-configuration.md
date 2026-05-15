@@ -1,11 +1,11 @@
 ---
 title: AI 模型配置指南
-description: NarrateFlow 支持的 AI 模型一览与配置方法。
+description: Voxplore 支持的 AI 模型一览与配置方法。
 ---
 
 # AI 模型配置指南
 
-NarrateFlow 支持多种 AI 模型，可根据需求自由组合。
+Voxplore 支持多种 AI 模型，可根据需求自由组合。
 
 ## 支持的模型
 

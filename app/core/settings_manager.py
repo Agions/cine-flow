@@ -44,8 +44,8 @@ class ProjectSettingsManager(QObject):
         self.profiles: Dict[str, ProjectSettingsProfile] = {}
 
         # 设置文件路径
-        self.settings_file = os.path.expanduser("~/NarrateFlow/settings/project_settings.json")
-        self.profiles_file = os.path.expanduser("~/NarrateFlow/settings/profiles.json")
+        self.settings_file = os.path.expanduser("~/Voxplore/settings/project_settings.json")
+        self.profiles_file = os.path.expanduser("~/Voxplore/settings/profiles.json")
 
         # Helpers
         self._settings_io = SettingsIO(self.settings_file, self.profiles_file)

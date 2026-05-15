@@ -1,5 +1,5 @@
 """
-NarrateFlow 基础样式系统
+Voxplore 基础样式系统
 所有样式基于 tokens.py，不硬编码颜色值
 """
 

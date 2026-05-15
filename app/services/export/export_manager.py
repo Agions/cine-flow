@@ -96,7 +96,7 @@ class ExportManager:
 
     def _generate_output_path(self, config: ExportConfig) -> str:
         """生成输出路径"""
-        output_dir = Path.home() / "NarrateFlow" / "exports"
+        output_dir = Path.home() / "Voxplore" / "exports"
         output_dir.mkdir(parents=True, exist_ok=True)
 
         suffix = config.format.value

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-NarrateFlow 错误处理和异常模块
+Voxplore 错误处理和异常模块
 提供自定义异常和错误处理功能
 """
 
@@ -47,8 +47,8 @@ class ErrorCode(Enum):
     UNKNOWN_ERROR = "UNK001"
 
 
-class NarrateFlowError(Exception):
-    """NarrateFlow 基础异常类"""
+class VoxploreError(Exception):
+    """Voxplore 基础异常类"""
 
     def __init__(
         self,
@@ -76,7 +76,7 @@ class NarrateFlowError(Exception):
         return result
 
 
-class LLMError(NarrateFlowError):
+class LLMError(VoxploreError):
     """LLM 错误"""
 
     def __init__(
@@ -116,7 +116,7 @@ class LLMError(NarrateFlowError):
         )
 
 
-class ConfigError(NarrateFlowError):
+class ConfigError(VoxploreError):
     """配置错误"""
 
     def __init__(self, message: str, key: Optional[str] = None):
@@ -131,7 +131,7 @@ class ConfigError(NarrateFlowError):
         )
 
 
-class FileError(NarrateFlowError):
+class FileError(VoxploreError):
     """文件操作错误"""
 
     def __init__(
@@ -159,7 +159,7 @@ class FileError(NarrateFlowError):
         )
 
 
-class VideoError(NarrateFlowError):
+class VideoError(VoxploreError):
     """视频处理错误"""
 
     def __init__(
@@ -190,7 +190,7 @@ class VideoError(NarrateFlowError):
         )
 
 
-class TTSError(NarrateFlowError):
+class TTSError(VoxploreError):
     """语音合成错误"""
 
     def __init__(self, message: str, voice: Optional[str] = None):
@@ -204,7 +204,7 @@ class TTSError(NarrateFlowError):
         )
 
 
-class NetworkError(NarrateFlowError):
+class NetworkError(VoxploreError):
     """网络错误"""
 
     def __init__(self, message: str, url: Optional[str] = None):
@@ -218,7 +218,7 @@ class NetworkError(NarrateFlowError):
         )
 
 
-class ProviderError(NarrateFlowError):
+class ProviderError(VoxploreError):
     """AI Provider 错误"""
 
     def __init__(
@@ -286,7 +286,7 @@ class CircuitOpenError(ProviderError):
         )
 
 
-class SecurityError(NarrateFlowError):
+class SecurityError(VoxploreError):
     """安全错误（路径遍历、格式验证等）"""
 
     def __init__(self, message: str, path: Optional[str] = None):
@@ -298,7 +298,7 @@ class SecurityError(NarrateFlowError):
         )
 
 
-class ExportError(NarrateFlowError):
+class ExportError(VoxploreError):
     """导出错误"""
 
     def __init__(
@@ -321,7 +321,7 @@ class ExportError(NarrateFlowError):
         )
 
 
-class ProjectError(NarrateFlowError):
+class ProjectError(VoxploreError):
     """项目管理错误"""
 
     def __init__(
@@ -355,7 +355,7 @@ class ProjectError(NarrateFlowError):
 # =============================================================================
 # 服务层错误（从 registry_models.py 迁移）
 # =============================================================================
-class ServiceError(NarrateFlowError):
+class ServiceError(VoxploreError):
     """服务层错误基类"""
     pass
 
@@ -419,7 +419,7 @@ class ServiceTimeoutError(ServiceError):
 def format_error_message(error: Exception) -> str:
     """格式化错误消息，用于用户界面显示"""
 
-    if isinstance(error, NarrateFlowError):
+    if isinstance(error, VoxploreError):
         return str(error)
 
     # 处理其他异常
@@ -468,7 +468,7 @@ def get_error_hint(code: ErrorCode) -> str:
 
 __all__ = [
     "ErrorCode",
-    "NarrateFlowError",
+    "VoxploreError",
     "LLMError",
     "ConfigError",
     "FileError",

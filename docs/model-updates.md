@@ -1,6 +1,6 @@
 ---
 title: 模型更新日志
-description: NarrateFlow AI 模型的更新历史与版本说明。
+description: Voxplore AI 模型的更新历史与版本说明。
 ---
 
 # 模型更新日志

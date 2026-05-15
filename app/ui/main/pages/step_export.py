@@ -355,7 +355,7 @@ class StepExport(QWidget):
 
         output_dir = self.out_path_label.text()
         if output_dir == "默认保存至项目目录" or not output_dir:
-            output_dir = self._draft_path if self._draft_path else os.path.expanduser("~/NarrateFlow/output")
+            output_dir = self._draft_path if self._draft_path else os.path.expanduser("~/Voxplore/output")
 
         sub_style = next(
             (sid for sid, card in self.sub_style_cards.items() if card._is_selected),

@@ -1,5 +1,5 @@
 """
-NarrateFlow UI Windows
+Voxplore UI Windows
 多窗口架构：主窗口 + 步骤子窗口 + 项目列表窗口
 """
 
@@ -8,7 +8,7 @@ from .upload_window import UploadWindow
 from .scene_window import SceneWindow
 from .narration_window import NarrationWindow
 from .export_window import ExportWindow
-from .main_window import MainWindow, NarrateFlowApp
+from .main_window import MainWindow, VoxploreApp
 from .projects_window import ProjectsWindow, ProjectCard
 
 __all__ = [
@@ -18,7 +18,7 @@ __all__ = [
     "NarrationWindow",
     "ExportWindow",
     "MainWindow",
-    "NarrateFlowApp",
+    "VoxploreApp",
     "ProjectsWindow",
     "ProjectCard",
 ]

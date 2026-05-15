@@ -1,5 +1,5 @@
 """
-NarrateFlow 空状态组件 - 品牌升级版
+Voxplore 空状态组件 - 品牌升级版
 带引导语的插画风格空状态
 """
 
@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFont, QPainter, QColor, QLinearGradient
 
-# 色彩系统 - NarrateFlow 现代暗色主题
+# 色彩系统 - Voxplore 现代暗色主题
 COLORS = {
     "primary": "#6366F1",
     "primary_end": "#8B5CF6",

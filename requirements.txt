@@ -1,4 +1,4 @@
-# NarrateFlow 依赖包
+# Voxplore 依赖包
 
 ## 核心依赖 (PySide6 - LGPL 授权，商业友好)
 PySide6>=6.6.0

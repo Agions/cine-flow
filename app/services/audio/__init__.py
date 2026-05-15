@@ -1,5 +1,5 @@
 """
-NarrateFlow 音频分析服务
+Voxplore 音频分析服务
 
 提供音频处理能力:
 - BeatDetector: 节拍检测

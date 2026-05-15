@@ -1,13 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <!-- Background -->
   <rect width="32" height="32" rx="8" fill="#070B12"/>
-
-  <!-- Flow waves / Sound wave representing narration -->
-  <path d="M6 18 Q10 14 14 18 T22 18 T30 18" stroke="#10B981" stroke-width="2" fill="none" stroke-linecap="round"/>
-  <path d="M6 14 Q10 10 14 14 T22 14 T30 14" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
-  <path d="M6 22 Q10 18 14 22 T22 22 T30 22" stroke="#10B981" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
-
-  <!-- Play button / Narrator icon -->
-  <circle cx="16" cy="18" r="6" fill="#070B12" stroke="#10B981" stroke-width="1.5"/>
-  <path d="M14.5 15.5 L14.5 20.5 L19.5 18 Z" fill="#10B981"/>
+  <path d="M8 10 L16 6 L24 10 L24 20 L16 26 L8 20 Z" stroke="#10B981" stroke-width="2" fill="none"/>
+  <path d="M16 6 L16 26" stroke="#10B981" stroke-width="1.5"/>
+  <path d="M8 10 L24 20" stroke="#10B981" stroke-width="1" opacity="0.5"/>
+  <path d="M24 10 L8 20" stroke="#10B981" stroke-width="1" opacity="0.5"/>
+  <circle cx="16" cy="15" r="3" fill="#10B981"/>
 </svg>

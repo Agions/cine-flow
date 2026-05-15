@@ -1,6 +1,6 @@
 ---
 title: 疑难排查
-description: NarrateFlow 常见问题与解决方案。
+description: Voxplore 常见问题与解决方案。
 ---
 
 # 疑难排查
@@ -49,4 +49,4 @@ pip install edge-tts
 
 ---
 
-更多问题请提交 [GitHub Issue](https://github.com/Agions/NarrateFlow/issues)。
+更多问题请提交 [GitHub Issue](https://github.com/Agions/Voxplore/issues)。
