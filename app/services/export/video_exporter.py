@@ -183,29 +183,15 @@ class VideoExporter:
         return str(output)
 
     def _get_hw_accel_params(self) -> List[str]:
-        """获取硬件加速参数"""
-        params = []
-
-        if self.config.hw_accel_type == "videotoolbox":
-            # macOS VideoToolbox
-            params.extend(['-c:v', 'h264_videotoolbox'])
-            params.extend(['-q:v', '60'])
-        elif self.config.hw_accel_type == "nvenc":
-            # NVIDIA NVENC
-            params.extend(['-c:v', 'h264_nvenc'])
-            params.extend(['-preset', 'p4'])
-            params.extend(['-cq', str(self.config.crf)])
-        elif self.config.hw_accel_type == "qsv":
-            # Intel Quick Sync
-            params.extend(['-c:v', 'h264_qsv'])
-            params.extend(['-preset', 'medium'])
-        else:
-            # 无硬件加速
-            params.extend(['-c:v', self.config.video_codec.value])
-            params.extend(['-preset', self.config.preset])
-            params.extend(['-crf', str(self.config.crf)])
-
-        return params
+        """获取硬件加速参数（字典映射消除 if-elif 链）"""
+        _HW_PARAMS = {
+            "videotoolbox": ['-c:v', 'h264_videotoolbox', '-q:v', '60'],
+            "nvenc": ['-c:v', 'h264_nvenc', '-preset', 'p4', '-cq', str(self.config.crf)],
+            "qsv": ['-c:v', 'h264_qsv', '-preset', 'medium'],
+        }
+        if self.config.hw_accel_type not in _HW_PARAMS:
+            return ['-c:v', self.config.video_codec.value, '-preset', self.config.preset, '-crf', str(self.config.crf)]
+        return _HW_PARAMS[self.config.hw_accel_type]
 
     def concat_videos(
         self,
