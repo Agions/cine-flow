@@ -245,6 +245,19 @@ class JianyingDraft:
         """添加轨道"""
         self.tracks.append(track)
 
+    def find_track(self, track_type: 'TrackType') -> Optional['Track']:
+        """按类型查找轨道，不存在则返回 None"""
+        return next((t for t in self.tracks if t.type == track_type), None)
+
+    def find_or_create_track(self, track_type: 'TrackType', attribute: int = 0) -> 'Track':
+        """查找或创建指定类型的轨道"""
+        track = self.find_track(track_type)
+        if track:
+            return track
+        track = Track(type=track_type, attribute=attribute)
+        self.add_track(track)
+        return track
+
     def add_video(self, material: VideoMaterial) -> None:
         """添加视频素材"""
         self.materials.videos.append(material)

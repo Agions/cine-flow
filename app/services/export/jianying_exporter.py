@@ -157,45 +157,22 @@ class JianyingExporter(BaseExporter[JianyingDraft, JianyingConfig]):
         _report("写入元信息", 1.0)
 
         return str(draft_folder)
-
     def _get_or_create_track(
         self,
         draft: JianyingDraft,
         track_type: TrackType,
         attribute: int = 0,
     ) -> Track:
-        """获取指定类型的已有轨道，或创建新轨道
-
-        Args:
-            draft: 草稿对象
-            track_type: 轨道类型（VIDEO/AUDIO）
-            attribute: 轨道属性（VIDEO 轨道默认为 1）
-
-        Returns:
-            轨道对象
-        """
-        track = next((t for t in draft.tracks if t.type == track_type), None)
-        if track:
-            return track
-        new_track = Track(type=track_type, attribute=attribute)
-        draft.add_track(new_track)
-        return new_track
+        """获取或创建指定类型的轨道"""
+        return draft.find_or_create_track(track_type, attribute=attribute)
 
     def _compute_next_track_start(
         self,
         draft: JianyingDraft,
         track_type: TrackType,
     ) -> float:
-        """计算自动 target_start：沿用指定轨道末尾时间
-
-        Args:
-            draft: 草稿对象
-            track_type: 轨道类型
-
-        Returns:
-            目标时间轴开始位置（秒），默认 0
-        """
-        track = next((t for t in draft.tracks if t.type == track_type), None)
+        """计算自动 target_start：沿用指定轨道末尾时间"""
+        track = draft.find_track(track_type)
         if not track or not track.segments:
             return 0.0
         last_seg = track.segments[-1]
