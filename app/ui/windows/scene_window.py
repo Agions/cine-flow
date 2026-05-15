@@ -6,7 +6,7 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
     QLabel, QScrollArea, QFrame, QProgressBar
 )
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QTimer
 from app.ui.windows.base_step_window import BaseStepWindow
 
 
@@ -100,17 +100,23 @@ class SceneWindow(BaseStepWindow):
         self._animate_progress(0, 100, 2000)
 
     def _animate_progress(self, start, end, duration_ms):
-        import time
         steps = 20
         step_ms = duration_ms // steps
-        for i in range(steps + 1):
-            value = start + (end - start) * i // steps
+        self._scene_progress = {"step": 0, "steps": steps, "start": start, "end": end}
+
+        def on_tick():
+            sp = self._scene_progress
+            i = sp["step"]
+            value = sp["start"] + (sp["end"] - sp["start"]) * i // sp["steps"]
             self.progress.setValue(value)
             self.progress_label.setText(f"分析进度: {value}%")
-            time.sleep(step_ms / 1000)
+            sp["step"] += 1
+            if sp["step"] <= sp["steps"]:
+                QTimer.singleShot(step_ms, on_tick)
+            else:
+                self._render_scene_cards()
 
-        # 分析完成，渲染场景卡片
-        self._render_scene_cards()
+        QTimer.singleShot(step_ms, on_tick)
 
     def _render_scene_cards(self):
         """渲染场景卡片"""

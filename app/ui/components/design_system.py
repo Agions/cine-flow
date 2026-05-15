@@ -438,7 +438,7 @@ class CFToastNotification(QFrame):
 
         # 带操作按钮
         toast = CFToastNotification("确定要删除吗？", type="warning")
-        toast.add_action("撤销", lambda: print("撤销"))
+        toast.add_action("撤销", lambda: None)  # placeholder action
 
     类型：success / warning / error / info
     """

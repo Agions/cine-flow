@@ -19,7 +19,6 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QFont
-import threading
 
 from .preview_text_area import PreviewTextArea
 from .style_preset_panel import StylePresetPanel
@@ -271,11 +270,15 @@ class StepPreview(QWidget):
 
     def _animate_progress(self):
         """动画进度条（演示用）"""
-        def update():
-            for i in range(0, 101, 2):
-                self._progress_bar.setValue(i)
-                import time
-                time.sleep(0.03)
-            self._progress_bar.setVisible(False)
-        t = threading.Thread(target=update, daemon=True)
-        t.start()
+        self._preview_step = 0
+
+        def on_tick():
+            i = self._preview_step
+            self._preview_step += 2
+            self._progress_bar.setValue(i)
+            if i < 100:
+                QTimer.singleShot(30, on_tick)
+            else:
+                self._progress_bar.setVisible(False)
+
+        QTimer.singleShot(30, on_tick)

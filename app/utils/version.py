@@ -8,7 +8,10 @@ Voxplore 版本管理
 
 from pathlib import Path
 from typing import NamedTuple
+import logging
 import re
+
+logger = logging.getLogger(__name__)
 
 
 def _safe_import():
@@ -95,7 +98,7 @@ def get_version() -> Version:
                 return Version.parse(version_str)
 
     except Exception as e:
-        print(f"Warning: Failed to read version from pyproject.toml: {e}")
+        logger.warning("Failed to read version from pyproject.toml: %s", e)
 
     # 后备方案: 返回默认版本
     return Version(2, 0, 0, prerelease="rc.1")

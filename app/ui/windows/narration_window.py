@@ -7,7 +7,7 @@ from PySide6.QtWidgets import (
     QLabel, QFrame, QTextEdit, QSlider, QGroupBox, QComboBox,
     QProgressBar
 )
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QFont
 from app.ui.windows.base_step_window import BaseStepWindow
 
@@ -185,13 +185,20 @@ class NarrationWindow(BaseStepWindow):
         self.btn_next.setEnabled(True)
 
         # 模拟进度
-        import time
-        for i in range(0, 101, 5):
+        self.tts_progress.setValue(0)
+        self._tts_step = 0
+
+        def on_tick():
+            i = self._tts_step
+            self._tts_step += 5
             self.tts_progress.setValue(i)
             self.tts_label.setText(f"生成中... {i}%")
-            time.sleep(0.1)
+            if i < 100:
+                QTimer.singleShot(100, on_tick)
+            else:
+                self.tts_label.setText("生成完成 ✓")
 
-        self.tts_label.setText("生成完成 ✓")
+        QTimer.singleShot(100, on_tick)
 
     def can_proceed(self) -> bool:
         return bool(self.text_editor.toPlainText().strip())

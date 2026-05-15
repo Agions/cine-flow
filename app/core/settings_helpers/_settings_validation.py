@@ -9,6 +9,8 @@ from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING:
     from app.core.settings_models import SettingDefinition
 
+from app.core.settings_models import SettingType
+
 logger = logging.getLogger(__name__)
 
 
@@ -34,7 +36,6 @@ class SettingsValidator:
 
     def _check_type(self, definition: "SettingDefinition", value: Any) -> bool:
         """Type-check value against definition.setting_type."""
-        from app.core.settings_models import SettingType
         try:
             if definition.setting_type == SettingType.STRING:
                 return isinstance(value, str)
@@ -49,7 +50,7 @@ class SettingsValidator:
             elif definition.setting_type == SettingType.DICT:
                 return isinstance(value, dict)
         except Exception:
-            pass
+            logger.debug("Type check failed for setting_type=%s, returning True (pass through)", definition.setting_type)
         return True  # Unknown type → pass through
 
     def _check_range(self, definition: "SettingDefinition", value: Any) -> bool:
@@ -95,7 +96,7 @@ class SettingsValidator:
         try:
             w, h = map(int, value.split('x'))
             return 0 < w <= 7680 and 0 < h <= 4320
-        except Exception:
+        except (ValueError, IndexError):
             return False
 
     def validate_path(self, value: str) -> bool:
