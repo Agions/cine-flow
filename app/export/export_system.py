@@ -18,6 +18,8 @@ from enum import Enum
 from concurrent.futures import ThreadPoolExecutor, Future
 
 from app.core._signals import QObject, Signal
+from app.services.export.export_manager import ExportManager
+from app.services.export.export_manager import ExportConfig, ExportFormat as EMFormat
 
 logger = logging.getLogger(__name__)
 
@@ -423,10 +425,6 @@ class ExportSystem(QObject):  # noqa: C901
         self.export_started.emit(task.id)
 
         try:
-            # 构建导出配置
-            from app.services.export.export_manager import ExportManager, ExportFormat as EMFormat
-            from app.services.export.export_manager import ExportConfig
-
             fmt_map = {
                 "mp4": EMFormat.MP4,
                 "mov": EMFormat.MOV,
