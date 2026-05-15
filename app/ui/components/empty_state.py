@@ -49,18 +49,16 @@ class EmptyStateIcon(QFrame):
             center.x() + radius, center.y() + radius
         )
 
-        if self._icon_type == "projects":
-            gradient.setColorAt(0, QColor("#388BFD").withAlpha(40))
-            gradient.setColorAt(1, QColor("#79C0FF").withAlpha(30))
-        elif self._icon_type == "media":
-            gradient.setColorAt(0, QColor("#A371F7").withAlpha(40))
-            gradient.setColorAt(1, QColor("#D2A8FF").withAlpha(30))
-        elif self._icon_type == "files":
-            gradient.setColorAt(0, QColor("#22C55E").withAlpha(40))
-            gradient.setColorAt(1, QColor("#79C0FF").withAlpha(30))
-        else:
-            gradient.setColorAt(0, QColor(COLORS["primary"]).withAlpha(40))
-            gradient.setColorAt(1, QColor(COLORS["accent"]).withAlpha(30))
+        # icon_type→(外圈起点色, 外圈终点色)，字典映射消除 if-elif 链
+        _ICON_GRADIENTS = {
+            "projects": ("#388BFD", "#79C0FF"),
+            "media": ("#A371F7", "#D2A8FF"),
+            "files": ("#22C55E", "#79C0FF"),
+        }
+        defaults = (COLORS["primary"], COLORS["accent"])
+        c0, c1 = _ICON_GRADIENTS.get(self._icon_type, defaults)
+        gradient.setColorAt(0, QColor(c0).withAlpha(40))
+        gradient.setColorAt(1, QColor(c1).withAlpha(30))
 
         painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(gradient)
