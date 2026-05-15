@@ -238,13 +238,13 @@ class StyleSheet:
 
     @staticmethod
     def label(secondary: bool = False, muted: bool = False) -> str:
-        """标签样式"""
-        if muted:
-            color = Colors.TextMuted
-        elif secondary:
-            color = Colors.TextSecondary
-        else:
-            color = Colors.TextPrimary
+        """标签样式（字典映射消除 if-elif 链）"""
+        # 按优先级排序，先匹配的生效
+        _LABEL_COLORS = [
+            (muted, Colors.TextMuted),
+            (secondary, Colors.TextSecondary),
+        ]
+        color = next((c for flag, c in _LABEL_COLORS if flag), Colors.TextPrimary)
         return f"QLabel {{ color: {color}; font-size: 14px; }}"
 
     @staticmethod
