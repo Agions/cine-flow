@@ -40,6 +40,7 @@ from .jianying_models import (
     JianyingDraft,
     JianyingConfig,
     CanvasConfig,
+    CANVAS_PRESETS,
 )
 from .export_utils import safe_filename, BaseExporter, get_video_duration, get_video_resolution
 
@@ -102,17 +103,9 @@ class JianyingExporter(BaseExporter[JianyingDraft, JianyingConfig]):
             version=self.config.version,
         )
 
-    # 画布比例配置（类常量，避免每次调用重新创建字典）
-    _CANVAS_CONFIGS = {
-        "9:16": CanvasConfig(width=1080, height=1920, ratio="9:16"),  # 竖屏
-        "16:9": CanvasConfig(width=1920, height=1080, ratio="16:9"),  # 横屏
-        "1:1": CanvasConfig(width=1080, height=1080, ratio="1:1"),    # 方形
-        "3:4": CanvasConfig(width=1080, height=1440, ratio="3:4"),    # 小红书
-    }
-
     def _get_canvas_config(self, ratio: str) -> CanvasConfig:
         """根据比例获取画布配置"""
-        return self._CANVAS_CONFIGS.get(ratio) or self._CANVAS_CONFIGS["9:16"]
+        return CANVAS_PRESETS.get(ratio) or CANVAS_PRESETS["9:16"]
 
     def export(
         self,

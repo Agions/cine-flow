@@ -202,6 +202,15 @@ class CanvasConfig:
     ratio: str = "9:16"
 
 
+# ─── 画布比例预设（供 JianyingExporter 使用）────────────────────────────
+CANVAS_PRESETS = {
+    "9:16": CanvasConfig(width=1080, height=1920, ratio="9:16"),   # 竖屏
+    "16:9": CanvasConfig(width=1920, height=1080, ratio="16:9"),   # 横屏
+    "1:1":  CanvasConfig(width=1080, height=1080, ratio="1:1"),    # 方形
+    "3:4":  CanvasConfig(width=1080, height=1440, ratio="3:4"),    # 小红书
+}
+
+
 # ─── 复合模型 ────────────────────────────────────────────────
 
 @dataclass
@@ -306,6 +315,7 @@ __all__ = [
     "TextMaterial",
     "JianyingMaterials",
     "CanvasConfig",
+    "CANVAS_PRESETS",
     # 复合模型
     "JianyingDraft",
     # 导出配置
