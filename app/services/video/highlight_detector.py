@@ -436,18 +436,18 @@ class HighlightDetector:
                 scores["color"] * self.config.color_weight
             )
 
-            # 判断主要原因
+            # 判断主要原因（字典映射消除 if-elif 链）
+            _REASON_MAP = {
+                "scene": HighlightReason.SCENE_CHANGE,
+                "audio": HighlightReason.AUDIO_PEAK,
+                "motion": HighlightReason.MOTION_INTENSE,
+                "color": HighlightReason.COLOR_VIBRANT,
+            }
             max_score = max(scores.values())
-            if max_score == scores["scene"]:
-                reason = HighlightReason.SCENE_CHANGE
-            elif max_score == scores["audio"]:
-                reason = HighlightReason.AUDIO_PEAK
-            elif max_score == scores["motion"]:
-                reason = HighlightReason.MOTION_INTENSE
-            elif max_score == scores["color"]:
-                reason = HighlightReason.COLOR_VIBRANT
-            else:
-                reason = HighlightReason.COMBINED
+            reason = _REASON_MAP.get(
+                max(scores, key=lambda k: scores[k]),
+                HighlightReason.COMBINED
+            )
 
             highlights.append(HighlightSegment(
                 start=ts,
