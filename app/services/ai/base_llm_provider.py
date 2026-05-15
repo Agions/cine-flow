@@ -239,13 +239,14 @@ class HTTPClientMixin:
             error_data = e.response.json()
             if "error" in error_data:
                 error_msg = f"{error_msg} - {error_data['error']['message']}"
-            # 针对特定状态码的处理
-            if e.response.status_code == 429:
-                error_msg = f"速率限制: {error_msg}"
-            elif e.response.status_code == 500:
-                error_msg = f"服务器错误: {error_msg}"
-            elif e.response.status_code == 401:
-                error_msg = f"认证失败: {error_msg}"
+            # 针对特定状态码的处理（字典映射消除 if-elif 链）
+            _STATUS_MSG = {
+                429: "速率限制",
+                500: "服务器错误",
+                401: "认证失败",
+            }
+            if e.response.status_code in _STATUS_MSG:
+                error_msg = f"{_STATUS_MSG[e.response.status_code]}: {error_msg}"
         except Exception as e:
             logger.debug(f"Failed to parse error response: {e}")
         return ProviderError(error_msg)
