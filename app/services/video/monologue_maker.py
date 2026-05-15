@@ -24,6 +24,7 @@ AI 第一人称独白制作器 (Monologue Maker)
     draft_path = maker.export_to_jianying(project, "/path/to/drafts")
 """
 
+import json
 import re
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -85,8 +86,6 @@ class MonologueProject(BaseProject):
         Returns:
             实际保存的文件路径
         """
-        import json
-
         save_path = Path(path) if path else Path(self.output_dir) / f"{self.name}.narrafiilm"
         save_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -133,8 +132,6 @@ class MonologueProject(BaseProject):
         Returns:
             MonologueProject 实例
         """
-        import json
-
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
 
@@ -439,7 +436,7 @@ class MonologueMaker(BaseVideoMaker[MonologueProject]):
         ]
 
         results: dict[int, tuple[str, float, list]] = {}
-        completed = 0
+        done_count = 0
 
         def _generate_one(i: int, segment: MonologueSegment, audio_path: str):
             config = VoiceConfig(
@@ -461,8 +458,8 @@ class MonologueMaker(BaseVideoMaker[MonologueProject]):
             for future in as_completed(futures):
                 i, audio_path, duration = future.result()
                 results[i] = (audio_path, duration)
-                completed += 1
-                self._report_progress("生成配音", completed / len(tasks))
+                done_count += 1
+                self._report_progress("生成配音", done_count / len(tasks))
 
         for i, segment in enumerate(project.segments):
             if i in results:

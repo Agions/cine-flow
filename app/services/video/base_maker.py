@@ -17,7 +17,7 @@ from ..export.jianying_exporter import JianyingExporter
 from ..export.jianying_models import (
     JianyingDraft, JianyingConfig,
     Track, TrackType, Segment, TimeRange,
-    VideoMaterial, AudioMaterial, TextMaterial,
+    VideoMaterial, AudioMaterial,
 )
 
 
@@ -203,43 +203,6 @@ def _add_segments_to_track(
                 seg.get("duration", 0),
             ),
         ))
-
-    def _create_text_track(
-        self,
-        draft: JianyingDraft,
-        captions: List[Dict],
-        caption_style: Optional[Dict] = None,
-    ) -> Track:
-        """创建字幕轨道"""
-        text_track = Track(type=TrackType.TEXT)
-        draft.add_track(text_track)
-
-        default_style = caption_style or {
-            "font_size": 6.0,
-            "font_color": "#FFFFFF",
-            "has_shadow": True,
-        }
-
-        for cap in captions:
-            text_material = TextMaterial(
-                content=cap.get("text", ""),
-                font_size=cap.get("font_size", default_style.get("font_size", 6.0)),
-                font_color=cap.get("font_color", default_style.get("font_color", "#FFFFFF")),
-                has_shadow=cap.get("has_shadow", default_style.get("has_shadow", True)),
-            )
-            draft.add_text(text_material)
-
-            text_segment = Segment(
-                material_id=text_material.id,
-                source_timerange=TimeRange.from_seconds(0, cap.get("duration", 0)),
-                target_timerange=TimeRange.from_seconds(
-                    cap.get("start", 0),
-                    cap.get("duration", 0),
-                ),
-            )
-            text_track.add_segment(text_segment)
-
-        return text_track
 
 
 # =========== 便捷函数 ===========

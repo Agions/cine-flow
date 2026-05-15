@@ -135,9 +135,10 @@ class ExportWindow(BaseStepWindow):
 
     def _start_export(self):
         """模拟导出过程"""
+        from PySide6 import QtCore
+
         self.progress_group.show()
 
-        import time
         steps = [
             ("正在合成音视频...", 20),
             ("正在处理字幕...", 45),
@@ -146,13 +147,17 @@ class ExportWindow(BaseStepWindow):
             ("导出完成!", 100),
         ]
 
-        for label_text, pct in steps:
+        def show_step(index: int):
+            if index >= len(steps):
+                self.preview_placeholder.setText("✅ 导出完成!\n\n文件已保存至：~/Videos/Voxplore/")
+                self.finished.emit()
+                return
+            label_text, pct = steps[index]
             self.export_progress.setValue(pct)
             self.export_label.setText(label_text)
-            time.sleep(0.8)
+            QtCore.QTimer.singleShot(800, lambda: show_step(index + 1))
 
-        self.preview_placeholder.setText("✅ 导出完成!\n\n文件已保存至：~/Videos/Voxplore/")
-        self.finished.emit()
+        show_step(0)
 
     def can_proceed(self) -> bool:
         return True

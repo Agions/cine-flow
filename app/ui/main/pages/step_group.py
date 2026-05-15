@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QPushButton,
     QFrame, QScrollArea, QSizePolicy, QProgressBar, QLineEdit
 )
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, Signal, QTimer
 from PySide6.QtGui import QFont, QDrag
 
 # 导入拖拽辅助组件
@@ -588,16 +588,18 @@ class StepGroup(QWidget):
         self._progress_bar.setVisible(True)
         self._new_group_btn.setEnabled(False)
 
-        def animate():
-            for i in range(0, 101, 5):
-                self._progress_bar.setValue(i)
-                if progress_callback:
-                    progress_callback(i)
-                import time
-                time.sleep(0.05)
-            self._progress_bar.setVisible(False)
-            self._new_group_btn.setEnabled(True)
+        self._analysis_step = 0
 
-        import threading
-        t = threading.Thread(target=animate, daemon=True)
-        t.start()
+        def on_timeout():
+            i = self._analysis_step
+            self._analysis_step += 5
+            self._progress_bar.setValue(i)
+            if progress_callback:
+                progress_callback(i)
+            if i >= 100:
+                self._progress_bar.setVisible(False)
+                self._new_group_btn.setEnabled(True)
+            else:
+                QTimer.singleShot(50, on_timeout)
+
+        QTimer.singleShot(50, on_timeout)

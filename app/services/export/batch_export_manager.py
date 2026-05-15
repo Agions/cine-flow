@@ -3,8 +3,10 @@
 支持多个项目或多个片段的批量导出
 """
 
+import json
 import os
 import logging
+from pathlib import Path
 from typing import List, Dict, Any, Optional, Callable
 from dataclasses import dataclass, field
 from enum import Enum
@@ -225,9 +227,6 @@ class BatchExportManager:
             logger.info(f"开始导出: {task.name} → {task.output_path}")
 
             # 加载项目数据
-            import json
-            from pathlib import Path
-
             project_path = Path(task.project_path)
             if project_path.exists() and project_path.suffix == '.json':
                 with open(project_path, 'r', encoding='utf-8') as f:
