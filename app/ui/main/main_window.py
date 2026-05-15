@@ -312,14 +312,14 @@ class VoxploreWindow(QMainWindow):
         self._pages = {}
         self._current_page = None
         self._is_animating = False
-        self._init_ui()
+        self._setup_ui()
         self._load_pages()
         self._navigate_to("creator")
         self.logger.info("Voxplore 主窗口初始化完成 (v4 — 精致现代布局)")
 
     # ─── UI 初始化 ────────────────────────────────────────────
 
-    def _init_ui(self):
+    def _setup_ui(self):
         central = QWidget()
         self.setCentralWidget(central)
         central.setStyleSheet(f"background: {Colors.BgBase};")

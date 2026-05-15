@@ -40,10 +40,10 @@ class VideoPlayer(QWidget):
         self._current_frame = 0
         self._fps = 30.0
 
-        self._init_ui()
+        self._setup_ui()
         self._connect_signals()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
 

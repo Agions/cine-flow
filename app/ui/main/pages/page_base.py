@@ -121,7 +121,7 @@ class PageBase(ABC):
 
     def get_config(self, key: str = None, default: Any = None) -> Any:
         """获取配置"""
-        from app.utils.config import get_config
+        from app.core.config_manager import get_config
         config = get_config()
         if key is None:
             return config

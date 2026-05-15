@@ -31,9 +31,9 @@ class PulseIndicator(QFrame):
         self._max_radius = size // 2
         self._animation_phase = 0
         self._dots = []
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         self.setFixedSize(self._size, self._size)
 
         # 启动脉冲动画
@@ -89,9 +89,9 @@ class SpinnerIndicator(QFrame):
         self._size = size
         self._color = color or QColor(99, 102, 241)
         self._rotation = 0
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         self.setFixedSize(self._size, self._size)
 
         # 启动旋转动画
@@ -143,9 +143,9 @@ class BouncingDots(QWidget):
         self._dot_size = dot_size
         self._color = color or QColor(99, 102, 241)
         self._phases = [0, 0, 0]
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         self.setFixedHeight(self._dot_size * 3)
         self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
 
@@ -188,9 +188,9 @@ class LoadingOverlay(QFrame):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         # 设置半透明背景
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setStyleSheet("background-color: rgba(10, 10, 15, 0.7);")
@@ -253,9 +253,9 @@ class InlineLoader(QWidget):
         super().__init__(parent)
         self._size = size
         self._color = color or QColor(99, 102, 241)
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         self.setFixedSize(self._size, self._size)
 
         # 旋转动画
@@ -294,9 +294,9 @@ class LoadingButton(QFrame):
     def __init__(self, text="加载中", parent=None):
         super().__init__(parent)
         self._text = text
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         self.setFixedHeight(36)
         self.setStyleSheet("""
             QFrame {

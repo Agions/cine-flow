@@ -202,10 +202,10 @@ class CreationWizardPage(BasePage):
         super().__init__(page_id, title, application)
         self._controller = PipelineController(self)
         self._is_animating = False
-        self._init_ui()
+        self._setup_ui()
         self._bind_signals()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)

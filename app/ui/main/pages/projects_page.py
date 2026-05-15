@@ -38,7 +38,7 @@ class ProjectsPage(BasePage):
         """初始化页面"""
         try:
             self._logger.info("Initializing projects page")
-            self._init_ui()
+            self._setup_ui()
             self._list_panel.load_projects()
             return True
         except Exception as e:
@@ -58,7 +58,7 @@ class ProjectsPage(BasePage):
         if not self._settings_manager:
             self._logger.warning("设置管理器服务未找到")
 
-    def _init_ui(self):
+    def _setup_ui(self):
         """初始化UI"""
         from .components.proj_details_pnl import ProjectDetailsPanel
         from .components.proj_list_pnl import ProjectsListPanel

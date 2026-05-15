@@ -57,9 +57,9 @@ class ProviderSelectionPage(QWizardPage):
         super().__init__()
         self.providers = providers
         self.selected_provider = None
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         """初始化UI"""
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -165,9 +165,9 @@ class RequirementsPage(QWizardPage):
     def __init__(self):
         super().__init__()
         self.provider = None
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         """初始化UI"""
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -279,9 +279,9 @@ class ApplicationFormPage(QWizardPage):
     def __init__(self):
         super().__init__()
         self.provider = None
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         """初始化UI"""
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -362,9 +362,9 @@ class SubmitApplicationPage(QWizardPage):
     def __init__(self):
         super().__init__()
         self.provider = None
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         """初始化UI"""
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)

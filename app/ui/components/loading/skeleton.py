@@ -62,9 +62,9 @@ class SkeletonWidget(QFrame):
         super().__init__(parent)
         self._width = width
         self._height = height
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         self.setObjectName("skeleton")
         if self._width:
             self.setFixedWidth(self._width)
@@ -90,9 +90,9 @@ class SkeletonBar(QFrame):
         super().__init__(parent)
         self._width = width
         self._height = height
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         self.setObjectName("skeleton-bar")
         if self._width:
             self.setFixedWidth(self._width)
@@ -117,9 +117,9 @@ class SkeletonCircle(QFrame):
     def __init__(self, size=40, parent=None):
         super().__init__(parent)
         self._size = size
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         self.setObjectName("skeleton-circle")
         self.setFixedSize(self._size, self._size)
 
@@ -141,9 +141,9 @@ class SkeletonCard(QFrame):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         self.setObjectName("card")
         self.setFixedHeight(120)
 
@@ -187,9 +187,9 @@ class SkeletonList(QWidget):
     def __init__(self, rows=5, parent=None):
         super().__init__(parent)
         self._rows = rows
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(8)

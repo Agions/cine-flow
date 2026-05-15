@@ -21,7 +21,6 @@ from .jianying_models import (
 )
 from .video_exporter import VideoExporter, ExportConfig, ExportFormat
 from .direct_video_exporter import DirectVideoExporter, VideoExportConfig, Resolution, VideoCodec, VideoFormat, HWAccel
-from .batch_export_manager import BatchExportManager, ExportTask, ExportStatus, BatchExportResult, get_batch_export_manager
 from .export_manager import ExportManager
 
 
@@ -65,12 +64,6 @@ __all__ = [
     "VideoFormat",
     "HWAccel",
 
-    # 批量导出
-    "BatchExportManager",
-    "ExportTask",
-    "ExportStatus",
-    "BatchExportResult",
-    "get_batch_export_manager",
 
     # 导出管理
     "ExportManager",

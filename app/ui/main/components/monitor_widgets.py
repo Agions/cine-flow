@@ -24,9 +24,9 @@ class ServiceStatusWidget(QWidget):
         self.service_name = service_name
         self.status = status
         self.health_data = health_data
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         """初始化UI"""
         layout = QHBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
@@ -190,9 +190,9 @@ class AlertWidget(QWidget):
     def __init__(self, alert):
         super().__init__()
         self.alert = alert
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         """初始化UI"""
         layout = QHBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)

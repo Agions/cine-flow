@@ -67,8 +67,8 @@ class AIMonitorPanel(QWidget):
         # 页面创建助手
         self.pages = MonitorPages(self)
 
-        self._init_ui()
-        self._setup_connections()
+        self._setup_ui()
+        self._connect_signals()
 
     def _get_ai_service_manager(self):
         """获取AI服务管理器"""
@@ -79,7 +79,7 @@ class AIMonitorPanel(QWidget):
         except Exception as e:
             self.logger.error(f"获取AI服务管理器失败: {e}")
 
-    def _init_ui(self):
+    def _setup_ui(self):
         """初始化UI"""
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
@@ -175,7 +175,7 @@ class AIMonitorPanel(QWidget):
 
         self.content_stack.setCurrentIndex(page_index)
 
-    def _setup_connections(self):
+    def _connect_signals(self):
         """设置信号连接"""
         # 连接AI服务管理器信号
         if self.ai_service_manager:

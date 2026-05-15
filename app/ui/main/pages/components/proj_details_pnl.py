@@ -38,9 +38,9 @@ class ProjectDetailsPanel(QWidget):
         self._project_manager = project_manager
         self._settings_manager = settings_manager
         self._current_project_id = None
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         """初始化UI"""
         layout = QVBoxLayout(self)
         layout.setSpacing(16)

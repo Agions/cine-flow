@@ -38,9 +38,9 @@ class ProjectsListPanel(QWidget):
         self._project_manager = project_manager
         self._project_cards = {}
         self._signals_initialized = False
-        self._init_ui()
+        self._setup_ui()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         """初始化UI"""
         layout = QVBoxLayout(self)
         layout.setSpacing(12)

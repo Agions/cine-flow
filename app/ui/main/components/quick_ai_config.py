@@ -43,13 +43,13 @@ class QuickAIConfigWidget(QWidget):
         self.logger = Logger("QuickAIConfigWidget")
 
         # 初始化UI
-        self._init_ui()
-        self._setup_connections()
+        self._setup_ui()
+        self._connect_signals()
 
         # 定时刷新状态
         self._setup_refresh_timer()
 
-    def _init_ui(self):
+    def _setup_ui(self):
         """初始化用户界面"""
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -143,7 +143,7 @@ class QuickAIConfigWidget(QWidget):
 
         layout.addStretch()
 
-    def _setup_connections(self):
+    def _connect_signals(self):
         """设置信号连接"""
         # 连接按钮信号
         if hasattr(self, 'apply_button'):
