@@ -74,22 +74,9 @@ class QwenProvider(BaseLLMProvider, HTTPClientMixin, ModelManagerMixin):
         api_key: str,
         base_url: str = "https://dashscope.aliyuncs.com/compatible-mode/v1",
     ):
-        """
-        初始化提供商
-
-        Args:
-            api_key: API 密钥
-            base_url: API 基础 URL
-        """
-        # 调用父类初始化
         BaseLLMProvider.__init__(self, api_key, base_url)
         HTTPClientMixin.__init__(self, api_key, base_url, timeout=60.0)
-
-        # 初始化HTTP客户端
-        self._init_http_client({
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-        })
+        self._init_with_bearer_auth(api_key)
 
     async def generate(self, request: LLMRequest) -> LLMResponse:
         """生成文本"""
