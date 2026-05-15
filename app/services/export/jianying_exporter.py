@@ -95,17 +95,15 @@ class JianyingExporter(BaseExporter[JianyingDraft, JianyingConfig]):
 
     def create_draft(self, name: str) -> JianyingDraft:
         """创建新草稿"""
-        canvas_config = self._get_canvas_config(self.config.canvas_ratio)
+        canvas_config = CANVAS_PRESETS.get(
+            self.config.canvas_ratio, CANVAS_PRESETS["9:16"]
+        )
 
         return JianyingDraft(
             name=name,
             canvas_config=canvas_config,
             version=self.config.version,
         )
-
-    def _get_canvas_config(self, ratio: str) -> CanvasConfig:
-        """根据比例获取画布配置"""
-        return CANVAS_PRESETS.get(ratio) or CANVAS_PRESETS["9:16"]
 
     def export(
         self,
