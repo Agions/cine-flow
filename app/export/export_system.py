@@ -152,7 +152,7 @@ class ExportTask:
         )
 
 
-class ExportSystem(QObject):
+class ExportSystem(QObject):  # noqa: C901
     """
     导出一个中心化的任务调度系统。
 
