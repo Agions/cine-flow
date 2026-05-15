@@ -14,6 +14,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 import threading
 from ...core.exceptions import ExportError
+from .export_utils import format_to_export_format
+from .export_manager import ExportManager, ExportFormat, ExportConfig
 
 logger = logging.getLogger(__name__)
 
@@ -240,16 +242,7 @@ class BatchExportManager:
                 else:
                     project_data = {"source": str(project_path)}
 
-            # 构建导出配置
-            from .export_manager import ExportManager, ExportFormat, ExportConfig
-
-            fmt_map = {
-                "mp4": ExportFormat.MP4,
-                "mov": ExportFormat.MOV,
-                "gif": ExportFormat.GIF,
-                "jianying": ExportFormat.JIANYING,
-            }
-            export_fmt = fmt_map.get(task.format.lower(), ExportFormat.MP4)
+            export_fmt = format_to_export_format(task.format, ExportFormat)
 
             config = ExportConfig(
                 format=export_fmt,

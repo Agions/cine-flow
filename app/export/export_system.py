@@ -20,6 +20,7 @@ from concurrent.futures import ThreadPoolExecutor, Future
 from app.core._signals import QObject, Signal
 from app.services.export.export_manager import ExportManager
 from app.services.export.export_manager import ExportConfig, ExportFormat as EMFormat
+from app.services.export.export_utils import format_to_export_format
 
 logger = logging.getLogger(__name__)
 
@@ -425,16 +426,9 @@ class ExportSystem(QObject):  # noqa: C901
         self.export_started.emit(task.id)
 
         try:
-            fmt_map = {
-                "mp4": EMFormat.MP4,
-                "mov": EMFormat.MOV,
-                "gif": EMFormat.GIF,
-                "jianying": EMFormat.JIANYING,
-            }
-
             preset = task.preset
             if preset:
-                export_fmt = fmt_map.get(preset.format.value, EMFormat.MP4)
+                export_fmt = format_to_export_format(preset.format.value, EMFormat)
                 resolution_str = preset.resolution if isinstance(preset.resolution, str) else f"{preset.resolution[0]}x{preset.resolution[1]}"
             else:
                 export_fmt = EMFormat.MP4

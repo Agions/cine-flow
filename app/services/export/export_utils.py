@@ -174,6 +174,17 @@ def copy_material_to_folder(material_path: str, dest_folder: Path) -> str:
     return str(dst)
 
 
+def format_to_export_format(fmt_str: str, em_format_cls) -> str:
+    """将格式字符串映射为 ExportFormat 枚举成员"""
+    fmt_map = {
+        "mp4": em_format_cls.MP4,
+        "mov": em_format_cls.MOV,
+        "gif": em_format_cls.GIF,
+        "jianying": em_format_cls.JIANYING,
+    }
+    return fmt_map.get(fmt_str.lower(), em_format_cls.MP4)
+
+
 __all__ = [
     # 工具函数
     "seconds_to_microseconds",
@@ -184,6 +195,7 @@ __all__ = [
     "get_video_resolution",
     "copy_material_to_folder",
     "first_video_stream",
+    "format_to_export_format",
 
     # 基础类
     "BaseTrack",
