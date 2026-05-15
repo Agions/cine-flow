@@ -53,7 +53,7 @@ def update_services_table(panel):
         services = panel.ai_service_manager.get_all_services()
         panel.services_table.setRowCount(len(services))
 
-        for row, (service_name, service) in enumerate(services.items()):
+        for row, (service_name, _) in enumerate(services.items()):
             health = panel.ai_service_manager.get_service_health(service_name)
             stats = panel.ai_service_manager.get_usage_stats(service_name)
 

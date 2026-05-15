@@ -216,6 +216,6 @@ class PreviewTextArea(QFrame):
     def _update_segment_tabs(self):
         """更新段落摘要标签页"""
         self._segment_tabs.clear()
-        for i, (t_range, text, emotion) in enumerate(self._segments):
+        for _, (t_range, text, _) in enumerate(self._segments):
             snippet = text[:60] + ("…" if len(text) > 60 else "")
             self._segment_tabs.addTab(QWidget(), f"[{t_range}] {snippet}")

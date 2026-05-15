@@ -98,7 +98,7 @@ class ProjectsListPanel(QWidget):
         type_filter = self._type_filter.currentText()
         status_filter = self._status_filter.currentText()
 
-        for project_id, card in self._project_cards.items():
+        for _, card in self._project_cards.items():
             project = card.project
             matches = True
 

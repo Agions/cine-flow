@@ -475,7 +475,7 @@ class ScriptGenerator:
             segment_words = len(segment.content.replace(' ', ''))
 
             current_text = ""
-            for i, part in enumerate(sentences):
+            for _, part in enumerate(sentences):
                 if not part:
                     continue
 
