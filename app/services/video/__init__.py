@@ -72,6 +72,7 @@ from .highlight_detector import (
 )
 from .pipeline_integrator import PipelineIntegrator
 from .scene_converter import SceneConverter, EmotionCurveGenerator
+from .av_sync_engine import AVSyncEngine, AVSyncConfig, SentenceSync
 
 __all__ = [
     # 原有
@@ -115,6 +116,10 @@ __all__ = [
     # 场景转换
     "SceneConverter",
     "EmotionCurveGenerator",
+    # 音画同步
+    "AVSyncEngine",
+    "AVSyncConfig",
+    "SentenceSync",
     # 流水线集成
     "PipelineIntegrator",
 ]

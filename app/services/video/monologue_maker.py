@@ -42,6 +42,7 @@ from ..video_tools.caption_gen import CaptionGenerator
 from ..video_tools.ffmpeg_tool import FFmpegTool
 from ..export.jianying_models import JianyingDraft
 from .track_builder import build_monologue_tracks, CAPTION_STYLES
+from .av_sync_engine import AVSyncEngine, AVSyncConfig
 
 logger = logging.getLogger(__name__)
 
@@ -258,6 +259,7 @@ class MonologueMaker(BaseVideoMaker[MonologueProject]):
         self.voice_generator = VoiceGenerator(provider=voice_provider)
         self.script_generator = ScriptGenerator(use_llm_manager=True)
         self.caption_generator = CaptionGenerator()
+        self.av_sync_engine = AVSyncEngine()
 
     def create_project(
         self,
@@ -319,6 +321,10 @@ class MonologueMaker(BaseVideoMaker[MonologueProject]):
         # 分段
         self._segment_script(project)
 
+        # 音画同步 — 确保解说内容与画面匹配
+        if project.scenes and project.segments:
+            self._apply_av_sync(project)
+
         self._report_progress("生成独白", 1.0)
 
     def _segment_script(self, project: MonologueProject) -> None:
@@ -373,33 +379,122 @@ class MonologueMaker(BaseVideoMaker[MonologueProject]):
             project.segments.append(segment)
 
     def _infer_emotion(self, text: str, base_emotion: str) -> EmotionType:
-        """根据文本内容推断情感"""
-        # 简单关键词匹配
+        """根据文本内容推断情感（增强版 - 更智能的情感识别）"""
+        # 扩展的情感关键词库
         emotion_keywords = {
-            EmotionType.SAD: ["悲", "泪", "哭", "失去", "离别", "孤独", "寂寞"],
-            EmotionType.HAPPY: ["开心", "快乐", "笑", "幸福", "美好", "温暖"],
-            EmotionType.CALM: ["平静", "安宁", "静", "默", "沉思"],
-            EmotionType.TENDER: ["温柔", "爱", "思念", "想", "心"],
-            EmotionType.EXCITED: ["激动", "兴奋", "期待", "梦想", "未来"],
+            EmotionType.SAD: ["悲", "泪", "哭", "失去", "离别", "孤独", "寂寞", 
+                            "难过", "伤心", "痛苦", "无奈", "遗憾", "惋惜", "怀念"],
+            EmotionType.HAPPY: ["开心", "快乐", "笑", "幸福", "美好", "温暖", 
+                              "高兴", "喜悦", "兴奋", "期待", "惊喜", "满足", "感动"],
+            EmotionType.CALM: ["平静", "安宁", "静", "默", "沉思", "思考", 
+                              "宁静", "淡然", "从容", "释然", "放下", "接受"],
+            EmotionType.TENDER: ["温柔", "爱", "思念", "想", "心", "情", 
+                               "珍惜", "呵护", "陪伴", "守候", "牵挂", "眷恋"],
+            EmotionType.EXCITED: ["激动", "兴奋", "期待", "梦想", "未来", 
+                                "挑战", "突破", "奋斗", "拼搏", "热血", "激情"],
         }
 
-        # 检查关键词
+        # 情感强度词
+        intensity_words = {
+            "very": ["非常", "特别", "极其", "十分", "格外", "异常"],
+            "slightly": ["有点", "稍微", "略微", "一点", "些许"],
+        }
+
+        # 计算情感得分
+        emotion_scores = {}
         for emotion, keywords in emotion_keywords.items():
+            score = 0
             for keyword in keywords:
                 if keyword in text:
-                    return emotion
+                    score += 1
+                    # 检查强度词
+                    for intense_word in intensity_words["very"]:
+                        if intense_word in text:
+                            score += 2
+                            break
+            if score > 0:
+                emotion_scores[emotion] = score
+
+        # 返回得分最高的情感
+        if emotion_scores:
+            return max(emotion_scores.items(), key=lambda x: x[1])[0]
 
         # 使用基础情感
         emotion_map = {
             "惆怅": EmotionType.SAD,
             "忧郁": EmotionType.SAD,
             "开心": EmotionType.HAPPY,
+            "快乐": EmotionType.HAPPY,
             "平静": EmotionType.CALM,
             "温柔": EmotionType.TENDER,
             "excited": EmotionType.EXCITED,
+            "激动": EmotionType.EXCITED,
+            "思念": EmotionType.TENDER,
+            "怀念": EmotionType.SAD,
+            "感动": EmotionType.TENDER,
+            "温暖": EmotionType.TENDER,
         }
 
         return emotion_map.get(base_emotion, EmotionType.NEUTRAL)
+
+    def _apply_av_sync(self, project: MonologueProject) -> None:
+        """应用音画同步 — 调整视频片段以匹配解说内容"""
+        # 准备场景数据
+        video_scenes = []
+        for scene in project.scenes:
+            if hasattr(scene, 'start') and hasattr(scene, 'end'):
+                video_scenes.append({
+                    "start": scene.start,
+                    "end": scene.end,
+                    "description": getattr(scene, 'description', ''),
+                    "keywords": getattr(scene, 'keywords', []) or [],
+                })
+
+        if not video_scenes:
+            return
+
+        # 准备句子时间戳（使用已有的 sentence_timestamps）
+        sentence_timestamps = []
+        scripts = []
+        for seg in project.segments:
+            scripts.append(seg.script)
+            if seg.sentence_timestamps:
+                for ts in seg.sentence_timestamps:
+                    sentence_timestamps.append({
+                        "text": ts.get("text", ""),
+                        "start": ts.get("start", 0) + seg.audio_start if hasattr(seg, 'audio_start') else ts.get("start", 0),
+                        "end": ts.get("end", 0) + seg.audio_start if hasattr(seg, 'audio_start') else ts.get("end", 0),
+                    })
+            else:
+                # 使用片段的估算时间
+                sentence_timestamps.append({
+                    "text": seg.script,
+                    "start": 0,
+                    "end": seg.audio_duration or 3.0,
+                })
+
+        # 执行音画同步
+        syncs = self.av_sync_engine.sync(
+            video_scenes=video_scenes,
+            sentence_timestamps=sentence_timestamps,
+            scripts=scripts,
+        )
+
+        # 更新片段的视频时间范围
+        for i, sync in enumerate(syncs):
+            if i < len(project.segments):
+                seg = project.segments[i]
+                seg.video_start = sync.video_start
+                seg.video_end = sync.video_end
+                # 记录同步质量
+                if hasattr(seg, 'sync_info'):
+                    seg.sync_info = {
+                        "match_score": sync.match_score,
+                        "sync_method": sync.sync_method,
+                        "keywords": sync.keywords,
+                    }
+
+        logger.info(f"音画同步完成: {len(syncs)} 个片段已对齐")
 
     def generate_voice(
         self,
