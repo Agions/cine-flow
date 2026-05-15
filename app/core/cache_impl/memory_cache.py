@@ -269,19 +269,12 @@ class MemoryCache(ICache):
             if not self._cache:
                 break
 
-            # 根据策略选择淘汰项
-            if self._policy == CachePolicy.LRU:
-                # 移除最久未访问的
-                key_to_remove = next(iter(self._cache))
-            elif self._policy == CachePolicy.LFU:
-                # 移除访问次数最少的
-                key_to_remove = min(
-                    self._cache.keys(),
-                    key=lambda k: self._cache[k].access_count
-                )
-            else:
-                # 默认FIFO
-                key_to_remove = next(iter(self._cache))
+            # 根据策略选择淘汰项（字典映射消除 if-elif 链）
+            _EVICT_STRATEGY = {
+                CachePolicy.LRU: lambda: next(iter(self._cache)),
+                CachePolicy.LFU: lambda: min(self._cache.keys(), key=lambda k: self._cache[k].access_count),
+            }
+            key_to_remove = _EVICT_STRATEGY.get(self._policy, _EVICT_STRATEGY[CachePolicy.LRU])()
 
             entry = self._cache.pop(key_to_remove)
             current_size -= entry.size_bytes
