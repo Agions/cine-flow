@@ -390,42 +390,34 @@ class DirectVideoExporter:
         return output_path
 
     def _get_video_codec(self, config: VideoExportConfig) -> str:
-        """获取视频编码器"""
-        if config.hw_accel == HWAccel.NVIDIA:
-            if config.video_codec == VideoCodec.H265:
-                return "hevc_nvenc"
-            return "h264_nvenc"
-        elif config.hw_accel == HWAccel.APPLE:
-            if config.video_codec == VideoCodec.H265:
-                return "hevc_videotoolbox"
-            return "h264_videotoolbox"
-        elif config.hw_accel == HWAccel.INTEL:
-            if config.video_codec == VideoCodec.H265:
-                return "hevc_qsv"
-            return "h264_qsv"
-        else:
+        """获取视频编码器（字典映射消除 if-elif 链）"""
+        _CODEC_MAP = {
+            HWAccel.NVIDIA: {VideoCodec.H265: "hevc_nvenc", VideoCodec.H264: "h264_nvenc"},
+            HWAccel.APPLE:  {VideoCodec.H265: "hevc_videotoolbox", VideoCodec.H264: "h264_videotoolbox"},
+            HWAccel.INTEL:  {VideoCodec.H265: "hevc_qsv", VideoCodec.H264: "h264_qsv"},
+        }
+        if config.hw_accel == HWAccel.NONE:
             return config.video_codec.value
+        return _CODEC_MAP.get(config.hw_accel, {}).get(config.video_codec, config.video_codec.value)
 
     def _add_hw_accel_params(
         self,
         cmd: List[str],
         config: VideoExportConfig,
     ) -> List[str]:
-        """添加硬件加速参数"""
+        """添加硬件加速参数（字典映射消除 if-elif 链）"""
         if config.hw_accel == HWAccel.NONE:
             return cmd
 
-        # 在输入前添加硬件加速设备
-        if config.hw_accel == HWAccel.NVIDIA:
-            cmd.insert(1, '-hwaccel')
-            cmd.insert(2, 'cuda')
-        elif config.hw_accel == HWAccel.APPLE:
-            cmd.insert(1, '-hwaccel')
-            cmd.insert(2, 'videotoolbox')
-        elif config.hw_accel == HWAccel.INTEL:
-            cmd.insert(1, '-hwaccel')
-            cmd.insert(2, 'qsv')
-
+        _HWACCEL_MAP = {
+            HWAccel.NVIDIA: ('-hwaccel', 'cuda'),
+            HWAccel.APPLE:  ('-hwaccel', 'videotoolbox'),
+            HWAccel.INTEL: ('-hwaccel', 'qsv'),
+        }
+        params = _HWACCEL_MAP.get(config.hw_accel)
+        if params:
+            cmd.insert(1, params[0])
+            cmd.insert(2, params[1])
         return cmd
 
     def export_with_presets(
