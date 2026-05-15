@@ -155,7 +155,7 @@ class ExportTask:
 class ExportSystem(QObject):
     """
     导出一个中心化的任务调度系统。
-    
+
     管理导出队列、预设持久化、并发控制和信号发射。
     """
 
@@ -177,7 +177,7 @@ class ExportSystem(QObject):
     ):
         """
         初始化导出系统。
-        
+
         Args:
             max_concurrent: 最大并发导出数
             presets_file: 预设持久化文件路径
@@ -211,7 +211,7 @@ class ExportSystem(QObject):
     ) -> str:
         """
         添加单个导出任务到队列。
-        
+
         Returns:
             task_id
         """
@@ -242,10 +242,10 @@ class ExportSystem(QObject):
     ) -> List[str]:
         """
         添加批量导出任务。
-        
+
         Args:
             batch_configs: [{"project_id", "output_path", "preset_id", "metadata"}, ...]
-        
+
         Returns:
             [task_id, ...]
         """
