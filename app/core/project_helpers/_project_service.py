@@ -318,7 +318,7 @@ class ProjectService:
                     if template.load():
                         self.templates[template.id] = template
                 except Exception:
-                    pass
+                    logger.debug("Skip invalid template: %s", entry_path)
         except Exception as e:
             self.logger.warning(f"Template scan failed: {e}")
 

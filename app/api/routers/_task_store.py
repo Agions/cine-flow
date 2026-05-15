@@ -10,6 +10,7 @@
 """
 
 import json
+import logging
 from abc import ABC, abstractmethod
 from typing import Optional, Dict, Any
 
@@ -125,7 +126,9 @@ def create_task_store(redis_url: Optional[str] = None) -> TaskStore:
         try:
             return RedisTaskStore(url=redis_url)
         except Exception:
-            pass
+            import logging
+            _logger = logging.getLogger(__name__)
+            _logger.debug("Redis unavailable, using InMemoryTaskStore")
 
     return InMemoryTaskStore()
 

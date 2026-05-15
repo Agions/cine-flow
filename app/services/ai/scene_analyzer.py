@@ -240,7 +240,7 @@ class SceneAnalyzer:
             if match:
                 return float(match.group(1))
         except Exception:
-            pass
+            logger.debug("Video metric failed for %s at %s", video_path, start)
         return default
 
     def _get_avg_brightness(self, video_path: str, start: float, duration: float) -> float:

@@ -31,6 +31,9 @@ from app.core.project_helpers import ProjectService, AutoSaveHelper
 from app.utils.time_utils import generate_timestamp_id
 
 
+logger = logging.getLogger(__name__)
+
+
 # ─── 错误处理装饰器 ────────────────────────────────────────────
 def _handle_project_error(action_code: str, action_name: str):
     def decorator(method):
@@ -176,7 +179,7 @@ class Project:
                                 backup_info = json.load(f)
                             backups.append((backup_path, backup_info['timestamp']))
                         except Exception:
-                            pass
+                            logger.debug("Skip unreadable backup: %s", info_file)
             backups.sort(key=lambda x: x[1], reverse=True)
             for backup_path, _ in backups[keep_count:]:
                 shutil.rmtree(backup_path)
