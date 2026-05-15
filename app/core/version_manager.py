@@ -13,14 +13,11 @@ import hashlib
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 import logging
-from dataclasses import dataclass
-
 from app.core._signals import QObject, Signal
-
+from app.utils.time_utils import generate_timestamp_id
 from .version_models import ProjectVersion, ProjectBranch
 
 
-@dataclass
 class ProjectVersionManager(QObject):
     """项目版本管理器"""
 
@@ -146,8 +143,7 @@ class ProjectVersionManager(QObject):
         """创建新版本"""
         try:
             # 生成版本ID
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            version_id = f"v_{timestamp}"
+            version_id = f"v_{generate_timestamp_id()}"
 
             # 计算项目文件哈希
             project_file = os.path.join(self.project_path, 'project.json')
@@ -463,8 +459,7 @@ class ProjectVersionManager(QObject):
             version_data['description'] = description or f"导入版本 - {version_data['description']}"
 
             # 生成新版本ID
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            version_id = f"imported_{timestamp}"
+            version_id = f"imported_{generate_timestamp_id()}"
 
             # 创建版本目录
             version_path = os.path.join(self.version_dir, version_id)

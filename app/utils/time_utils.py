@@ -111,3 +111,16 @@ def format_timestamp(ts: float) -> str:
         return f"{delta.seconds // 3600}小时前"
     else:
         return dt.strftime("%Y-%m-%d %H:%M")
+
+
+def generate_timestamp_id(prefix: str = "") -> str:
+    """
+    Generate a timestamp-based unique ID: [{prefix}_]YYYYMMDD_HHMMSS.
+
+    >>> generate_timestamp_id("backup")
+    'backup_20250515_143022'
+    >>> generate_timestamp_id("")
+    '20250515_143022'
+    """
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    return f"{prefix}_{ts}" if prefix else ts

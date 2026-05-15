@@ -28,6 +28,7 @@ from app.core.models.project_models import (
     ProjectMedia, ProjectTimeline,
 )
 from app.core.project_helpers import ProjectService, AutoSaveHelper
+from app.utils.time_utils import generate_timestamp_id
 
 
 # ─── 错误处理装饰器 ────────────────────────────────────────────
@@ -138,7 +139,7 @@ class Project:
 
     def create_backup(self) -> Optional[str]:
         try:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            timestamp = generate_timestamp_id()
             backup_name = f"backup_{timestamp}"
             backup_path = os.path.join(self.path, 'backups', backup_name)
             os.makedirs(backup_path, exist_ok=True)

@@ -21,6 +21,7 @@ from .project_manager import Project, ProjectType
 from .config_manager import ConfigManager
 from .template_models import TemplateInfo, TemplateCategory, TemplateMetadata
 from .template_helpers import TemplateStorageIO, TemplateFileOps, TemplateCategorizer
+from app.utils.time_utils import generate_timestamp_id
 
 
 class ProjectTemplateManager(QObject):
@@ -90,7 +91,7 @@ class ProjectTemplateManager(QObject):
         """从项目创建模板"""
         try:
             # 生成模板ID
-            template_id = f"template_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            template_id = f"template_{generate_timestamp_id()}"
 
             # 创建模板目录
             template_dir = self.templates_dir / template_id
@@ -357,7 +358,7 @@ class ProjectTemplateManager(QObject):
         """导入模板"""
         try:
             # 创建临时目录
-            temp_dir = self.temp_dir / f"template_import_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            temp_dir = self.temp_dir / f"template_import_{generate_timestamp_id()}"
             temp_dir.mkdir(parents=True, exist_ok=True)
 
             # 解压ZIP文件
@@ -377,7 +378,7 @@ class ProjectTemplateManager(QObject):
             template_info = TemplateInfo.from_dict(template_data)
 
             # 生成新模板ID
-            template_id = f"imported_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            template_id = f"imported_{generate_timestamp_id()}"
             template_info.id = template_id
             template_info.is_builtin = False
             template_info.updated_at = datetime.now()
