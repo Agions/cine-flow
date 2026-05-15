@@ -210,13 +210,6 @@ class NarrationWindow(BaseStepWindow):
             "speed": self._speed,
         }
 
-    def set_pipeline(self, pipeline):
-        """由 MainWindow 调用，注入 PipelineController"""
-        self._pipeline = pipeline
-        if pipeline:
-            pipeline.stage_changed.connect(self.on_pipeline_stage)
-            pipeline.stage_progress.connect(self.on_pipeline_progress)
-
     def on_pipeline_stage(self, stage: str, desc: str):
         """Pipeline 阶段变化回调"""
         self.tts_label.setText(desc)

@@ -174,6 +174,14 @@ class HTTPClientMixin:
             )
         )
 
+    def _init_with_bearer_auth(self, api_key: str):
+        """初始化 HTTP 客户端并设置 Bearer 认证（供 Provider __init__ 调用）"""
+        self._default_headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+        self._init_http_client()
+
     async def _close_http_client(self):
         """关闭HTTP客户端"""
         if self.http_client:

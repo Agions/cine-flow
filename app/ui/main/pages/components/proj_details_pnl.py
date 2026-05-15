@@ -305,11 +305,7 @@ class ProjectDetailsPanel(QWidget):
     # ── 按钮事件 ──────────────────────────────────────────────
 
     def _on_open(self):
-        if self._current_project_id:
-            project = self._project_manager.get_project(self._current_project_id)
-            if project:
-                QMessageBox.information(self, "编辑项目",
-                    f"正在编辑项目: {project.metadata.name}")
+        self._on_edit()
 
     def _on_edit(self):
         if self._current_project_id:

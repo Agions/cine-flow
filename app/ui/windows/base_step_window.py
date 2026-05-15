@@ -77,6 +77,21 @@ class BaseStepWindow(QWidget):
         """子类可选覆写：当共享数据被设置时触发（用于初始化 UI）"""
         pass
 
+    def set_pipeline(self, pipeline):
+        """由 MainWindow 调用，注入 PipelineController"""
+        self._pipeline = pipeline
+        if pipeline:
+            pipeline.stage_changed.connect(self.on_pipeline_stage)
+            pipeline.stage_progress.connect(self.on_pipeline_progress)
+
+    def on_pipeline_stage(self, stage: str, desc: str):
+        """Pipeline 阶段变化回调（子类可覆盖）"""
+        pass
+
+    def on_pipeline_progress(self, stage: str, pct: float):
+        """Pipeline 进度回调（子类可覆盖）"""
+        pass
+
     def set_step_label(self, step: int):
         """更新步骤指示"""
         self.step_label.setText(f"步骤 {step + 1}/4")
