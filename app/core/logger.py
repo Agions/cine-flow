@@ -109,17 +109,13 @@ def setup_logging(
     for handler in root_logger.handlers[:]:
         root_logger.removeHandler(handler)
 
-    # 创建格式化器
-    if format_type == LogFormat.SIMPLE:
-        formatter = logging.Formatter('%(levelname)s - %(message)s')
-    elif format_type == LogFormat.DETAILED:
-        formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        )
-    else:  # STRUCTURED
-        formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s'
-        )
+    # 创建格式化器（字典映射消除 if-elif 链）
+    _FORMAT_MAP = {
+        LogFormat.SIMPLE:     '%(levelname)s - %(message)s',
+        LogFormat.DETAILED:  '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        LogFormat.STRUCTURED: '%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s',
+    }
+    formatter = logging.Formatter(_FORMAT_MAP.get(format_type, _FORMAT_MAP[LogFormat.SIMPLE]))
 
     # 控制台处理器
     if enable_console:
