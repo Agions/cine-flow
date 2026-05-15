@@ -29,7 +29,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Optional, Dict, Any
 
-from ..video_tools.ffmpeg_tool import FFmpegTool
 from .jianying_models import (
     TrackType,
     TimeRange,
@@ -42,7 +41,7 @@ from .jianying_models import (
     JianyingConfig,
     CanvasConfig,
 )
-from .export_utils import safe_filename, first_video_stream, BaseExporter
+from .export_utils import safe_filename, BaseExporter, get_video_duration, get_video_resolution
 
 
 logger = logging.getLogger(__name__)
@@ -407,18 +406,10 @@ class JianyingExporter(BaseExporter[JianyingDraft, JianyingConfig]):
         )
 
     def _get_video_info(self, video_path: str) -> dict:
-        """
-        获取视频信息
-
-        使用 FFmpegTool 获取视频的时长、分辨率等信息
-        """
+        """获取视频基本信息（宽高、时长）"""
         try:
-            info = FFmpegTool.get_video_info(video_path)
-            video_stream = first_video_stream(info)
-            duration_str = info.get('format', {}).get('duration', '0')
-            duration = float(duration_str) if duration_str else 0.0
-            width = int(video_stream.get('width', 1920))
-            height = int(video_stream.get('height', 1080))
+            width, height = get_video_resolution(video_path)
+            duration = get_video_duration(video_path)
             return {
                 'width': width,
                 'height': height,
