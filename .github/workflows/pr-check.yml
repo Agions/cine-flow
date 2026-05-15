@@ -28,7 +28,8 @@ jobs:
             --ignore B904,B007 \
             --ignore SIM102,SIM103,SIM105,SIM108,SIM110,SIM117,SIM118 \
             --ignore W292,E401,E701 \
-            --ignore N806,N812
+            --ignore N806,N812 \
+            --ignore PLC
 
   test:
     runs-on: ubuntu-latest

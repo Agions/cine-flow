@@ -100,7 +100,7 @@ class VisionProvider(ABC):
     def _parse_json_response(content: str) -> Dict[str, Any]:
         """从可能包含 markdown 的响应中提取 JSON"""
         if "```json" in content:
-            content = content.split("```json")[1].split("```")[0]
+            content = content.split("```json")[1].split("```", maxsplit=1)[0]
         elif "```" in content:
             content = content.split("```")[1].split("```")[0]
         try:

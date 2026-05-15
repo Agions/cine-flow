@@ -11,8 +11,18 @@
 
 import json
 import logging
+import os
 from abc import ABC, abstractmethod
 from typing import Optional, Dict, Any
+
+try:
+    import redis
+    _HAS_REDIS = True
+except ImportError:
+    _HAS_REDIS = False
+
+
+logger = logging.getLogger(__name__)
 
 
 class TaskStore(ABC):
@@ -77,7 +87,8 @@ class RedisTaskStore(TaskStore):
     """
 
     def __init__(self, url: str = "redis://localhost:6379/0", prefix: str = "voxplore:task:"):
-        import redis
+        if not _HAS_REDIS:
+            raise ImportError("redis is not installed. Run: pip install redis")
         self._client = redis.from_url(url, decode_responses=True)
         self._prefix = prefix
         self._ttl = 7 * 24 * 3600  # 7天过期
@@ -119,16 +130,13 @@ def create_task_store(redis_url: Optional[str] = None) -> TaskStore:
     若 REDIS_URL 环境变量存在且可用，自动使用 RedisTaskStore
     """
     if redis_url is None:
-        import os
         redis_url = os.getenv("REDIS_URL")
 
     if redis_url:
         try:
             return RedisTaskStore(url=redis_url)
         except Exception:
-            import logging
-            _logger = logging.getLogger(__name__)
-            _logger.debug("Redis unavailable, using InMemoryTaskStore")
+            logger.debug("Redis unavailable, using InMemoryTaskStore")
 
     return InMemoryTaskStore()
 

@@ -80,7 +80,7 @@ class UploadWindow(BaseStepWindow):
 
     def _add_file_item(self, path: str):
         """向列表添加文件项"""
-        item = QListWidgetItem(path.split("/")[-1])
+        item = QListWidgetItem(path.rsplit("/", maxsplit=1)[-1])
         item.setData(Qt.UserRole, path)
         self.file_list.addItem(item)
 

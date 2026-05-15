@@ -3,6 +3,8 @@ Voxplore FastAPI Application
 Web API 层入口
 """
 
+import traceback
+
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -53,7 +55,6 @@ def create_app() -> FastAPI:
     @app.exception_handler(Exception)
     async def general_exception_handler(request: Request, exc: Exception):
         # 暴露详细错误（开发环境）
-        import traceback
         return JSONResponse(
             status_code=500,
             content={

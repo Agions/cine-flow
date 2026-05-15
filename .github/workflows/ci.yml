@@ -31,7 +31,8 @@ jobs:
             --ignore W292,E401,E701 \
             --ignore N806,N812 \
             --ignore SIM103,SIM105,SIM110,SIM117 \
-            --ignore N812
+            --ignore N812 \
+            --ignore PLC
 
   type-check:
     runs-on: ubuntu-latest

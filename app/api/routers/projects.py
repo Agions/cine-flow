@@ -3,6 +3,9 @@ Projects Router
 项目管理 API
 """
 
+from datetime import datetime
+from uuid import uuid4
+
 from fastapi import APIRouter, HTTPException
 
 from app.api.schemas.models import (
@@ -19,10 +22,7 @@ _projects_db: dict = {}
 @router.post("/projects", response_model=ProjectResponse, status_code=201)
 async def create_project(request: ProjectCreate):
     """创建新项目"""
-    import uuid
-    from datetime import datetime
-
-    project_id = str(uuid.uuid4())
+    project_id = str(uuid4())
     now = datetime.now().isoformat()
 
     project = ProjectResponse(

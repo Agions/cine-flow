@@ -235,7 +235,7 @@ class ProjectsWindow(QWidget):
     def _delete_project(self, project_id: str, project_path: str):
         """删除项目"""
         reply = QMessageBox.question(
-            self, "确认删除", f"确定要删除项目「{project_path.split('/')[-1]}」吗？\n此操作不可恢复。",
+            self, "确认删除", f"确定要删除项目「{project_path.rsplit('/', maxsplit=1)[-1]}」吗？\n此操作不可恢复。",
             QMessageBox.Yes | QMessageBox.No, QMessageBox.No
         )
         if reply == QMessageBox.Yes:
