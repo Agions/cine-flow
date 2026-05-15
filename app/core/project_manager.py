@@ -15,8 +15,6 @@ import functools
 import os
 import json
 import shutil
-import uuid
-import zipfile
 import logging
 from datetime import datetime
 from typing import Dict, List, Optional, Any
@@ -25,7 +23,7 @@ from app.core._signals import QObject, Signal
 from app.core.config_manager import ConfigManager
 from app.core.secure_key_manager import get_secure_key_manager
 from app.core.models.project_models import (
-    ProjectStatus, ProjectType,
+    ProjectType,
     ProjectMetadata, ProjectSettings,
     ProjectMedia, ProjectTimeline,
 )

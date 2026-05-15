@@ -11,7 +11,7 @@ from pathlib import Path
 import logging
 logger = logging.getLogger(__name__)
 
-from ..export.export_utils import first_video_stream
+from ..export.export_utils import first_video_stream  # noqa: E402
 
 
 @dataclass

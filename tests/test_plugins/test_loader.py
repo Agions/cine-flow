@@ -1,9 +1,8 @@
 """Tests for app.plugins.loader - entry_points discovery"""
 
-import pytest
 from unittest.mock import patch, MagicMock
 from app.plugins.loader import PluginLoader
-from app.plugins.interfaces.base import PluginManifest, PluginType
+from app.plugins.interfaces.base import PluginType
 
 
 class TestPluginLoaderEntryPoints:

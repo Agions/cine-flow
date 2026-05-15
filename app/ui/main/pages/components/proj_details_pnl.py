@@ -8,6 +8,7 @@
 
 import logging
 from pathlib import Path
+from app.utils.time_utils import format_duration
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel,
     QStackedWidget, QMessageBox, QDialog,
@@ -262,7 +263,7 @@ class ProjectDetailsPanel(QWidget):
         self._stat_media.stat_value_label.setText(str(len(project.media_files)))
 
         duration = project.timeline.duration
-        self._stat_duration.stat_value_label.setText(self._format_duration(duration))
+        self._stat_duration.stat_value_label.setText(format_duration(duration))
 
         size = self._calc_size(project)
         self._stat_size.stat_value_label.setText(self._format_size(size))
@@ -288,17 +289,7 @@ class ProjectDetailsPanel(QWidget):
             logger.debug(f"Failed to calculate project size: {e}")
             return 0
 
-    def _format_duration(self, seconds: float) -> str:
-        """格式化时长"""
-        if seconds < 60:
-            return f"{seconds:.1f}秒"
-        elif seconds < 3600:
-            return f"{int(seconds // 60)}:{int(seconds % 60):02d}"
-        else:
-            h = int(seconds // 3600)
-            m = int((seconds % 3600) // 60)
-            s = int(seconds % 60)
-            return f"{h}:{m:02d}:{s:02d}"
+    # _format_duration removed — uses format_duration from time_utils
 
     def _format_size(self, size_bytes: int) -> str:
         """格式化大小"""

@@ -9,7 +9,7 @@
 from typing import Callable, List, Dict, Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from PySide6.QtWidgets import QWidget
+    from PySide6.QtWidgets import QWidget, QTableWidget
 
 
 def create_batch_projects_table(parent: "QWidget") -> "QTableWidget":
@@ -41,7 +41,7 @@ def create_batch_export_tab(
     """
     from PySide6.QtWidgets import (
         QWidget, QVBoxLayout, QGroupBox, QFormLayout, QLineEdit,
-        QPushButton, QHBoxLayout, QTableWidget, QCheckBox
+        QPushButton, QHBoxLayout, QComboBox
     )
 
     widget = QWidget()
@@ -59,7 +59,6 @@ def create_batch_export_tab(
     output_layout.addWidget(output_dir_edit, 1)
     output_layout.addWidget(browse_btn)
 
-    from PySide6.QtWidgets import QComboBox
     preset_combo = QComboBox()
     preset_combo.setMinimumWidth(200)
 
@@ -132,7 +131,7 @@ def populate_batch_projects_table(table, projects: List[Dict[str, Any]]):
     """
     填充批量项目表格数据
     """
-    from PySide6.QtWidgets import QCheckBox
+    from PySide6.QtWidgets import QCheckBox, QTableWidgetItem
     from PySide6.QtCore import Qt
 
     table.setRowCount(len(projects))
@@ -145,6 +144,3 @@ def populate_batch_projects_table(table, projects: List[Dict[str, Any]]):
         table.setItem(i, 1, name_item)
         table.setItem(i, 2, QTableWidgetItem(project.get("duration", "00:00:00")))
         table.setItem(i, 3, QTableWidgetItem(project.get("resolution", "1920x1080")))
-
-
-from PySide6.QtWidgets import QTableWidgetItem

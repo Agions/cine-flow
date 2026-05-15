@@ -24,7 +24,7 @@ class MonitorAlertManager:
         service_health: dict,
     ) -> None:
         """Scan service health and generate new alerts for threshold violations."""
-        current_time = time_module.time()
+        time_module.time()
 
         for service_name, health in service_health.items():
             status_str = str(health.status)

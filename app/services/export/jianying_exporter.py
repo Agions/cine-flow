@@ -28,7 +28,7 @@ import json
 import shutil
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Optional, Dict, Any
 
 from ..video_tools.ffmpeg_tool import FFmpegTool
 from .jianying_models import (

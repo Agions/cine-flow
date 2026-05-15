@@ -8,7 +8,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from PySide6.QtWidgets import QWidget
+    pass
 
 
 def create_export_signal_handlers(panel) -> dict:

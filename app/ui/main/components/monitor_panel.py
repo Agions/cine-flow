@@ -6,24 +6,21 @@ AI状态监控面板
 实时监控AI服务的运行状态、性能指标和使用情况
 """
 
-import time as time_module
 from typing import Dict, List
 from datetime import datetime
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QFrame, QStackedWidget,
-    QPushButton, QLabel, QMessageBox, QTableWidgetItem
+    QPushButton, QLabel, QMessageBox
 )
 from PySide6.QtCore import QTimer, Signal, Qt
-from PySide6.QtGui import QColor
 
 from ....core.logger import Logger
 from ....core.icon_manager import get_icon
 from ....core.application import Application
-from ....services import ServiceStatus
 
 from .monitor_models import MonitorMode, AlertData
-from .monitor_widgets import ServiceStatusWidget, AlertWidget
+from .monitor_widgets import AlertWidget
 from .monitor_pages import MonitorPages
 from .monitor_helpers import (
     MonitorAlertManager,

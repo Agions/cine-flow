@@ -8,14 +8,12 @@ import os
 import shutil
 import zipfile
 from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 import uuid
 import psutil
 
 from app.core.project_models import (
     Project, ProjectType, ProjectMetadata,
-    ProjectMedia, ProjectSettings,
 )
 
 

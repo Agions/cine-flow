@@ -146,5 +146,4 @@ def calculate_throughput(panel) -> float:
         return 0.0
 
 
-# Late import to avoid circular dependency at module level
-from PySide6.QtWidgets import QTableWidgetItem
+from PySide6.QtWidgets import QTableWidgetItem  # noqa: E402

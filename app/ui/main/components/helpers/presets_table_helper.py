@@ -9,7 +9,7 @@
 from typing import List, Callable, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from PySide6.QtWidgets import QWidget
+    from PySide6.QtWidgets import QWidget, QTableWidget
     from ....export.export_system import ExportPreset
 
 
@@ -27,10 +27,7 @@ def create_presets_table_widget(
     Returns:
         dict with 'table' and 'buttons' widgets
     """
-    from PySide6.QtWidgets import (
-        QTableWidget, QTableWidgetItem, QPushButton, QWidget, QHBoxLayout
-    )
-    from PySide6.QtCore import Qt
+    from PySide6.QtWidgets import QTableWidget, QPushButton
 
     table = QTableWidget()
     table.setColumnCount(5)
@@ -66,7 +63,7 @@ def populate_presets_table(table: "QTableWidget", presets: List["ExportPreset"],
     """
     填充预设表格数据
     """
-    from PySide6.QtWidgets import QTableWidgetItem, QPushButton, QWidget, QHBoxLayout
+    from PySide6.QtWidgets import QTableWidgetItem, QWidget, QHBoxLayout, QPushButton
 
     table.setRowCount(len(presets))
 

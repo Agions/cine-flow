@@ -3,7 +3,6 @@
 """Settings validation - extracted from settings_manager.py"""
 
 import logging
-import os
 import re
 from typing import Any, TYPE_CHECKING
 

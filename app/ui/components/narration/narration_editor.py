@@ -10,9 +10,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, Signal
 from typing import List, Optional, Dict
 
-from app.services.video.models.perspective import (
-    NarrationSegment
-)
+from app.utils.time_utils import format_time
+from app.services.video.models.perspective import NarrationSegment
 
 
 class NarrationSegmentItem(QFrame):
@@ -50,7 +49,7 @@ class NarrationSegmentItem(QFrame):
         layout.setSpacing(12)
 
         # 时间戳
-        time_label = QLabel(self._format_time(self.segment.start_time))
+        time_label = QLabel(format_time(self.segment.start_time))
         time_label.setObjectName("timeLabel")
         time_label.setFixedWidth(70)
         layout.addWidget(time_label)
@@ -121,10 +120,6 @@ class NarrationSegmentItem(QFrame):
 
     def _load_data(self):
         pass
-
-    def _format_time(self, seconds: float) -> str:
-        m, s = divmod(int(seconds), 60)
-        return f"{m:02d}:{s:02d}"
 
     def _truncate(self, text: str, max_len: int) -> str:
         if len(text) <= max_len:

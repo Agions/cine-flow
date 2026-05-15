@@ -23,7 +23,6 @@ def create_quick_export_tab(parent_widget: "QWidget") -> dict:
         QWidget, QVBoxLayout, QGroupBox, QFormLayout, QLabel,
         QComboBox, QLineEdit, QPushButton, QHBoxLayout
     )
-    from PySide6.QtCore import Signal
 
     widget = QWidget()
     layout = QVBoxLayout(widget)

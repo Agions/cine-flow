@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, Signal, QUrl
 
 from app.ui.components.design_system import Colors
+from app.utils.time_utils import format_time_from_ms
 
 
 try:
@@ -151,7 +152,7 @@ class VideoPreview(QWidget):
         if self._player and HAS_MULTIMEDIA:
             self._player.stop()
             self._progress.setValue(0)
-            self._time_label.setText("00:00 / " + self._format_time(self._duration_ms))
+            self._time_label.setText("00:00 / " + format_time_from_ms(self._duration_ms))
 
     def seek(self, position_ms: int):
         if self._player and HAS_MULTIMEDIA:
@@ -162,7 +163,7 @@ class VideoPreview(QWidget):
             self._progress.blockSignals(True)
             self._progress.setValue(int(pos_ms / self._duration_ms * 1000))
             self._progress.blockSignals(False)
-        self._time_label.setText(f"{self._format_time(pos_ms)} / {self._format_time(self._duration_ms)}")
+        self._time_label.setText(f"{format_time_from_ms(pos_ms)} / {format_time_from_ms(self._duration_ms)}")
         self.playback_position_changed.emit(pos_ms)
 
     def _on_duration_changed(self, duration_ms: int):
@@ -182,11 +183,7 @@ class VideoPreview(QWidget):
         if self._player and HAS_MULTIMEDIA:
             self._audio.setVolume(value / 100.0)
 
-    @staticmethod
-    def _format_time(ms: int) -> str:
-        s = ms // 1000
-        m, s = divmod(s, 60)
-        return f"{m:02d}:{s:02d}"
+    # _format_time removed — uses format_time_from_ms from time_utils
 
     def cleanup(self):
         if self._player and HAS_MULTIMEDIA:

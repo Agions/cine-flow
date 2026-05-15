@@ -7,11 +7,11 @@
 """
 
 import os
-from typing import Dict, List, Any
+from typing import Dict, Any
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTabWidget, QGroupBox, QHBoxLayout,
-    QComboBox, QPushButton, QMessageBox, QDialog
+    QMessageBox, QDialog
 )
 from PySide6.QtCore import Signal
 
@@ -243,13 +243,15 @@ class ExportPanel(QWidget):
         """全选项目"""
         for i in range(self.batch_projects_table.rowCount()):
             w = self.batch_projects_table.cellWidget(i, 0)
-            if w: w.setChecked(True)
+            if w:
+                w.setChecked(True)
 
     def select_none_projects(self):
         """全不选项目"""
         for i in range(self.batch_projects_table.rowCount()):
             w = self.batch_projects_table.cellWidget(i, 0)
-            if w: w.setChecked(False)
+            if w:
+                w.setChecked(False)
 
     def handle_queue_action(self, action: str, task_id: str):
         """处理队列操作"""

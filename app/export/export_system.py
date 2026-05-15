@@ -12,8 +12,8 @@ import json
 import threading
 import logging
 from pathlib import Path
-from typing import Optional, List, Dict, Any, Callable
-from dataclasses import dataclass, field, asdict
+from typing import Optional, List, Dict, Any
+from dataclasses import dataclass, field
 from enum import Enum
 from concurrent.futures import ThreadPoolExecutor, Future
 

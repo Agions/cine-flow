@@ -13,7 +13,8 @@ from PySide6.QtCore import Qt, Signal, QUrl
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PySide6.QtMultimediaWidgets import QVideoWidget
 
-from ...utils.security import get_ffmpeg_executor
+from app.utils.security import get_ffmpeg_executor
+from app.utils.time_utils import format_time
 
 _video_executor = get_ffmpeg_executor()
 
@@ -224,15 +225,9 @@ class VideoPlayer(QWidget):
 
     def _update_time_display(self, current: float):
         """更新时间显示"""
-        current_str = self._format_time(current)
-        total_str = self._format_time(self._duration)
+        current_str = format_time(current)
+        total_str = format_time(self._duration)
         self._label_time.setText(f"{current_str} / {total_str}")
-
-    def _format_time(self, seconds: float) -> str:
-        """格式化时间"""
-        m = int(seconds // 60)
-        s = int(seconds % 60)
-        return f"{m:02d}:{s:02d}"
 
     # ===== 属性 =====
 

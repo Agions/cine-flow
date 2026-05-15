@@ -3,7 +3,6 @@
 """Auto-save helper - QTimer isolated here so ProjectService stays headless-safe."""
 
 import logging
-from typing import TYPE_CHECKING
 
 logger = logging.getLogger(__name__)
 

@@ -17,6 +17,7 @@ from PySide6.QtGui import QFont
 from app.ui.components.design_system import Colors
 from app.ui.main.components.export_stats import ExportStatisticsWidget
 from app.ui.main.components.monitor_widgets import PerformanceChart
+from app.utils.time_utils import format_duration
 from ...export.export_system import ExportTask, ExportStatus
 from ...core.logger import Logger
 
@@ -174,10 +175,11 @@ class ExportProgressWidget(QWidget):
         if remaining_time < 0:
             return "即将完成"
 
-        return self._format_duration(remaining_time)
+        return format_duration(remaining_time)
 
     def _format_duration(self, seconds: float) -> str:
-        """格式化持续时间"""
+        """格式化持续时间 — 已迁移到 app.utils.time_utils.format_duration"""
+        # Kept for backward compatibility during migration
         if seconds < 60:
             return f"{int(seconds)}秒"
         elif seconds < 3600:

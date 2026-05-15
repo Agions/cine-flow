@@ -15,6 +15,7 @@ from typing import List, Optional, Callable
 from .scene_models import SceneType, SceneInfo, AnalysisConfig
 from .scene_analyzer import SceneAnalyzer
 from .scene_scorer import SceneScorer
+from app.utils.time_utils import format_time
 
 logger = logging.getLogger(__name__)
 
@@ -130,8 +131,8 @@ class SceneAnalyzerV2(SceneAnalyzer):
         lines = ["## 场景列表\n"]
 
         for i, scene in enumerate(scenes, 1):
-            start_str = self._format_timestamp(scene.start)
-            end_str = self._format_timestamp(scene.end)
+            start_str = format_time(scene.start)
+            end_str = format_time(scene.end)
 
             type_name = self._get_scene_type_name_cn(scene.type)
 
@@ -177,7 +178,7 @@ class SceneAnalyzerV2(SceneAnalyzer):
         parts = [f"视频共 {len(scenes)} 个场景，选取最重要的 {len(sorted_scenes)} 个：\n"]
 
         for scene in sorted_scenes:
-            start_str = self._format_timestamp(scene.start)
+            start_str = format_time(scene.start)
             type_name = self._get_scene_type_name_cn(scene.type)
             score = scene.suitability_score
 
@@ -185,11 +186,7 @@ class SceneAnalyzerV2(SceneAnalyzer):
 
         return "\n".join(parts)
 
-    def _format_timestamp(self, seconds: float) -> str:
-        """格式化时间戳为 MM:SS"""
-        minutes = int(seconds // 60)
-        secs = int(seconds % 60)
-        return f"{minutes:02d}:{secs:02d}"
+    # _format_timestamp removed — uses format_time from time_utils
 
     def _get_scene_type_name_cn(self, scene_type: SceneType) -> str:
         """获取场景类型中文名"""

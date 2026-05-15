@@ -33,7 +33,7 @@ _audio_executor = get_ffmpeg_executor()
 
 
 
-from .tts_providers import EdgeTTSProvider, OpenAITTSProvider, F5TTSProvider
+from .tts_providers import EdgeTTSProvider, OpenAITTSProvider, F5TTSProvider  # noqa: E402
 
 class VoiceGenerator:
     """
