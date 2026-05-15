@@ -219,7 +219,7 @@ class JianyingExporter(BaseExporter[JianyingDraft, JianyingConfig]):
         # 收集所有待复制的素材
         tasks = [
             material.path
-            for material in draft.materials.videos + draft.materials.audios
+            for material in draft.materials.media_materials
             if material.path
         ]
 
@@ -241,7 +241,7 @@ class JianyingExporter(BaseExporter[JianyingDraft, JianyingConfig]):
                         logger.warning(f"素材复制失败 {src}: {e}")
 
             # 更新路径为相对路径
-            for material in draft.materials.videos + draft.materials.audios:
+            for material in draft.materials.media_materials:
                 if material.path and material.path in results:
                     material.path = results[material.path]
 

@@ -193,6 +193,11 @@ class JianyingMaterials:
     def to_dict(self) -> dict:
         return asdict(self)
 
+    @property
+    def media_materials(self) -> list:
+        """所有媒体素材（视频+音频）"""
+        return self.videos + self.audios
+
 
 @dataclass
 class CanvasConfig:
