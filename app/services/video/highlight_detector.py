@@ -24,7 +24,7 @@
     detector = HighlightDetector()
     highlights = detector.detect("video.mp4", min_confidence=0.6)
     for h in highlights:
-        print(f"高光时刻: {h.timestamp:.1f}s, 置信度: {h.confidence:.2f}")
+        logger.info(f"高光时刻: {h.peak_timestamp:.1f}s, 置信度: {h.confidence:.2f}")
 """
 
 __all__ = ["HighlightReason", "HighlightSegment", "HighlightDetectorConfig", "HighlightDetector"]
@@ -39,7 +39,6 @@ from ...utils.security import SecurityError
 
 logger = logging.getLogger(__name__)
 
-# 可选依赖，用于帧分析
 try:
     import numpy as np  # noqa: F401
     from PIL import Image  # noqa: F401
@@ -48,6 +47,11 @@ except ImportError:
     _OPTIONAL_DEPS_OK = False
     np = None
     Image = None
+
+# ── 类型别名 ──────────────────────────────────────────────
+#: (timestamp, score) 元组列表
+TimestampScore = Tuple[float, float]
+HighlightScores = List[TimestampScore]
 
 
 class HighlightReason(Enum):
@@ -408,26 +412,15 @@ class HighlightDetector:
         """
         # 构建时间线分数
         timeline: dict[float, dict] = {}
-
+        zero = {"scene": 0, "audio": 0, "motion": 0, "color": 0}
         for ts, score in scene_changes:
-            if ts not in timeline:
-                timeline[ts] = {"scene": 0, "audio": 0, "motion": 0, "color": 0}
-            timeline[ts]["scene"] = score
-
+            timeline.setdefault(ts, zero.copy())["scene"] = score
         for ts, score in audio_peaks:
-            if ts not in timeline:
-                timeline[ts] = {"scene": 0, "audio": 0, "motion": 0, "color": 0}
-            timeline[ts]["audio"] = score
-
+            timeline.setdefault(ts, zero.copy())["audio"] = score
         for ts, score in motion_intense:
-            if ts not in timeline:
-                timeline[ts] = {"scene": 0, "audio": 0, "motion": 0, "color": 0}
-            timeline[ts]["motion"] = score
-
+            timeline.setdefault(ts, zero.copy())["motion"] = score
         for ts, score in color_vibrant:
-            if ts not in timeline:
-                timeline[ts] = {"scene": 0, "audio": 0, "motion": 0, "color": 0}
-            timeline[ts]["color"] = score
+            timeline.setdefault(ts, zero.copy())["color"] = score
 
         # 计算加权综合分数
         highlights = []

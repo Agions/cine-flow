@@ -24,7 +24,6 @@
 """
 
 import logging
-import json
 import shutil
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -43,7 +42,7 @@ from .jianying_models import (
     JianyingConfig,
     CanvasConfig,
 )
-from .export_utils import safe_filename, first_video_stream
+from .export_utils import safe_filename, first_video_stream, BaseExporter
 
 
 logger = logging.getLogger(__name__)
@@ -54,7 +53,7 @@ __all__ = [
 ]
 
 
-class JianyingExporter:
+class JianyingExporter(BaseExporter[JianyingDraft, JianyingConfig]):
     """
     剪映草稿导出器
 
@@ -84,7 +83,15 @@ class JianyingExporter:
     """
 
     def __init__(self, config: Optional[JianyingConfig] = None):
-        self.config = config or JianyingConfig()
+        super().__init__(config or JianyingConfig())
+
+    def create_project(self, name: str) -> JianyingDraft:
+        """实现基类抽象方法（别名为 create_draft）"""
+        return self.create_draft(name)
+
+    def export_project(self, project: JianyingDraft, output_dir: str) -> str:
+        """实现基类抽象方法（别名为 export）"""
+        return self.export(project, output_dir)
 
     def create_draft(self, name: str) -> JianyingDraft:
         """创建新草稿"""
@@ -270,13 +277,6 @@ class JianyingExporter:
             for material in draft.materials.videos + draft.materials.audios:
                 if material.path and material.path in results:
                     material.path = results[material.path]
-
-    def _write_json(self, path: Path, data: dict) -> None:
-        """写入 JSON 文件"""
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-
-    # =========== 便捷方法 ===========
 
     def add_video_segment(
         self,
