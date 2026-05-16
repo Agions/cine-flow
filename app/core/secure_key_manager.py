@@ -84,9 +84,14 @@ class SecureKeyManager:
                     keyring.set_password(self.app_name, "master_key", master_password)
                     self.logger.info("Generated new master key")
 
-                # 使用PBKDF2衍生密钥
-                password = master_password.encode()
-                salt = hashlib.sha256(self.app_name.encode()).digest()[:16]
+                # 从 keyring 获取 salt，不存在则生成并存储
+                salt_str = keyring.get_password(self.app_name, "pbkdf2_salt")
+                if not salt_str:
+                    salt = os.urandom(16)
+                    keyring.set_password(self.app_name, "pbkdf2_salt", base64.b64encode(salt).decode())
+                    self.logger.info("Generated new PBKDF2 salt")
+                else:
+                    salt = base64.b64decode(salt_str.encode())
                 kdf = PBKDF2HMAC(
                     algorithm=hashes.SHA256(),
                     length=32,
