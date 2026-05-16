@@ -19,20 +19,9 @@
 import logging
 import re
 from dataclasses import dataclass, field
-from typing import List, Optional, Tuple, Dict, Any
-
-import numpy as np
+from typing import List, Optional, Dict, Any
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class WordTimestamp:
-    """词级时间戳"""
-    word: str
-    start: float  # 秒
-    end: float    # 秒
-    confidence: float = 1.0
 
 
 @dataclass
@@ -59,21 +48,6 @@ class AVSyncConfig:
 
     # 最大视频片段时长（秒）
     max_video_segment: float = 15.0
-
-    # 场景切换优先位置（语气停顿前的秒数）
-    pause_lookahead: float = 0.3
-
-    # 启用语义匹配
-    enable_semantic_match: bool = True
-
-    # 启用时间扩展/压缩
-    enable_time_stretch: bool = True
-
-    # 最大时间拉伸比例
-    max_stretch_ratio: float = 1.2
-
-    # 最小时间拉伸比例
-    min_stretch_ratio: float = 0.8
 
 
 class AVSyncEngine:
@@ -407,53 +381,8 @@ class AVSyncEngine:
 
         return results
 
-    def analyze_sync_quality(self, syncs: List[SentenceSync]) -> Dict[str, Any]:
-        """
-        分析同步质量
-
-        Returns:
-            包含各项质量指标的字典
-        """
-        if not syncs:
-            return {"quality": "unknown", "score": 0}
-
-        total_offset = 0
-        semantic_count = 0
-        optimized_count = 0
-
-        for sync in syncs:
-            offset = abs(sync.audio_start - sync.video_start)
-            total_offset += offset
-            if sync.sync_method == "semantic":
-                semantic_count += 1
-            if sync.sync_method == "optimized":
-                optimized_count += 1
-
-        avg_offset = total_offset / len(syncs)
-        semantic_ratio = semantic_count / len(syncs)
-
-        # 计算综合得分
-        quality_score = 1.0
-        if avg_offset > 2.0:
-            quality_score -= 0.3
-        elif avg_offset > 0.5:
-            quality_score -= 0.1
-
-        quality_score += semantic_ratio * 0.3
-
-        return {
-            "quality": "good" if quality_score > 0.8 else "medium" if quality_score > 0.5 else "poor",
-            "score": round(quality_score, 2),
-            "avg_offset_sec": round(avg_offset, 2),
-            "semantic_ratio": round(semantic_ratio, 2),
-            "optimized_count": optimized_count,
-            "total_sentences": len(syncs),
-        }
-
-
 __all__ = [
     "AVSyncEngine",
     "AVSyncConfig",
-    "WordTimestamp",
     "SentenceSync",
 ]
