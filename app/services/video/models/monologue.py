@@ -57,6 +57,10 @@ class MonologueSegment:
     # 字幕
     captions: List[Dict] = field(default_factory=list)
 
+    # ✅ ASR 语音识别结果（由 SenseVoice 分析填充）
+    asr_text: str = ""          # 语音转文字
+    asr_emotions: List = field(default_factory=list)  # 情感片段列表
+
 
 __all__ = [
     "MonologueStyle",

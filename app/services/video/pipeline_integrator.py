@@ -31,6 +31,8 @@ Pipeline Integrator
 """
 
 from typing import List, Optional, Dict, Any
+from pathlib import Path
+import logging
 
 from .monologue_maker import MonologueMaker, MonologueProject, MonologueSegment
 from .perspective_mapper import PerspectiveMapper
@@ -45,6 +47,8 @@ from .models.perspective import (
     SceneSegment,
 )
 from ..ai.scene_models import SceneInfo
+
+logger = logging.getLogger(__name__)
 
 
 class PipelineIntegrator(MonologueMaker):
@@ -79,6 +83,10 @@ class PipelineIntegrator(MonologueMaker):
         # 缓存最新穿插结果
         self._last_perspective_shots: List[PerspectiveShot] = []
         self._last_interleave_timeline: Optional[InterleaveTimeline] = None
+
+        # ASR 提供者（lazy 初始化）
+        self._whisper_asr = None
+        self._sense_voice = None
 
     # ─────────────────────────────────────────────────────────────────
     # 视角映射
@@ -356,6 +364,90 @@ class PipelineIntegrator(MonologueMaker):
         else:
             self._report_progress("完整流水线", 1.0)
             return None
+
+    # ─────────────────────────────────────────────────────────────────
+    # ASR 语音识别分析
+    # ─────────────────────────────────────────────────────────────────
+
+    def run_asr_analysis(
+        self,
+        project: MonologueProject,
+        use_sensevoice: bool = True,
+    ) -> MonologueProject:
+        """
+        运行 ASR 语音识别分析（Whisper + SenseVoice 情感检测）
+
+        对项目每个片段的配音音频进行：
+        1. Whisper 转写：提取语音文本
+        2. SenseVoice 情感检测：分析每个时间段的情感
+
+        分析结果写入 MonologueSegment 的 asr_text / asr_emotions 字段，
+        可用于：字幕对齐校验、情感曲线优化、口吻风格调整。
+
+        Args:
+            project: 独白项目
+            use_sensevoice: 是否启用 SenseVoice 情感检测（默认启用）
+
+        Returns:
+            更新后的项目
+        """
+        self._report_progress("ASR 分析", 0.0)
+
+        # Lazy 初始化 ASR 提供者
+        if self._whisper_asr is None:
+            try:
+                self._whisper_asr = self._create_whisper_provider()
+            except Exception as e:
+                logger.warning(f"Whisper ASR 初始化失败: {e}，跳过 ASR 分析")
+                return project
+
+        if use_sensevoice and self._sense_voice is None:
+            try:
+                self._sense_voice = self._create_sensevoice_provider()
+            except Exception as e:
+                logger.warning(f"SenseVoice 初始化失败: {e}，仅使用 Whisper")
+                use_sensevoice = False
+
+        for i, segment in enumerate(project.segments):
+            audio_path = segment.audio_path
+            if not audio_path or not Path(audio_path).exists():
+                logger.debug(f"片段 {i} 无音频路径，跳过 ASR")
+                continue
+
+            self._report_progress("ASR 分析", (i + 1) / len(project.segments))
+
+            # 1. Whisper 转写
+            try:
+                whisper_result = self._whisper_asr.transcribe(audio_path)
+                segment.asr_text = whisper_result.text
+            except Exception as e:
+                logger.warning(f"Whisper 转写失败 [{audio_path}]: {e}")
+
+            # 2. SenseVoice 情感检测
+            if use_sensevoice and self._sense_voice:
+                try:
+                    emotions = self._sense_voice.extract_emotions(audio_path)
+                    segment.asr_emotions = [
+                        {"start": e.start, "end": e.end, "emotion": e.emotion.value, "confidence": e.confidence}
+                        for e in emotions
+                    ]
+                except Exception as e:
+                    logger.warning(f"SenseVoice 情感检测失败 [{audio_path}]: {e}")
+
+        self._report_progress("ASR 分析", 1.0)
+        return project
+
+    def _create_whisper_provider(self):
+        """创建 Whisper ASR 提供者"""
+        from ..ai.whisper_asr_provider import WhisperASRProvider
+        return WhisperASRProvider(model_size="medium", language="zh")
+
+    def _create_sensevoice_provider(self):
+        """创建 SenseVoice 情感检测提供者"""
+        from ..ai.sensevoice_provider import SenseVoiceProvider
+        sv = SenseVoiceProvider()
+        sv.load_model()
+        return sv
 
     # ─────────────────────────────────────────────────────────────────
     # 便捷方法
