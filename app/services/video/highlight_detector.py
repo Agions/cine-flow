@@ -443,7 +443,7 @@ class HighlightDetector:
                 "motion": HighlightReason.MOTION_INTENSE,
                 "color": HighlightReason.COLOR_VIBRANT,
             }
-            max_score = max(scores.values())
+            _max_score = max(scores.values())  # 保留以备日志记录
             reason = _REASON_MAP.get(
                 max(scores, key=lambda k: scores[k]),
                 HighlightReason.COMBINED

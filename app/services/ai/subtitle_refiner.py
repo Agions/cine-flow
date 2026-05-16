@@ -470,8 +470,8 @@ class SubtitleRefiner:
             from .llm_manager import LLMManager, LLMRequest
             from .llm_manager import ProviderType
 
-            # 创建请求
-            request = LLMRequest(
+            # 创建请求（保留以备后续调用）
+            _request = LLMRequest(
                 prompt=prompt,
                 system_prompt="你是一个专业的语音识别文本校正专家。",
                 model="qwen-plus",

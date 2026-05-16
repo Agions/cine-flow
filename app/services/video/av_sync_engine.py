@@ -197,9 +197,7 @@ class AVSyncEngine:
             else:
                 if temp_word and len(temp_word) <= 3:
                     words.append(temp_word)
-                if part in common_words:
-                    words.append(part)
-                elif len(part) >= 2:
+                if part in common_words or len(part) >= 2:
                     words.append(part)
                 temp_word = ""
 
