@@ -15,9 +15,13 @@ import psutil
 from app.core.project_models import (
     Project, ProjectType, ProjectMetadata,
 )
+from app.utils.security import PathValidator
 
 
 logger = logging.getLogger(__name__)
+
+# 模块级路径验证器（所有项目操作共享）
+_project_path_validator = PathValidator()
 
 
 class ProjectService:
@@ -97,6 +101,12 @@ class ProjectService:
         return None
 
     def open_project(self, project_path: str) -> Optional[str]:
+        # 路径安全验证
+        result = _project_path_validator.validate(project_path)
+        if not result.passed:
+            self.logger.error(f"Project path validation failed: {result.message}")
+            return None
+
         project_file = os.path.join(project_path, 'project.json')
         if not os.path.exists(project_file):
             self.logger.error(f"Project file not found: {project_path}")
@@ -221,12 +231,31 @@ class ProjectService:
             return False
 
     def import_project(self, import_path: str) -> Optional[str]:
+        # 路径安全验证
+        result = _project_path_validator.validate(import_path)
+        if not result.passed:
+            self.logger.error(f"Import path validation failed: {result.message}")
+            return None
+
         if not os.path.exists(import_path):
             return None
 
         temp_extract_dir = os.path.join(self.temp_dir, f"import_{uuid.uuid4().hex[:8]}")
+        os.makedirs(temp_extract_dir, exist_ok=True)
         try:
+            # 安全解压：逐个条目验证目标路径在 temp_extract_dir 内
             with zipfile.ZipFile(import_path, 'r') as zipf:
+                for zip_entry in zipf.infolist():
+                    # 清理路径，防止 zip slip
+                    safe_name = os.path.basename(zip_entry.filename)
+                    if not safe_name or zip_entry.filename.endswith('/'):
+                        continue  # 跳过目录条目和空名称
+                    target = os.path.join(temp_extract_dir, safe_name)
+                    # 确保目标在 temp_extract_dir 内（realpath 检查）
+                    if not os.path.realpath(target).startswith(os.path.realpath(temp_extract_dir)):
+                        self.logger.error(f"Zip entry escapes extraction dir: {zip_entry.filename}")
+                        return None
+                # 安全解压
                 zipf.extractall(temp_extract_dir)
 
             project_file = os.path.join(temp_extract_dir, 'project.json')
