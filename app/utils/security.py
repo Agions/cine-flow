@@ -118,9 +118,9 @@ class PathValidator:
             if re.search(pattern, path, re.IGNORECASE):
                 return SecurityCheckResult(False, f"路径包含危险模式: {pattern}")
 
-        # 转换为绝对路径
+        # 解析符号链接并转换为绝对路径（防止 symlink escape 攻击）
         try:
-            abs_path = os.path.abspath(path)
+            abs_path = os.path.realpath(path)
         except Exception as e:
             return SecurityCheckResult(False, f"路径解析失败: {e}")
 
@@ -128,7 +128,7 @@ class PathValidator:
         if self.allowed_base_dirs:
             in_allowed = False
             for base_dir in self.allowed_base_dirs:
-                base_abs = os.path.abspath(base_dir)
+                base_abs = os.path.realpath(base_dir)
                 if abs_path.startswith(base_abs):
                     in_allowed = True
                     break
