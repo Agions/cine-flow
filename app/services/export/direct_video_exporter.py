@@ -197,6 +197,13 @@ class DirectVideoExporter:
         if resolution:
             cfg.resolution = resolution
 
+        # ✅ WebM 格式自动选择 VP9 + Opus 编码器（除非用户已显式设置）
+        if cfg.format == VideoFormat.WEBM:
+            if cfg.video_codec == VideoCodec.H264:  # 用户未显式指定
+                cfg.video_codec = VideoCodec.VP9
+            if cfg.audio_codec == AudioCodec.AAC:  # 用户未显式指定
+                cfg.audio_codec = AudioCodec.OPUS
+
         self._report_progress("准备导出", 0.0)
 
         output = Path(output_path)
@@ -295,7 +302,7 @@ class DirectVideoExporter:
             '-c:v', self._get_video_codec(config),
             '-preset', config.preset,
             '-crf', str(config.crf),
-            '-c:a', 'aac',
+            '-c:a', config.audio_codec.value,
             '-b:a', config.audio_bitrate,
             '-ar', '48000',
             '-pix_fmt', 'yuv420p',
