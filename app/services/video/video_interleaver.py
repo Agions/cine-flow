@@ -12,6 +12,40 @@ from .models.perspective import (
     SubjectRole, SubjectPosition
 )
 
+# ── Dict-dispatch 表 ────────────────────────────────────────────────────────
+
+# 角色+情感 → 穿插得分
+_INNER_EMOTIONS = frozenset({"sad", "melancholy", "nostalgic", "fearful", "tender", "neutral"})
+_NARRATIVE_EMOTIONS = frozenset({"excited", "neutral", "calm", "tense"})
+_EMOTION_SCORE_MAP: Dict[tuple, float] = {
+    (SubjectRole.PROTAGONIST, _INNER_EMOTIONS): 1.0,
+    (SubjectRole.PROTAGONIST, frozenset()): 0.3,
+    (SubjectRole.SUPPORTING, _NARRATIVE_EMOTIONS): 0.8,
+    (SubjectRole.SUPPORTING, frozenset()): 0.4,
+    (SubjectRole.BACKGROUND, frozenset()): 0.1,
+    (SubjectRole.UNKNOWN, frozenset()): 0.1,
+}
+
+# 视线方向 → 得分加成
+_GAZE_SCORE_MAP: Dict[str, float] = {
+    "center": 0.3,
+    "left": 0.1,
+    "right": 0.1,
+}
+
+# 情绪强度 → 字幕风格
+_SUBTITLE_STYLE_MAP: List[Tuple[float, str]] = [
+    (0.8, "cinematic_intense"),
+    (0.5, "cinematic"),
+]
+
+# 情感曲线平均值 → 穿插模式
+_INTERLEAVE_MODE_MAP: List[Tuple[float, InterleaveMode]] = [
+    (0.7, InterleaveMode.EMOTIONAL_BURST),
+    (0.5, InterleaveMode.CINEMATIC),
+    (0.3, InterleaveMode.NARRATION_PRIORITY),
+]
+
 
 __all__ = [
     "VideoInterleaver",
@@ -296,23 +330,10 @@ class VideoInterleaver:
         emotion = narration.emotion.lower() if narration.emotion else "neutral"
         role = subject.role
 
-        # 内心情感 → 主角（第一人称代入感）
-        inner_emotions = {"sad", "melancholy", "nostalgic", "fearful", "tender", "neutral"}
-        # 叙述性情感 → 配角/背景（观察者视角）
-        narrative_emotions = {"excited", "neutral", "calm", "tense"}
-
-        if role == SubjectRole.PROTAGONIST:
-            if emotion in inner_emotions:
-                score += 1.0
-            else:
-                score += 0.3
-        elif role == SubjectRole.SUPPORTING:
-            if emotion in narrative_emotions:
-                score += 0.8
-            else:
-                score += 0.4
-        else:  # BACKGROUND / UNKNOWN
-            score += 0.1
+        # Dict dispatch: (role, 情感集) → 得分
+        is_inner = emotion in _INNER_EMOTIONS
+        emotion_set = _INNER_EMOTIONS if is_inner else _NARRATIVE_EMOTIONS
+        score += _EMOTION_SCORE_MAP.get((role, emotion_set), 0.1)
 
         # ── 空间构图 ────────────────────────────────────
         # 黄金分割 / 中心构图加分
@@ -331,22 +352,16 @@ class VideoInterleaver:
 
         # ── 视线方向 ────────────────────────────────────
         gaze = subject.gaze_direction
-        if gaze == "center":
-            score += 0.3
-        elif gaze in ("left", "right"):
-            score += 0.1
-        # "up"/"down" 不加分
+        score += _GAZE_SCORE_MAP.get(gaze, 0.0)  # up/down → 0.0
 
         return score
 
     def _infer_subtitle_style(self, emotional_intensity: float) -> str:
         """根据情绪推断字幕风格"""
-        if emotional_intensity >= 0.8:
-            return "cinematic_intense"
-        elif emotional_intensity >= 0.5:
-            return "cinematic"
-        else:
-            return "minimal"
+        for threshold, style in _SUBTITLE_STYLE_MAP:
+            if emotional_intensity >= threshold:
+                return style
+        return "minimal"
 
     def _infer_interleave_mode(self, emotion_curve: List[float]) -> InterleaveMode:
         """从情感曲线推断整体穿插模式"""
@@ -354,13 +369,7 @@ class VideoInterleaver:
             return self.default_mode
 
         avg_emotion = sum(emotion_curve) / len(emotion_curve)
-
-        if avg_emotion >= 0.7:
-            return InterleaveMode.EMOTIONAL_BURST
-        elif avg_emotion >= 0.5:
-            return InterleaveMode.CINEMATIC
-        elif avg_emotion >= 0.3:
-            return InterleaveMode.NARRATION_PRIORITY
-        else:
-            return InterleaveMode.MINIMALIST
-
+        for threshold, mode in _INTERLEAVE_MODE_MAP:
+            if avg_emotion >= threshold:
+                return mode
+        return InterleaveMode.MINIMALIST
