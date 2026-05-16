@@ -253,14 +253,19 @@ class HTTPClientMixin:
 
     async def _call_api(self, method: str, endpoint: str, **kwargs) -> Dict[str, Any]:
         """
-        通用非流式 API 调用（含统一错误包装）。
+        通用非流式 API 调用（含重试 + 统一错误包装）。
 
         用法::
             data = await self._call_api("POST", endpoint, json=payload)
         """
-        try:
+        async def _make_request():
+            """实际 HTTP 请求（由 RetryHandler 包裹执行）"""
             response = await self.http_client.request(method, endpoint, **kwargs)
             return response.json()
+
+        try:
+            # RetryHandler.execute() 会自动重试（指数退避 + jitter）
+            return await self._retry_handler.execute(_make_request)
         except httpx.HTTPStatusError as e:
             raise self._handle_http_error(e)
         except Exception as e:
@@ -435,16 +440,18 @@ class BaseLLMProvider(ABC):
             return False
     async def generate_cached(self, request: LLMRequest) -> LLMResponse:
         """
-        生成文本（带缓存）✅ 优化：重复 prompt 直接返回缓存结果
+        生成文本（带缓存 + 熔断）✅ 优化：重复 prompt 直接返回缓存结果
 
         缓存键 = model + prompt 前200字 + temperature + max_tokens（TTL=24h）。
+        熔断保护：连续失败 5 次后拒绝请求，防止级联故障。
         """
         key = self._make_cache_key(request)
         cached = await self._cache.get_from_key(key)
         if cached is not None:
             logger.debug(f"[Cache hit] {key[:8]}... ({self.__class__.__name__})")
             return cached
-        response = await self.generate(request)
+        # CircuitBreaker.call() 包裹 generate()：失败连续达到阈值时打开熔断
+        response = await self._circuit_breaker.call(self.generate, request)
         await self._cache.set_from_key(key, response)
         return response
 

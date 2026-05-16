@@ -8,8 +8,6 @@
 使用公共混入类减少重复代码
 """
 
-import httpx
-
 from ..base_llm_provider import (
     BaseLLMProvider,
     LLMRequest,
@@ -78,26 +76,18 @@ class DoubaoProvider(BaseLLMProvider, HTTPClientMixin, ModelManagerMixin):
         model = self._get_model_name(request.model)
         messages = self._build_messages(request)
 
-        try:
-            response = await self.http_client.post(
-                "/chat/completions",
-                json={
-                    "model": model,
-                    "messages": messages,
-                    "max_tokens": request.max_tokens or 4096,
-                    "temperature": request.temperature or 0.7,
-                    "top_p": request.top_p,
-                    "stream": False,
-                },
-            )
-            if response.status_code != 200:
-                raise ProviderError(f"API Error: {response.status_code} - {response.text}")
-            result = response.json()
-        except httpx.HTTPStatusError as e:
-            raise self._handle_http_error(e)
-        except Exception as e:
-            raise ProviderError(f"生成失败: {str(e)}")
-
+        result = await self._call_api(
+            "POST",
+            "/chat/completions",
+            json={
+                "model": model,
+                "messages": messages,
+                "max_tokens": request.max_tokens or 4096,
+                "temperature": request.temperature or 0.7,
+                "top_p": request.top_p,
+                "stream": False,
+            },
+        )
         return self._parse_response(result, model)
 
     async def generate_stream(self, request: LLMRequest):
