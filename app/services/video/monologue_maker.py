@@ -24,17 +24,18 @@ AI 第一人称独白制作器 (Monologue Maker)
     draft_path = maker.export_to_jianying(project, "/path/to/drafts")
 """
 
-import json
 import re
 import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Optional, List
-from dataclasses import dataclass, field
 from enum import Enum
 
-from .base_maker import BaseVideoMaker, BaseProject
+from .base_maker import BaseVideoMaker
 from .models.monologue import MonologueStyle, EmotionType, MonologueSegment
+from .monologue_project import MonologueProject
+from .emotion_engine import infer_emotion
+from .av_sync_applier import AVSyncApplier
 from ..ai.script_generator import ScriptGenerator, VoiceTone
 from ..ai.voice_generator import VoiceGenerator, VoiceConfig
 from ..ai.voice_models import VoiceStyle
@@ -42,7 +43,6 @@ from ..video_tools.caption_gen import CaptionGenerator
 from ..video_tools.ffmpeg_tool import FFmpegTool
 from ..export.jianying_models import JianyingDraft
 from .track_builder import build_monologue_tracks, CAPTION_STYLES
-from .av_sync_engine import AVSyncEngine
 
 logger = logging.getLogger(__name__)
 
@@ -53,124 +53,8 @@ __all__ = [
     "create_monologue",
 ]
 
-
-@dataclass
-class MonologueProject(BaseProject):
-    """独白视频项目"""
-    # 独白内容
-    context: str = ""              # 场景/情境描述
-    emotion: str = ""              # 情感基调
-    full_script: str = ""          # 完整独白
-    segments: List[MonologueSegment] = field(default_factory=list)
-
-    # 配置
-    style: MonologueStyle = MonologueStyle.MELANCHOLIC
-    voice_config: VoiceConfig = field(default_factory=VoiceConfig)
-    caption_style: str = "cinematic"  # cinematic, minimal, expressive
-
-    @property
-    def total_duration(self) -> float:
-        """总时长"""
-        return sum(seg.audio_duration for seg in self.segments)
-
-    # ------------------------------------------------------------------ #
-    #  持久化 (.narrafiilm JSON)                                        #
-    # ------------------------------------------------------------------ #
-
-    def save(self, path: Optional[str] = None) -> str:
-        """
-        将项目保存为 .narrafiilm 文件（JSON）。
-
-        Args:
-            path: 保存路径，默认 <output_dir>/<name>.narrafiilm
-
-        Returns:
-            实际保存的文件路径
-        """
-        save_path = Path(path) if path else Path(self.output_dir) / f"{self.name}.narrafiilm"
-        save_path.parent.mkdir(parents=True, exist_ok=True)
-
-        data = {
-            "version": "1.0",
-            "type": "monologue",
-            "id": self.id,
-            "name": self.name,
-            "source_video": self.source_video,
-            "video_duration": self.video_duration,
-            "output_dir": self.output_dir,
-            "context": self.context,
-            "emotion": self.emotion,
-            "full_script": self.full_script,
-            "style": self.style.value if isinstance(self.style, Enum) else self.style,
-            "caption_style": self.caption_style,
-            "segments": [
-                {
-                    "script": seg.script,
-                    "emotion": seg.emotion.value if isinstance(seg.emotion, Enum) else seg.emotion,
-                    "video_start": seg.video_start,
-                    "video_end": seg.video_end,
-                    "audio_path": seg.audio_path,
-                    "audio_duration": seg.audio_duration,
-                    "captions": seg.captions,
-                }
-                for seg in self.segments
-            ],
-        }
-
-        with open(save_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-
-        return str(save_path)
-
-    @classmethod
-    def load(cls, path: str) -> "MonologueProject":
-        """
-        从 .narrafiilm 文件加载项目。
-
-        Args:
-            path: .narrafiilm 文件路径
-
-        Returns:
-            MonologueProject 实例
-        """
-        with open(path, encoding="utf-8") as f:
-            data = json.load(f)
-
-        segments = [
-            MonologueSegment(
-                script=seg["script"],
-                emotion=seg["emotion"],
-                video_start=seg["video_start"],
-                video_end=seg["video_end"],
-                audio_path=seg.get("audio_path", ""),
-                audio_duration=seg.get("audio_duration", 0.0),
-                captions=seg.get("captions", []),
-            )
-            for seg in data.get("segments", [])
-        ]
-
-        style_val = data.get("style", "melancholic")
-        if isinstance(style_val, str):
-            try:
-                style = MonologueStyle(style_val)
-            except ValueError:
-                style = MonologueStyle.MELANCHOLIC
-        else:
-            style = MonologueStyle.MELANCHOLIC
-
-        return cls(
-            id=data.get("id", ""),
-            name=data.get("name", "新建项目"),
-            source_video=data.get("source_video", ""),
-            video_duration=data.get("video_duration", 0.0),
-            output_dir=data.get("output_dir", ""),
-            context=data.get("context", ""),
-            emotion=data.get("emotion", ""),
-            full_script=data.get("full_script", ""),
-            style=style,
-            caption_style=data.get("caption_style", "cinematic"),
-            segments=segments,
-        )
+# MonologueProject 已迁移至 monologue_project.py
+from .monologue_project import MonologueProject
 
 
 class MonologueMaker(BaseVideoMaker[MonologueProject]):
@@ -259,7 +143,7 @@ class MonologueMaker(BaseVideoMaker[MonologueProject]):
         self.voice_generator = VoiceGenerator(provider=voice_provider)
         self.script_generator = ScriptGenerator(use_llm_manager=True)
         self.caption_generator = CaptionGenerator()
-        self.av_sync_engine = AVSyncEngine()
+        self.av_sync_applier = AVSyncApplier()
 
     def create_project(
         self,
@@ -323,7 +207,11 @@ class MonologueMaker(BaseVideoMaker[MonologueProject]):
 
         # 音画同步 — 确保解说内容与画面匹配
         if project.scenes and project.segments:
-            self._apply_av_sync(project)
+            self.av_sync_applier.apply_sync(
+                segments=project.segments,
+                scenes=project.scenes,
+                video_duration=project.video_duration,
+            )
 
         self._report_progress("生成独白", 1.0)
 
@@ -381,7 +269,7 @@ class MonologueMaker(BaseVideoMaker[MonologueProject]):
                 scene = None
 
             # 根据内容推断情感
-            emotion = self._infer_emotion(para, project.emotion)
+            emotion = infer_emotion(para, project.emotion)
 
             seg_duration = project.video_duration / len(paragraphs) if paragraphs else 10.0
             segment = MonologueSegment(
@@ -391,132 +279,6 @@ class MonologueMaker(BaseVideoMaker[MonologueProject]):
                 video_end=scene.end if scene else (i + 1) * seg_duration,
             )
             project.segments.append(segment)
-
-    def _infer_emotion(self, text: str, base_emotion: str) -> EmotionType:
-        """根据文本内容推断情感（增强版 - 更智能的情感识别）"""
-        # 扩展的情感关键词库
-        emotion_keywords = {
-            EmotionType.SAD: ["悲", "泪", "哭", "失去", "离别", "孤独", "寂寞",
-                            "难过", "伤心", "痛苦", "无奈", "遗憾", "惋惜", "怀念"],
-            EmotionType.HAPPY: ["开心", "快乐", "笑", "幸福", "美好", "温暖",
-                              "高兴", "喜悦", "兴奋", "期待", "惊喜", "满足", "感动"],
-            EmotionType.CALM: ["平静", "安宁", "静", "默", "沉思", "思考",
-                              "宁静", "淡然", "从容", "释然", "放下", "接受"],
-            EmotionType.TENDER: ["温柔", "爱", "思念", "想", "心", "情",
-                               "珍惜", "呵护", "陪伴", "守候", "牵挂", "眷恋"],
-            EmotionType.EXCITED: ["激动", "兴奋", "期待", "梦想", "未来",
-                                "挑战", "突破", "奋斗", "拼搏", "热血", "激情"],
-        }
-
-        # 情感强度词
-        intensity_words = {
-            "very": ["非常", "特别", "极其", "十分", "格外", "异常"],
-            "slightly": ["有点", "稍微", "略微", "一点", "些许"],
-        }
-
-        # 计算情感得分（支持否定词检测）
-        negation_patterns = ["不", "没", "无", "非", "别", "休", "勿"]
-        emotion_scores = {}
-        for emotion, keywords in emotion_keywords.items():
-            score = 0
-            for keyword in keywords:
-                if keyword in text:
-                    # 检查是否有否定词修饰
-                    negated = any(f"{neg}{keyword}" in text or text.find(keyword) - text.find(neg) <= 2
-                                 for neg in negation_patterns
-                                 if f"{neg}{keyword}" in text)
-                    if negated:
-                        score -= 0.5  # 否定词削弱正面情感
-                    else:
-                        score += 1
-                        # 检查强度词
-                        for intense_word in intensity_words["very"]:
-                            if intense_word in text:
-                                score += 2
-                                break
-            if score != 0:
-                emotion_scores[emotion] = score
-
-        # 返回得分最高的情感
-        if emotion_scores:
-            return max(emotion_scores.items(), key=lambda x: x[1])[0]
-
-        # 使用基础情感
-        emotion_map = {
-            "惆怅": EmotionType.SAD,
-            "忧郁": EmotionType.SAD,
-            "开心": EmotionType.HAPPY,
-            "快乐": EmotionType.HAPPY,
-            "平静": EmotionType.CALM,
-            "温柔": EmotionType.TENDER,
-            "excited": EmotionType.EXCITED,
-            "激动": EmotionType.EXCITED,
-            "思念": EmotionType.TENDER,
-            "怀念": EmotionType.SAD,
-            "感动": EmotionType.TENDER,
-            "温暖": EmotionType.TENDER,
-        }
-
-        return emotion_map.get(base_emotion, EmotionType.NEUTRAL)
-
-    def _apply_av_sync(self, project: MonologueProject) -> None:
-        """应用音画同步 — 调整视频片段以匹配解说内容"""
-        # 准备场景数据
-        video_scenes = []
-        for scene in project.scenes:
-            if hasattr(scene, 'start') and hasattr(scene, 'end'):
-                video_scenes.append({
-                    "start": scene.start,
-                    "end": scene.end,
-                    "description": getattr(scene, 'description', ''),
-                    "keywords": getattr(scene, 'keywords', []) or [],
-                })
-
-        if not video_scenes:
-            return
-
-        # 准备句子时间戳（使用已有的 sentence_timestamps）
-        sentence_timestamps = []
-        scripts = []
-        for seg in project.segments:
-            scripts.append(seg.script)
-            if seg.sentence_timestamps:
-                for ts in seg.sentence_timestamps:
-                    sentence_timestamps.append({
-                        "text": ts.get("text", ""),
-                        "start": ts.get("start", 0) + seg.audio_start if hasattr(seg, 'audio_start') else ts.get("start", 0),
-                        "end": ts.get("end", 0) + seg.audio_start if hasattr(seg, 'audio_start') else ts.get("end", 0),
-                    })
-            else:
-                # 使用片段的估算时间
-                sentence_timestamps.append({
-                    "text": seg.script,
-                    "start": 0,
-                    "end": seg.audio_duration or 3.0,
-                })
-
-        # 执行音画同步
-        syncs = self.av_sync_engine.sync(
-            video_scenes=video_scenes,
-            sentence_timestamps=sentence_timestamps,
-            scripts=scripts,
-        )
-
-        # 更新片段的视频时间范围
-        for i, sync in enumerate(syncs):
-            if i < len(project.segments):
-                seg = project.segments[i]
-                seg.video_start = sync.video_start
-                seg.video_end = sync.video_end
-                # 记录同步质量
-                if hasattr(seg, 'sync_info'):
-                    seg.sync_info = {
-                        "match_score": sync.match_score,
-                        "sync_method": sync.sync_method,
-                        "keywords": sync.keywords,
-                    }
-
-        logger.info(f"音画同步完成: {len(syncs)} 个片段已对齐")
 
     def generate_voice(
         self,
