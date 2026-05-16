@@ -8,6 +8,8 @@
 使用公共混入类减少重复代码
 """
 
+import httpx
+
 from ..base_llm_provider import (
     BaseLLMProvider,
     LLMRequest,

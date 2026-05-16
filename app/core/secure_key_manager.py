@@ -98,7 +98,7 @@ class SecureKeyManager:
                     salt=salt,
                     iterations=480000,  # OWASP 建议最低 480,000 次
                 )
-                self._encryption_key = base64.urlsafe_b64encode(kdf.derive(password))
+                self._encryption_key = base64.urlsafe_b64encode(kdf.derive(master_password.encode()))
 
             except Exception as e:
                 self.logger.error(f"Failed to get master key: {e}")
