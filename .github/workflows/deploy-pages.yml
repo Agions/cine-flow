@@ -25,7 +25,7 @@ jobs:
           node-version: '20'
       - run: npm ci
         working-directory: docs
-      - run: ./node_modules/.bin/vitepress build
+      - run: npx --no-install vitepress build
         working-directory: docs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
