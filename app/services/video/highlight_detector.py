@@ -30,10 +30,9 @@
 __all__ = ["HighlightReason", "HighlightSegment", "HighlightDetectorConfig", "HighlightDetector"]
 
 import logging
-import subprocess
 from pathlib import Path
 from collections import defaultdict
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Any
 from enum import Enum
 from dataclasses import dataclass, asdict
 from ...utils.security import SecurityError
@@ -130,6 +129,15 @@ def _get_executor():
     return _executor
 
 
+class _FakeCompletedProcess:
+    """替代 subprocess.CompletedProcess，用于错误时返回"""
+    def __init__(self, args, returncode, stdout, stderr):
+        self.args = args
+        self.returncode = returncode
+        self.stdout = stdout
+        self.stderr = stderr
+
+
 class HighlightDetector:
     """
     高光检测器
@@ -195,7 +203,7 @@ class HighlightDetector:
 
         return highlights
 
-    def _run_ffmpeg(self, cmd: List[str], timeout: int = 60) -> subprocess.CompletedProcess:
+    def _run_ffmpeg(self, cmd: List[str], timeout: int = 60) -> Any:
         """执行 ffmpeg 命令"""
         try:
             result = _get_executor().run(cmd, timeout=timeout)
@@ -203,10 +211,10 @@ class HighlightDetector:
         except SecurityError:
             # 命令注入攻击被拦截，不要静默吞噬
             logger.warning(f"FFmpeg command blocked by security policy: {cmd[0]}")
-            return subprocess.CompletedProcess(cmd, 1, "", "SecurityError: command blocked")
+            return _FakeCompletedProcess(cmd, 1, "", "SecurityError: command blocked")
         except Exception as e:
             logger.debug(f"FFmpeg 执行失败: {e}")
-            return subprocess.CompletedProcess(cmd, 1, "", str(e))
+            return _FakeCompletedProcess(cmd, 1, "", str(e))
 
     def _extract_frames(self, video_path: Path, prefix: str) -> List[Path]:
         """提取视频帧到临时目录，返回帧文件列表"""
