@@ -54,7 +54,6 @@ __all__ = [
 ]
 
 # MonologueProject 已迁移至 monologue_project.py
-from .monologue_project import MonologueProject
 
 
 class MonologueMaker(BaseVideoMaker[MonologueProject]):
