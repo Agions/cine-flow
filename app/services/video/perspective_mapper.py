@@ -130,8 +130,8 @@ class PerspectiveMapper:
         # 找主角
         protagonist = self._find_protagonist(subjects)
         if protagonist:
-            # "我"的位置与主角相对（反方向）
-            spatial_x = 100 - protagonist.x_percent
+            # "我"的视角与主角同侧（观察者视角跟随主角视线方向）
+            spatial_x = protagonist.x_percent
             spatial_y = protagonist.y_percent
             spatial_depth = protagonist.depth_layer
         else:
@@ -197,10 +197,22 @@ class PerspectiveMapper:
 
     def _has_specific_reference(self, text: str) -> bool:
         """检查解说是否包含具体指代（需要可视化）"""
-        # 简化的启发式判断
+        # 扩展的中文指代词库
         specific_words = [
-            "看", "这里", "这个", "那个人", "这个东西",
-            "左边", "右边", "前面", "后面", "上方"
+            # 指示代词
+            "这", "那", "这个", "那个", "这些", "那些",
+            "这里", "那里", "这儿", "那儿",
+            # 人物指代
+            "他", "她", "他们", "她们", "我", "你", "我们",
+            "谁", "哪位", "哪位", "哪位",
+            # 空间指代
+            "左边", "右边", "前面", "后面", "上方", "下方", "中间",
+            "旁边", "附近", "远处", "近处", "对面",
+            # 物体指代
+            "这个东西", "那个东西", "这玩意儿", "它",
+            "画面中", "屏幕上", "图中", "照片里",
+            # 视觉动词
+            "看", "看到", "瞧", "瞅", "观察", "发现", "注意到",
         ]
         return any(word in text for word in specific_words)
 

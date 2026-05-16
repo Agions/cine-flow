@@ -42,7 +42,7 @@ from ..video_tools.caption_gen import CaptionGenerator
 from ..video_tools.ffmpeg_tool import FFmpegTool
 from ..export.jianying_models import JianyingDraft
 from .track_builder import build_monologue_tracks, CAPTION_STYLES
-from .av_sync_engine import AVSyncEngine, AVSyncConfig
+from .av_sync_engine import AVSyncEngine
 
 logger = logging.getLogger(__name__)
 
@@ -357,14 +357,28 @@ class MonologueMaker(BaseVideoMaker[MonologueProject]):
         if not paragraphs:
             paragraphs = [project.full_script]
 
-        # 匹配场景
-        scenes = project.scenes if project.scenes else [None]
-        n_scenes = len(scenes) if scenes and scenes[0] else 1
+        # 按时间顺序整理有效场景（跳过无效）
+        valid_scenes = [s for s in project.scenes if s and s.end > s.start]
+        n_scenes = len(valid_scenes)
 
         project.segments = []
         for i, para in enumerate(paragraphs):
-            scene_idx = i % n_scenes
-            scene = scenes[scene_idx] if scenes and scenes[0] else None
+            # 按时间比例分配段落到场景（避免取模循环导致长场景被跳过）
+            if n_scenes > 0:
+                # 计算段落在总字数中的比例位置
+                para_ratio = (i + 0.5) / len(paragraphs)
+                # 找到对应时间点的场景
+                target_time = para_ratio * project.video_duration
+                scene_idx = 0
+                for j, scene in enumerate(valid_scenes):
+                    if scene.start <= target_time < scene.end:
+                        scene_idx = j
+                        break
+                    elif target_time >= scene.end:
+                        scene_idx = j  # 落在当前场景之后
+                scene = valid_scenes[min(scene_idx, n_scenes - 1)]
+            else:
+                scene = None
 
             # 根据内容推断情感
             emotion = self._infer_emotion(para, project.emotion)
@@ -400,19 +414,27 @@ class MonologueMaker(BaseVideoMaker[MonologueProject]):
             "slightly": ["有点", "稍微", "略微", "一点", "些许"],
         }
 
-        # 计算情感得分
+        # 计算情感得分（支持否定词检测）
+        negation_patterns = ["不", "没", "无", "非", "别", "休", "勿"]
         emotion_scores = {}
         for emotion, keywords in emotion_keywords.items():
             score = 0
             for keyword in keywords:
                 if keyword in text:
-                    score += 1
-                    # 检查强度词
-                    for intense_word in intensity_words["very"]:
-                        if intense_word in text:
-                            score += 2
-                            break
-            if score > 0:
+                    # 检查是否有否定词修饰
+                    negated = any(f"{neg}{keyword}" in text or text.find(keyword) - text.find(neg) <= 2
+                                 for neg in negation_patterns
+                                 if f"{neg}{keyword}" in text)
+                    if negated:
+                        score -= 0.5  # 否定词削弱正面情感
+                    else:
+                        score += 1
+                        # 检查强度词
+                        for intense_word in intensity_words["very"]:
+                            if intense_word in text:
+                                score += 2
+                                break
+            if score != 0:
                 emotion_scores[emotion] = score
 
         # 返回得分最高的情感
