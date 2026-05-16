@@ -21,6 +21,7 @@
 import logging
 import re
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import List, Optional
 
@@ -82,13 +83,12 @@ class SceneAnalyzer:
         # 构建场景列表
         scenes = self._build_scenes(scene_times, duration)
 
-        # 分析每个场景
-        for scene in scenes:
-            self._analyze_scene(str(video_path), scene)
+        # 分析每个场景（并发执行）
+        self._analyze_scenes_parallel(str(video_path), scenes)
 
-        # 提取关键帧（如果启用）
+        # 提取关键帧（并发执行）
         if self.config.extract_keyframes:
-            self._extract_keyframes(str(video_path), scenes)
+            self._extract_keyframes_parallel(str(video_path), scenes)
 
         return scenes
 
@@ -220,6 +220,25 @@ class SceneAnalyzer:
 
         scene.type = self._infer_scene_type(scene)
 
+    def _analyze_scenes_parallel(self, video_path: str, scenes: List[SceneInfo]) -> None:
+        """并发分析所有场景（每个场景独立FFmpeg提取亮度/运动/音频）"""
+        if not scenes:
+            return
+
+        def analyze_one(scene: SceneInfo) -> SceneInfo:
+            self._analyze_scene(video_path, scene)
+            return scene
+
+        max_workers = min(8, len(scenes))
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {executor.submit(analyze_one, scene): scene for scene in scenes}
+            for future in as_completed(futures):
+                try:
+                    future.result()
+                except Exception as e:
+                    scene = futures[future]
+                    logger.error(f"场景 {scene.index} 分析失败: {e}")
+
     def _run_video_metric(
         self,
         video_path: str,
@@ -346,3 +365,47 @@ class SceneAnalyzer:
 
             except Exception as e:
                 logger.error(f"提取关键帧失败 (场景 {scene.index}): {e}")
+
+    def _extract_keyframes_parallel(self, video_path: str, scenes: List[SceneInfo]) -> None:
+        """并发提取所有场景的关键帧"""
+        if not scenes:
+            return
+
+        if not self.config.keyframe_dir:
+            keyframe_dir = Path(video_path).parent / "keyframes"
+        else:
+            keyframe_dir = Path(self.config.keyframe_dir)
+
+        keyframe_dir.mkdir(parents=True, exist_ok=True)
+
+        def extract_one(scene: SceneInfo) -> SceneInfo:
+            timestamp = scene.start + scene.duration / 2
+            output_path = keyframe_dir / f"scene_{scene.index:03d}.jpg"
+
+            try:
+                cmd = [
+                    'ffmpeg', '-ss', str(timestamp),
+                    '-i', video_path,
+                    '-vframes', '1',
+                    '-q:v', '2',
+                    '-y', str(output_path)
+                ]
+
+                result = self._executor.run(cmd, timeout=60)
+
+                if result.returncode == 0:
+                    scene.keyframe_path = str(output_path)
+
+            except Exception as e:
+                logger.error(f"提取关键帧失败 (场景 {scene.index}): {e}")
+
+            return scene
+
+        max_workers = min(8, len(scenes))
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {executor.submit(extract_one, scene): scene for scene in scenes}
+            for future in as_completed(futures):
+                try:
+                    future.result()
+                except Exception as e:
+                    logger.error(f"关键帧提取任务异常: {e}")
