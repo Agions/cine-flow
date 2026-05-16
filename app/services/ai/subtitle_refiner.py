@@ -61,7 +61,6 @@ class SubtitleRefiner:
 
     def __init__(self, config: Optional[RefinerConfig] = None):
         self.config = config or RefinerConfig()
-        self._llm_client = None
 
     def refine(
         self,
@@ -93,11 +92,7 @@ class SubtitleRefiner:
         # Step 3: 边界优化
         segments = self._optimize_boundaries(segments)
 
-        # Step 4: LLM 校正（如启用）
-        if self.config.enable_llm_correction:
-            segments = self._apply_llm_correction(segments, context)
-
-        # Step 5: 专有名词修复
+        # Step 4: 专有名词修复
         if self.config.enable_proper_nouns:
             segments = self._fix_proper_nouns(segments, context)
 
@@ -345,156 +340,14 @@ class SubtitleRefiner:
 
         return merged
 
-    def _apply_llm_correction(
-        self,
-        segments: List[SubtitleSegment],
-        context: Optional[Dict[str, Any]] = None,
-    ) -> List[SubtitleSegment]:
-        """使用 LLM 校正低置信度片段"""
-        # 找出需要校正的片段
-        low_confidence_indices = []
-        for i, seg in enumerate(segments):
-            if seg.confidence < self.config.min_confidence_threshold:
-                low_confidence_indices.append(i)
-
-        if not low_confidence_indices:
-            logger.debug("所有片段置信度均达标，无需 LLM 校正")
-            return segments
-
-        logger.info(f"发现 {len(low_confidence_indices)} 个低置信度片段，需要 LLM 校正")
-
-        # 获取上下文
-        context_text = self._build_context(segments, low_confidence_indices, context)
-
-        # 构建 LLM 校正提示
-        correction_prompt = self._build_correction_prompt(
-            segments, low_confidence_indices, context_text
-        )
-
-        # 调用 LLM 校正
-        corrected_texts = self._call_llm_correction(correction_prompt)
-
-        # 应用校正结果
-        if corrected_texts:
-            for idx, new_text in zip(low_confidence_indices, corrected_texts):
-                if new_text and new_text.strip():
-                    segments[idx] = SubtitleSegment(
-                        start=segments[idx].start,
-                        end=segments[idx].end,
-                        text=new_text.strip(),
-                        confidence=max(segments[idx].confidence, 0.8),
-                        source="llm_corrected",
-                    )
-
-        return segments
-
-    def _build_context(
-        self,
-        segments: List[SubtitleSegment],
-        indices: List[int],
-        context: Optional[Dict[str, Any]],
-    ) -> str:
-        """构建上下文信息"""
-        parts = []
-
-        # 添加视频主题（如果有）
-        if context and context.get("topic"):
-            parts.append(f"视频主题：{context['topic']}")
-
-        # 添加说话人信息（如果有）
-        if context and context.get("speaker"):
-            parts.append(f"说话人：{context['speaker']}")
-
-        # 添加领域信息（如果有）
-        if context and context.get("domain"):
-            parts.append(f"领域：{context['domain']}")
-
-        return "\n".join(parts)
-
-    def _build_correction_prompt(
-        self,
-        segments: List[SubtitleSegment],
-        indices: List[int],
-        context: str,
-    ) -> str:
-        """构建 LLM 校正提示"""
-        # 收集需要校正的片段及其上下文
-        targets = []
-        for idx in indices:
-            seg = segments[idx]
-
-            # 获取前后各一个片段作为上下文
-            prev_text = segments[idx - 1].text if idx > 0 else ""
-            next_text = segments[idx + 1].text if idx < len(segments) - 1 else ""
-
-            targets.append({
-                "index": idx,
-                "text": seg.text,
-                "start": seg.start,
-                "end": seg.end,
-                "prev": prev_text,
-                "next": next_text,
-            })
-
-        prompt_parts = [
-            "你是一个专业的语音识别文本校正专家。请根据上下文校正以下识别错误的文本。",
-            "",
-        ]
-
-        if context:
-            prompt_parts.append(f"上下文信息：{context}")
-            prompt_parts.append("")
-
-        prompt_parts.append("校正要求：")
-        prompt_parts.append("1. 根据前后句子的语义，修正明显识别错误的文字")
-        prompt_parts.append("2. 保持原句的语气和风格不变")
-        prompt_parts.append("3. 只修正错误，不改变正确的内容")
-        prompt_parts.append("4. 如果原句正确，直接输出原句")
-        prompt_parts.append("5. 只输出校正后的文本，每行一句，不要添加任何解释或标注")
-        prompt_parts.append("")
-
-        for i, target in enumerate(targets):
-            prompt_parts.append(f"--- 片段 {i + 1} ---")
-            prompt_parts.append(f"前文：{target['prev']}")
-            prompt_parts.append(f"当前（可能错误）：{target['text']}")
-            prompt_parts.append(f"后文：{target['next']}")
-            prompt_parts.append("")
-
-        return "\n".join(prompt_parts)
-
-    def _call_llm_correction(self, prompt: str) -> List[str]:
-        """调用 LLM 进行校正"""
-        try:
-            # 使用简单的方式调用 LLM
-            # 实际实现中可以集成到 LLMManager
-            from .llm_manager import LLMManager, LLMRequest
-            from .llm_manager import ProviderType
-
-            # 创建请求（保留以备后续调用）
-            _request = LLMRequest(
-                prompt=prompt,
-                system_prompt="你是一个专业的语音识别文本校正专家。",
-                model="qwen-plus",
-                max_tokens=500,
-                temperature=0.3,
-            )
-
-            # 尝试使用默认配置
-            # 注意：这里需要配置 LLM
-            logger.debug("LLM 校正功能需要配置 LLM Manager")
-
-            return []  # 如果没有配置 LLM，返回空列表
-
-        except Exception as e:
-            logger.warning(f"LLM 校正失败: {e}")
-            return []
-
     def _fix_proper_nouns(
         self,
         segments: List[SubtitleSegment],
         context: Optional[Dict[str, Any]],
     ) -> List[SubtitleSegment]:
         """修复专有名词"""
+        if not segments:
+            return segments
 
         # 常见专有名词库
         proper_nouns = [
@@ -517,21 +370,31 @@ class SubtitleRefiner:
 
         # 构建专有名词模式
         noun_pattern = '|'.join(re.escape(n) for n in proper_nouns)
+        if not noun_pattern:
+            return segments
 
+        # 编译正则（用于检测是否包含专有名词）
+        noun_re = re.compile(noun_pattern)
+
+        result = []
         for seg in segments:
-            text = seg.text
+            # 替换标点连接的专有名词碎片（如 "北 京" → "北京"）
+            if noun_re.search(seg.text):
+                text = re.sub(rf'({noun_pattern})', lambda m: m.group(1), seg.text)
+            else:
+                text = seg.text
 
-            # 替换可能的识别错误
-            # 注意：这里只处理明显错误的情况
-            if noun_pattern:
-                # 修复常见的识别错误模式
-                text = re.sub(
-                    rf'({noun_pattern})',
-                    lambda m: m.group(1),
-                    text
+            if text != seg.text:
+                seg = SubtitleSegment(
+                    start=seg.start,
+                    end=seg.end,
+                    text=text,
+                    confidence=seg.confidence,
+                    source=seg.source,
                 )
+            result.append(seg)
 
-        return segments
+        return result
 
     def _final_cleanup(
         self,
